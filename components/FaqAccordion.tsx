@@ -4,24 +4,24 @@ import { useState } from "react";
 
 const faqs = [
   {
-    q: "Comment se passe la livraison ?",
-    a: "Nous livrons partout au Cameroun sous 2 à 5 jours ouvrables. Après votre commande WhatsApp, nous vous confirmons le délai selon votre ville. La BD vous est remise en main propre par notre livreur.",
+    q: "Comment fonctionne la personnalisation ?",
+    a: "Après votre commande WhatsApp, vous indiquez le prénom de votre enfant (et son sexe). Notre équipe insère ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez ensuite votre livre unique, imprimé et livré sous 24h.",
   },
   {
     q: "Quand est-ce que je paye ?",
-    a: "Vous payez uniquement à la réception de votre BD. Le livreur vous remet le livre, vous vérifiez qu'il est en bon état, puis vous réglez le montant total (prix BD + frais de livraison). Aucun paiement à l'avance.",
+    a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) après confirmation de votre commande sur WhatsApp — avant la personnalisation. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
   },
   {
-    q: "Que faire si je ne suis pas satisfait ?",
-    a: "Si votre BD arrive abîmée ou si ce n'est pas le bon titre, contactez-nous immédiatement sur WhatsApp. Nous arrangerons un remplacement sans frais supplémentaires.",
+    q: "Quel est le délai de livraison ?",
+    a: "Une fois votre paiement Mobile Money confirmé, nous personnalisons et imprimons votre BD, puis la livrons sous 24h à Yaoundé et Douala.",
   },
   {
-    q: "Puis-je commander plusieurs BD en même temps ?",
-    a: "Oui ! Précisez simplement les titres souhaités dans votre message WhatsApp. Les frais de livraison restent forfaitaires, quel que soit le nombre de BD commandées.",
+    q: "Ma commande est-elle garantie ?",
+    a: "Oui. Si votre BD arrive abîmée ou si le prénom est mal orthographié, contactez-nous immédiatement sur WhatsApp. Nous corrigeons et relivrons sans frais supplémentaires.",
   },
   {
-    q: "Livrez-vous hors de Douala et Yaoundé ?",
-    a: "Oui, nous livrons dans toutes les villes du Cameroun : Bafoussam, Garoua, Maroua, Ngaoundéré, Bertoua, Ebolowa et plus. Le délai peut être légèrement plus long selon la région.",
+    q: "Livrez-vous en dehors de Yaoundé et Douala ?",
+    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous sur WhatsApp pour connaître les possibilités pour votre ville — nous faisons de notre mieux pour servir tout le Cameroun.",
   },
 ];
 
@@ -37,7 +37,11 @@ export default function FaqAccordion() {
             onClick={() => setOuvert(ouvert === i ? null : i)}
           >
             <span className="font-semibold text-gray-800 text-sm pr-4">{faq.q}</span>
-            <span className={`text-green-600 text-lg font-bold transition-transform shrink-0 ${ouvert === i ? "rotate-45" : ""}`}>
+            <span
+              className={`text-green-600 text-lg font-bold transition-transform shrink-0 ${
+                ouvert === i ? "rotate-45" : ""
+              }`}
+            >
               +
             </span>
           </button>

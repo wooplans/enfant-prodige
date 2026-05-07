@@ -10,8 +10,9 @@ export default function Footer() {
             <span>📚</span> Enfant Prodige BD
           </h3>
           <p className="text-green-200 text-sm leading-relaxed">
-            Des bandes dessinées africaines originales, livrées partout au Cameroun. Commandez
-            facilement via WhatsApp et payez à la livraison.
+            Des livres illustrés personnalisés pour les enfants africains de 6 à 10 ans. Le prénom
+            de votre enfant sur la couverture et dans les dialogues. Livraison sous 24h à Yaoundé
+            et Douala.
           </p>
         </div>
 
@@ -25,7 +26,7 @@ export default function Footer() {
             </li>
             <li>
               <Link href="/catalogue" className="hover:text-white transition-colors">
-                Catalogue
+                Nos séries
               </Link>
             </li>
             <li>
@@ -39,7 +40,7 @@ export default function Footer() {
         <div>
           <h3 className="font-bold mb-3">Commander</h3>
           <p className="text-green-200 text-sm mb-3">
-            Commandez directement via WhatsApp. Livraison partout au Cameroun.
+            Commandez via WhatsApp. Payez par Mobile Money après confirmation. Livraison en 24h.
           </p>
           <a
             href={`https://wa.me/${WHATSAPP_NUMBER}`}

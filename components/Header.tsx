@@ -16,7 +16,7 @@ export default function Header() {
             <div className="font-bold text-lg leading-tight group-hover:text-yellow-300 transition-colors">
               Enfant Prodige BD
             </div>
-            <div className="text-green-300 text-xs">Bandes Dessinées Africaines</div>
+            <div className="text-green-300 text-xs">Livres Personnalisés pour Enfants</div>
           </div>
         </Link>
 
@@ -26,7 +26,7 @@ export default function Header() {
             Accueil
           </Link>
           <Link href="/catalogue" className="hover:text-yellow-300 transition-colors">
-            Catalogue
+            Nos séries
           </Link>
           <Link href="/contact" className="hover:text-yellow-300 transition-colors">
             Contact
@@ -63,7 +63,7 @@ export default function Header() {
             onClick={() => setMenuOpen(false)}
             className="hover:text-yellow-300"
           >
-            Catalogue
+            Nos séries
           </Link>
           <Link
             href="/contact"

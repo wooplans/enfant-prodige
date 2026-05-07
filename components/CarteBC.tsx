@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BD, buildWhatsAppMessage } from "@/lib/catalogue";
+import { BD } from "@/lib/catalogue";
 
 interface CarteBDProps {
   bd: BD;
@@ -13,32 +13,23 @@ export default function CarteBD({ bd }: CarteBDProps) {
         <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-amber-200 to-orange-300 group-hover:scale-105 transition-transform duration-300">
           📖
         </div>
-        {bd.nouveaute && (
-          <span className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-            NOUVEAUTÉ
-          </span>
-        )}
-        {!bd.disponible && (
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <span className="bg-gray-800 text-white text-sm px-3 py-1 rounded-full">
-              Rupture de stock
-            </span>
-          </div>
-        )}
+        {/* Badge âge */}
+        <span className="absolute top-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-0.5 rounded-full shadow">
+          {bd.ageMin}–{bd.ageMax} ans
+        </span>
       </Link>
 
       {/* Infos */}
       <div className="p-4 flex flex-col flex-1">
-        <span className="text-xs text-green-700 font-medium uppercase tracking-wide mb-1">
+        <span className="text-xs text-green-700 font-medium uppercase tracking-wide mb-1 line-clamp-1">
           {bd.genre}
         </span>
         <Link href={`/bd/${bd.id}`}>
-          <h3 className="font-bold text-gray-900 hover:text-green-700 transition-colors leading-tight">
-            {bd.titre}
-            {bd.tome && <span className="font-normal text-gray-500"> — Tome {bd.tome}</span>}
+          <h3 className="font-bold text-gray-900 hover:text-green-700 transition-colors leading-tight text-sm">
+            {bd.serie}
           </h3>
         </Link>
-        <p className="text-sm text-gray-500 mt-0.5">✍️ {bd.auteur}</p>
+        <p className="text-xs text-gray-400 mt-0.5">✨ Avec le prénom de votre enfant</p>
 
         <p className="text-sm text-gray-600 mt-2 line-clamp-2 flex-1">{bd.description}</p>
 
@@ -52,23 +43,12 @@ export default function CarteBD({ bd }: CarteBDProps) {
             </div>
           </div>
 
-          {bd.disponible ? (
-            <a
-              href={buildWhatsAppMessage(bd)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-4 py-2 rounded-xl flex items-center gap-1.5 transition-colors whitespace-nowrap"
-            >
-              <span>📱</span> Commander
-            </a>
-          ) : (
-            <button
-              disabled
-              className="bg-gray-300 text-gray-500 text-sm px-4 py-2 rounded-xl cursor-not-allowed"
-            >
-              Indisponible
-            </button>
-          )}
+          <Link
+            href={`/bd/${bd.id}`}
+            className="bg-green-600 hover:bg-green-500 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1 transition-colors whitespace-nowrap"
+          >
+            Pré-commander
+          </Link>
         </div>
       </div>
     </div>

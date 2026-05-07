@@ -10,10 +10,10 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "Enfant Prodige BD | Bandes Dessinées Africaines au Cameroun",
+  title: "Enfant Prodige BD | Livres Personnalisés pour Enfants au Cameroun",
   description:
-    "Découvrez et commandez des bandes dessinées africaines originales. Livraison partout au Cameroun. Commandez via WhatsApp.",
-  keywords: "bande dessinée, BD, Cameroun, Afrique, comics, manga africain",
+    "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, livrées en 24h à Yaoundé et Douala. Commandez via WhatsApp.",
+  keywords: "livre personnalisé enfant, BD personnalisée, Cameroun, Yaoundé, Douala, cadeau enfant africain",
 };
 
 export default function RootLayout({
