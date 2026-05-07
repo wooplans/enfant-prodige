@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BD } from "@/lib/catalogue";
 
 interface CarteBDProps {
@@ -10,9 +11,13 @@ export default function CarteBD({ bd }: CarteBDProps) {
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden flex flex-col border border-amber-100">
       {/* Couverture */}
       <Link href={`/bd/${bd.id}`} className="relative block bg-amber-100 aspect-[2/3] overflow-hidden group">
-        <div className="w-full h-full flex items-center justify-center text-6xl bg-gradient-to-br from-amber-200 to-orange-300 group-hover:scale-105 transition-transform duration-300">
-          📖
-        </div>
+        <Image
+          src={bd.couverture}
+          alt={`Couverture de ${bd.serie}`}
+          fill
+          sizes="(min-width: 768px) 33vw, 50vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-300"
+        />
         {/* Badge âge */}
         <span className="absolute top-2 left-2 bg-white/90 text-gray-700 text-xs font-bold px-2 py-0.5 rounded-full shadow">
           {bd.ageMin}–{bd.ageMax} ans

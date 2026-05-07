@@ -9,8 +9,8 @@ interface Props {
 export default function CommanderForm({ prix, fraisLivraison, onCommander }: Props) {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-      <div className="flex items-end justify-between mb-1">
-        <span className="text-3xl font-extrabold text-green-800">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+        <span className="text-2xl sm:text-3xl font-extrabold text-green-800">
           {prix.toLocaleString("fr-FR")} FCFA
         </span>
         <span className="text-xs bg-green-100 text-green-700 font-semibold px-2 py-1 rounded-full">

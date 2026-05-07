@@ -25,6 +25,7 @@ export interface BD {
   note: number;
   nombreAvis: number;
   nombreCommandesSemaine: number;
+  galerie: string[];
   avis: Avis[];
 }
 
@@ -35,7 +36,7 @@ export interface CommandeData {
   rue: string;
 }
 
-export const WHATSAPP_NUMBER = "237600000000"; // À remplacer par votre numéro
+export const WHATSAPP_NUMBER = "237680589708";
 
 export const catalogue: BD[] = [
   {
@@ -56,6 +57,12 @@ export const catalogue: BD[] = [
     prix: 9900,
     fraisLivraison: 1000,
     couverture: "/covers/academie-genies.jpg",
+    galerie: [
+      "/covers/academie-genies.jpg",
+      "/covers/academie-genies-scene.jpg",
+      "/covers/academie-genies-heros.jpg",
+      "/covers/academie-genies-detail.jpg",
+    ],
     nombrePages: 32,
     ageMin: 6,
     ageMax: 10,
@@ -111,6 +118,12 @@ export const catalogue: BD[] = [
     prix: 9900,
     fraisLivraison: 1000,
     couverture: "/covers/apprentis-explorateurs.jpg",
+    galerie: [
+      "/covers/apprentis-explorateurs.jpg",
+      "/covers/apprentis-explorateurs-scene.jpg",
+      "/covers/apprentis-explorateurs-heros.jpg",
+      "/covers/apprentis-explorateurs-detail.jpg",
+    ],
     nombrePages: 32,
     ageMin: 6,
     ageMax: 10,
@@ -166,6 +179,12 @@ export const catalogue: BD[] = [
     prix: 9900,
     fraisLivraison: 1000,
     couverture: "/covers/exploration-zoo.jpg",
+    galerie: [
+      "/covers/exploration-zoo.jpg",
+      "/covers/exploration-zoo-scene.jpg",
+      "/covers/exploration-zoo-heros.jpg",
+      "/covers/exploration-zoo-detail.jpg",
+    ],
     nombrePages: 32,
     ageMin: 6,
     ageMax: 10,

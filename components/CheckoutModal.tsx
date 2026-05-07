@@ -99,7 +99,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
             <div className="space-y-5">
               <div>
                 <div className="text-2xl mb-1">👶</div>
-                <h2 className="text-lg font-extrabold text-gray-900">Parlez-nous de l'enfant</h2>
+                <h2 className="text-lg font-extrabold text-gray-900">Parlez-nous de l&apos;enfant</h2>
                 <p className="text-sm text-gray-500 mt-0.5">
                   Son prénom apparaîtra sur la couverture et dans les dialogues.
                 </p>
@@ -108,7 +108,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               {/* Prénom */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Prénom de l'enfant <span className="text-red-500">*</span>
+                  Prénom de l&apos;enfant <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
