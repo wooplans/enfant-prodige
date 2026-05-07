@@ -53,6 +53,24 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
           </Link>
 
           <div className="grid lg:grid-cols-[1fr_480px] gap-6 lg:gap-12 items-center">
+            <div className="max-w-2xl lg:col-start-1 lg:row-start-1">
+              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">
+                {bd.serie}
+              </h1>
+              <div className="mt-4">
+                {bd.nombreAvis > 0 && (
+                  <div className="inline-flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-4 py-2 shadow-lg border border-yellow-200">
+                    <Stars note={bd.note} />
+                    <span className="text-sm font-extrabold text-green-900">{bd.note}/5</span>
+                    <span className="text-sm font-semibold text-green-700">({bd.nombreAvis} avis)</span>
+                  </div>
+                )}
+              </div>
+              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">
+                {bd.description}
+              </p>
+            </div>
+
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
               <div
                 className="relative w-full h-72 sm:h-[420px] lg:h-auto lg:aspect-[4/5] overflow-hidden bg-green-950 shadow-2xl border-y border-white/15 lg:rounded-2xl lg:border"
@@ -108,34 +126,6 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
               </div>
             </div>
 
-            <div className="max-w-2xl lg:col-start-1 lg:row-start-1">
-              <div className="flex flex-wrap items-center gap-2 mb-4">
-                <span className="bg-yellow-400 text-green-950 text-xs font-extrabold px-3 py-1 rounded-full">
-                  {bd.ageMin}–{bd.ageMax} ans
-                </span>
-                <span className="bg-white/10 border border-white/15 text-green-50 text-xs font-semibold px-3 py-1 rounded-full">
-                  {bd.nombrePages} pages · Format A4
-                </span>
-              </div>
-
-              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">
-                {bd.serie}
-              </h1>
-              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">
-                {bd.description}
-              </p>
-
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                {bd.nombreAvis > 0 && (
-                  <div className="flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-4 py-2 shadow-lg border border-yellow-200">
-                    <Stars note={bd.note} />
-                    <span className="text-sm font-extrabold text-green-900">{bd.note}/5</span>
-                    <span className="text-sm font-semibold text-green-700">({bd.nombreAvis} avis)</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
           </div>
         </div>
       </section>
@@ -143,20 +133,6 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
       {/* ── CONTENU ── */}
       <div className="bg-amber-50 pb-28 pt-6">
         <div className="max-w-2xl mx-auto px-4">
-
-          {/* ── BADGES RÉASSURANCE ── */}
-          <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2 my-5">
-            {[
-              { icon: "📱", label: "Commande via WhatsApp" },
-              { icon: "💳", label: "Paiement Mobile Money" },
-              { icon: "🚀", label: "Livraison en 24h" },
-            ].map(({ icon, label }) => (
-              <div key={label} className="bg-white rounded-xl border border-gray-100 p-3 text-center">
-                <div className="text-2xl mb-1">{icon}</div>
-                <div className="text-xs text-gray-600 font-medium leading-tight break-words">{label}</div>
-              </div>
-            ))}
-          </div>
 
           {/* ── DESCRIPTION ── */}
           <Section titre="📖 À propos de cette série">
@@ -248,7 +224,12 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                       </div>
                       <div className="flex-1">
                         <div className="font-semibold text-gray-800 text-sm">{avis.nom}</div>
-                        <div className="text-xs text-gray-400">{avis.ville} · {avis.date}</div>
+                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
+                          <span>{avis.ville} · {avis.date}</span>
+                          <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2 py-0.5 font-semibold text-green-700">
+                            Achat vérifié
+                          </span>
+                        </div>
                       </div>
                       <Stars note={avis.note} small />
                     </div>
@@ -310,6 +291,20 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
             <p className="text-green-400 text-xs mt-2">
               {bd.prix.toLocaleString("fr-FR")} FCFA + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA livraison
             </p>
+          </div>
+
+          {/* ── BADGES RÉASSURANCE ── */}
+          <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2 mt-5">
+            {[
+              { icon: "📱", label: "Commande via WhatsApp" },
+              { icon: "💳", label: "Paiement Mobile Money" },
+              { icon: "🚀", label: "Livraison en 24h" },
+            ].map(({ icon, label }) => (
+              <div key={label} className="bg-white rounded-xl border border-gray-100 p-3 text-center">
+                <div className="text-2xl mb-1">{icon}</div>
+                <div className="text-xs text-gray-600 font-medium leading-tight break-words">{label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

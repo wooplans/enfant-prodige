@@ -167,7 +167,7 @@ export const catalogue: BD[] = [
     titre: "Exploration du ZOO",
     genre: "Nature · Animaux · Découverte",
     description:
-      "Votre enfant part à la découverte d'un zoo africain extraordinaire peuplé d'animaux fascinants. Une aventure éducative pleine de surprises avec son prénom au cœur de l'histoire.",
+      "Votre enfant va en aventure dans un zoo : découverte et apprentissage en compagnie de son guide.",
     descriptionLongue:
       "Votre enfant passe la plus belle journée de sa vie dans le plus grand zoo d'Afrique ! Accompagné par Kamo le gardien, il rencontre des éléphants, des gorilles, des lions et des perroquets multicolores — tous avec des histoires et des secrets à partager. Une BD éducative et tendre, pleine de découvertes sur le règne animal africain. 32 pages illustrées, pleine couleur, format A4, avec le prénom de votre enfant sur la couverture et dans les dialogues.",
     pourQui: [
