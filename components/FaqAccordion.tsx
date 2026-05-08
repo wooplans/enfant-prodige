@@ -29,16 +29,16 @@ export default function FaqAccordion() {
   const [ouvert, setOuvert] = useState<number | null>(null);
 
   return (
-    <div className="space-y-2">
+    <div className="divide-y divide-amber-200 border-y border-amber-200">
       {faqs.map((faq, i) => (
-        <div key={i} className="border border-gray-100 rounded-xl overflow-hidden">
+        <div key={i}>
           <button
-            className="w-full text-left px-4 py-4 flex justify-between items-center bg-white hover:bg-gray-50 transition-colors"
+            className="flex w-full items-center justify-between gap-6 py-5 text-left transition-colors duration-200 hover:text-green-800"
             onClick={() => setOuvert(ouvert === i ? null : i)}
           >
-            <span className="font-semibold text-gray-800 text-sm pr-4">{faq.q}</span>
+            <span className="pr-4 text-base font-extrabold leading-snug text-gray-950">{faq.q}</span>
             <span
-              className={`text-green-600 text-lg font-bold transition-transform shrink-0 ${
+              className={`shrink-0 text-xl font-bold text-green-700 transition-transform duration-200 ${
                 ouvert === i ? "rotate-45" : ""
               }`}
             >
@@ -46,8 +46,8 @@ export default function FaqAccordion() {
             </span>
           </button>
           {ouvert === i && (
-            <div className="px-4 pb-4 bg-white">
-              <p className="text-gray-500 text-sm leading-relaxed">{faq.a}</p>
+            <div className="pb-5">
+              <p className="max-w-3xl text-sm leading-7 text-gray-700">{faq.a}</p>
             </div>
           )}
         </div>

@@ -1,0 +1,210 @@
+IDENTITE VISUELLE - ENFANT PRODIGE BD
+
+1. Positionnement de marque
+
+Enfant Prodige BD est une marque de bandes dessinees personnalisees pour enfants africains de 6 a 10 ans. Le site doit transmettre une impression chaleureuse, educative, fiable et familiale.
+
+Promesse principale :
+- Une BD ou l'enfant devient le heros.
+- Le prenom de l'enfant apparait sur la couverture et dans les dialogues.
+- Livraison rapide sous 24h a Yaounde et Douala.
+- Commande simple via WhatsApp et paiement Mobile Money.
+
+Mots-cles de l'univers :
+personnalisation, enfance, Afrique, lecture, cadeau, aventure, confiance, rapidite, proximite.
+
+
+2. Palette de couleurs
+
+Couleurs principales :
+- Vert profond : #166534 / Tailwind green-800
+  Utilisation : header, footer, sections fortes, titres importants, prix, elements de confiance.
+
+- Vert tres fonce : #064E3B / Tailwind green-900
+  Utilisation : footer, hero detail, fonds premium, contrastes forts.
+
+- Vert action : #16A34A / Tailwind green-600
+  Utilisation : boutons principaux, WhatsApp, validation, progression, CTA.
+
+- Vert clair : #DCFCE7 / Tailwind green-100
+  Utilisation : badges, pictogrammes, encarts positifs, fonds doux.
+
+Couleurs secondaires :
+- Jaune / or : #FACC15 / Tailwind yellow-400
+  Utilisation : accent emotionnel, etoiles, mise en avant du prenom, elements joyeux.
+
+- Ambre tres clair : #FFFBEB / Tailwind amber-50
+  Utilisation : fond general des pages, zones de respiration, ambiance chaleureuse.
+
+- Ambre pale : #FEF3C7 / Tailwind amber-100
+  Utilisation : fonds de couvertures, bordures legeres, cartes produit.
+
+Couleurs neutres :
+- Texte principal : #111827 / Tailwind gray-900
+- Texte secondaire : #4B5563 / Tailwind gray-600
+- Texte leger : #6B7280 / Tailwind gray-500
+- Bordures : #F3F4F6 / Tailwind gray-100
+- Blanc : #FFFFFF
+
+Couleur ponctuelle :
+- Violet doux : #FAF5FF / Tailwind purple-50, #6B21A8 / purple-800
+  Utilisation actuelle : badge "Chaque BD est unique". A garder ponctuel, uniquement pour signaler la personnalisation.
+
+
+3. Typographie
+
+Police principale :
+- Geist via next/font/google, avec fallback Arial, Helvetica, sans-serif.
+
+Style typographique :
+- Titres : tres gras, directs, rassurants.
+  Classes frequentes : font-extrabold, text-3xl a text-6xl.
+
+- Sous-titres et textes : lisibles, simples, orientes parent.
+  Classes frequentes : text-sm, text-base, text-lg, leading-relaxed.
+
+- Prix et CTA : gras, visibles, verts.
+  Classes frequentes : font-bold / font-extrabold, text-green-800.
+
+Regle generale :
+La typographie doit rester claire et commerciale, sans effet decoratif complexe. Le site parle aux parents, pas uniquement aux enfants.
+
+
+4. Style graphique
+
+Ambiance generale :
+- Chaleureuse, familiale et educative.
+- Visuellement joyeuse mais pas enfantine au point de perdre la confiance des parents.
+- Forte presence du vert pour la credibilite et la proximite.
+- Accents jaunes pour la magie, la recompense et l'emotion.
+
+Formes :
+- Coins arrondis frequents : rounded-xl, rounded-2xl, rounded-full.
+- Cartes produit arrondies avec bordures fines.
+- Boutons souvent arrondis en pilule ou gros rectangle arrondi.
+
+Ombres :
+- Utiliser des ombres douces pour les cartes et CTA importants.
+- Classes actuelles : shadow-md, shadow-lg, shadow-xl, shadow-2xl.
+
+Iconographie :
+- Usage important d'emojis dans l'interface : livre, etincelle, telephone, fusee, carte, etoile.
+- Les emojis servent de reperes rapides et rendent le parcours plus accessible.
+- Les icones SVG sont surtout utilisees pour WhatsApp et les controles simples.
+
+Illustrations / images :
+- Les couvertures de BD sont centrales.
+- Les images doivent montrer l'univers narratif : heros enfants, aventure, Afrique, science, nature, zoo, exploration.
+- Les images doivent etre colorees, expressives et lisibles.
+- Format dominant des couvertures : ratio vertical 2:3.
+
+
+5. Composants visuels principaux
+
+Header :
+- Fond vert profond.
+- Logo textuel "Enfant Prodige BD" accompagne d'une icone livre.
+- Navigation simple : Accueil, Nos series, Contact.
+- CTA WhatsApp visible en vert action.
+
+Hero accueil :
+- Fond degrade vert profond vers vert moyen.
+- Texte blanc.
+- Accent jaune sur la promesse du prenom.
+- Deux CTA : choix de serie en jaune, commande WhatsApp en bouton transparent blanc.
+
+Cartes BD :
+- Fond blanc.
+- Bordure ambre tres claire.
+- Image de couverture verticale en haut.
+- Badge age en pilule blanche.
+- Genre en vert, titre en gras, prix en vert profond.
+- CTA "Pre-commander" en vert action.
+
+Page detail :
+- Hero vert tres fonce avec galerie image.
+- Carrousel visuel large, boutons ronds transparents, indicateurs jaunes.
+- Contenu sur fond ambre tres clair.
+- Sections courtes, empilees, faciles a lire sur mobile.
+
+Modale de commande :
+- Fond blanc, coins tres arrondis.
+- Overlay noir semi-transparent avec blur.
+- Parcours en 3 etapes.
+- Barre de progression verte.
+- Inputs arrondis, focus vert.
+- Bouton final WhatsApp en vert action.
+
+Footer :
+- Fond vert tres fonce.
+- Texte blanc et vert clair.
+- Rappel de la promesse, navigation et commande WhatsApp.
+
+
+6. Boutons et appels a l'action
+
+Bouton principal :
+- Fond : #16A34A / green-600.
+- Hover : #22C55E / green-500.
+- Texte : blanc, gras.
+- Coins : rounded-xl, rounded-2xl ou rounded-full selon le contexte.
+- Usage : commander, personnaliser, continuer, WhatsApp.
+
+Bouton secondaire fort :
+- Fond jaune : #FACC15.
+- Texte vert tres fonce.
+- Usage : action de decouverte ou choix de serie dans le hero.
+
+Bouton secondaire discret :
+- Fond blanc transparent ou blanc.
+- Bordure blanche ou grise claire.
+- Usage : WhatsApp secondaire, navigation, retour.
+
+Regle :
+Le CTA principal doit toujours etre immediatement identifiable en vert ou jaune. Les libelles doivent rester orientes action : "Choisir une serie", "Personnaliser maintenant", "Commander sur WhatsApp".
+
+
+7. Ton editorial
+
+Ton :
+- Simple, rassurant, direct.
+- Oriente parent : facilite, confiance, paiement, livraison, personnalisation.
+- Emotion positive autour de l'enfant : fierte, surprise, heros, cadeau unique.
+
+Expressions recurrentes :
+- "BD personnalisee"
+- "Avec le prenom de votre enfant"
+- "Votre enfant devient le heros"
+- "Livraison en 24h"
+- "Commande via WhatsApp"
+- "Paiement Mobile Money"
+
+A eviter :
+- Ton trop institutionnel.
+- Vocabulaire technique.
+- Promesses floues.
+- Textes longs qui ralentissent la commande.
+
+
+8. Principes UX
+
+Priorite mobile :
+- Le parcours est concu pour mobile, avec CTA larges et modale en bas d'ecran.
+- Les cartes, boutons et formulaires doivent rester faciles a toucher.
+
+Parcours d'achat :
+- Montrer la valeur avant le prix.
+- Rappeler souvent la personnalisation.
+- Rassurer sur le paiement et la livraison.
+- Diriger vers WhatsApp sans friction.
+
+Confiance :
+- Avis parents, notes, achat verifie.
+- Prix clair : 9 900 FCFA + 1 000 FCFA livraison.
+- Delai clair : 24h apres paiement.
+- Zones couvertes : Yaounde et Douala.
+
+
+9. Resume de la direction artistique
+
+Enfant Prodige BD doit ressembler a une boutique de livres personnalises chaleureuse, africaine et fiable. Le vert installe la confiance, l'ambre rechauffe l'experience, le jaune apporte la magie, et les couvertures illustrees portent l'emotion. L'interface doit rester simple, mobile-first et tres orientee commande WhatsApp.

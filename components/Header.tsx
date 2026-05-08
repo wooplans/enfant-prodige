@@ -16,7 +16,7 @@ export default function Header() {
             <div className="font-bold text-lg leading-tight group-hover:text-yellow-300 transition-colors">
               Enfant Prodige BD
             </div>
-            <div className="text-green-300 text-xs">Livres Personnalisés pour Enfants</div>
+            <div className="text-green-100 text-sm">Livres Personnalisés pour Enfants</div>
           </div>
         </Link>
 

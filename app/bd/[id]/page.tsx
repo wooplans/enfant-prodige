@@ -1,25 +1,57 @@
-import { catalogue } from "@/lib/catalogue";
+import { getPublicCatalogue, getPublicSeriesBySlug } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-export function generateStaticParams() {
-  return catalogue.map((bd) => ({
-    id: bd.id,
-  }));
-}
-
-export default async function PageBD({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const bd = catalogue.find((b) => b.id === id);
+  const bd = await getPublicSeriesBySlug(id);
 
   if (!bd) {
     notFound();
   }
 
+  const description = bd.description;
+
+  return {
+    title: `${bd.serie} | BD personnalisée enfant`,
+    description,
+    openGraph: {
+      title: `${bd.serie} | Enfant Prodige BD`,
+      description,
+      type: "website",
+      url: `/bd/${bd.id}`,
+      images: [
+        {
+          url: bd.couverture,
+          width: 1200,
+          height: 630,
+          alt: `Couverture ${bd.serie}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${bd.serie} | Enfant Prodige BD`,
+      description,
+      images: [bd.couverture],
+    },
+  };
+}
+
+export default async function PageBD({ params }: Props) {
+  const { id } = await params;
+  const bd = await getPublicSeriesBySlug(id);
+
+  if (!bd) {
+    notFound();
+  }
+
+  const catalogue = await getPublicCatalogue();
   const autresSeries = catalogue.filter((b) => b.id !== bd.id);
 
   return <BDDetailClient bd={bd} autresSeries={autresSeries} />;

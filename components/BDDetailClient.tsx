@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { BD } from "@/lib/catalogue";
+import { useEffect, useState } from "react";
+import type { BD } from "@/lib/catalogue";
 import StickyCommanderBar from "@/components/StickyCommanderBar";
 import CheckoutModal from "@/components/CheckoutModal";
-import DescriptionExpandable from "@/components/DescriptionExpandable";
 import FaqAccordion from "@/components/FaqAccordion";
+import { fbqTrack } from "@/components/FacebookPixel";
 
 interface Props {
   bd: BD;
@@ -20,8 +20,10 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const slides = bd.galerie.slice(0, 4);
   const slideLabels = ["Couverture", "Aperçu histoire", "Héros", "Détails"];
+
   const slideSuivant = () => setSlideActif((current) => (current + 1) % slides.length);
   const slidePrecedent = () => setSlideActif((current) => (current - 1 + slides.length) % slides.length);
+
   const handleSwipeEnd = (x: number) => {
     if (touchStartX === null) return;
 
@@ -36,9 +38,24 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
     setTouchStartX(null);
   };
 
+  useEffect(() => {
+    fbqTrack("ViewContent", {
+      content_name: bd.serie,
+      content_ids: [bd.id],
+      content_type: "product",
+      value: bd.prix,
+      currency: "XAF",
+    });
+  }, [bd.id, bd.prix, bd.serie]);
+
+  const synopsisTexte =
+    bd.id === "apprentis-explorateurs"
+      ? "Votre enfant est invité à rejoindre l'équipe des Apprentis Explorateurs pour une expédition à travers les plus beaux paysages d'Afrique : la savane du Cameroun, les chutes de la Lobé, le lac Tchad et bien plus encore. Guidé par ses compagnons, il découvre la géographie, les animaux et les cultures de son continent."
+      : bd.descriptionLongue;
+
   return (
     <>
-      {/* ── HERO ── */}
+      {/* HERO */}
       <section className="relative overflow-hidden bg-green-900 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.2),transparent_28%),linear-gradient(135deg,rgba(22,101,52,0.95),rgba(6,78,59,0.98))]" />
         <div className="relative max-w-6xl mx-auto px-4 py-6 md:py-12">
@@ -54,9 +71,7 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
 
           <div className="grid lg:grid-cols-[1fr_480px] gap-6 lg:gap-12 items-center">
             <div className="max-w-2xl lg:col-start-1 lg:row-start-1">
-              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">
-                {bd.serie}
-              </h1>
+              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">{bd.serie}</h1>
               <div className="mt-4">
                 {bd.nombreAvis > 0 && (
                   <div className="inline-flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-4 py-2 shadow-lg border border-yellow-200">
@@ -66,9 +81,7 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                   </div>
                 )}
               </div>
-              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">
-                {bd.description}
-              </p>
+              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{bd.description}</p>
             </div>
 
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -86,9 +99,7 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                     fill
                     priority={index === 0}
                     sizes="(min-width: 1024px) 480px, 100vw"
-                    className={`object-cover transition-opacity duration-500 ${
-                      slideActif === index ? "opacity-100" : "opacity-0"
-                    }`}
+                    className={`object-cover transition-opacity duration-500 ${slideActif === index ? "opacity-100" : "opacity-0"}`}
                   />
                 ))}
                 <button
@@ -115,9 +126,7 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                           key={src}
                           onClick={() => setSlideActif(index)}
                           aria-label={`Voir l'image ${index + 1}`}
-                          className={`h-2 rounded-full transition-all ${
-                            slideActif === index ? "w-8 bg-yellow-300" : "w-2 bg-white/50 hover:bg-white"
-                          }`}
+                          className={`h-2 rounded-full transition-all ${slideActif === index ? "w-8 bg-yellow-300" : "w-2 bg-white/50 hover:bg-white"}`}
                         />
                       ))}
                     </div>
@@ -125,205 +134,233 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* ── CONTENU ── */}
-      <div className="bg-amber-50 pb-28 pt-6">
-        <div className="max-w-2xl mx-auto px-4">
+      {/* CONTENU */}
+      <main className="bg-white pb-28">
+        <FullWidthSection title="À propos de cette série" tone="white">
+          <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_280px] md:items-start">
+            <p className="max-w-3xl text-base leading-8 text-gray-700 md:text-lg md:leading-9">{synopsisTexte}</p>
+            <div className="border-t border-green-200 pt-5 md:border-l md:border-t-0 md:pl-7 md:pt-0">
+              <div className="text-sm font-bold uppercase tracking-wide text-green-700">Prix personnalisé</div>
+              <div className="mt-2 text-3xl font-extrabold leading-none text-green-900">
+                {bd.prix.toLocaleString("fr-FR")} FCFA
+              </div>
+              <button
+                onClick={() => setModalOuvert(true)}
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-700 px-5 py-3.5 text-base font-bold text-white transition-colors duration-200 hover:bg-green-600 active:bg-green-800"
+              >
+                <span>*</span> Personnaliser maintenant
+              </button>
+            </div>
+          </div>
+        </FullWidthSection>
 
-          {/* ── DESCRIPTION ── */}
-          <Section titre="📖 À propos de cette série">
-            <DescriptionExpandable texte={bd.descriptionLongue} />
-          </Section>
+        <FullWidthSection title="Comment commander ?" tone="warm" wide>
+          <ol className="grid gap-8 md:grid-cols-4 md:gap-6">
+            {[
+              {
+                step: "1",
+                titre: "Entrez le prénom de l'enfant",
+                texte: "Cliquez sur « Commander cette BD » et renseignez le prénom et le sexe de l'enfant. Il apparaîtra sur la couverture.",
+              },
+              {
+                step: "2",
+                titre: "Indiquez votre adresse",
+                texte: "Renseignez votre quartier pour que le livreur vous trouve facilement.",
+              },
+              {
+                step: "3",
+                titre: "Envoyez sur WhatsApp et payez",
+                texte: "Un message pré-rempli s'ouvre. Envoyez-le et payez 9 900 FCFA par Mobile Money après confirmation.",
+              },
+              {
+                step: "4",
+                titre: "Recevez votre BD sous 24h",
+                texte: "Nous personnalisons et livrons votre BD. Vous payez 1 000 FCFA au livreur à la réception.",
+              },
+            ].map(({ step, titre, texte }) => (
+              <li key={step} className="relative border-t border-amber-200 pt-5">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-green-700 text-sm font-extrabold text-white">
+                  {step}
+                </div>
+                <h3 className="text-base font-extrabold leading-snug text-gray-950">{titre}</h3>
+                <p className="mt-2 text-sm leading-6 text-gray-600">{texte}</p>
+              </li>
+            ))}
+          </ol>
+        </FullWidthSection>
 
-          {/* ── POUR QUI ── */}
-          <Section titre="🎯 Cette BD vous plaira si…">
-            <ul className="space-y-2">
-              {bd.pourQui.map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
-                  <span className="text-green-500 font-bold mt-0.5 shrink-0">✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </Section>
-
-          {/* ── COMMENT COMMANDER ── */}
-          <Section titre="📱 Comment commander ?">
-            <div className="space-y-4">
-              {[
-                {
-                  step: "1",
-                  titre: "Entrez le prénom de l'enfant",
-                  texte: "Cliquez sur « Commander cette BD » et renseignez le prénom et le sexe de l'enfant. Il apparaîtra sur la couverture.",
-                },
-                {
-                  step: "2",
-                  titre: "Indiquez votre adresse",
-                  texte: "Renseignez votre quartier pour que le livreur vous trouve facilement.",
-                },
-                {
-                  step: "3",
-                  titre: "Envoyez sur WhatsApp et payez",
-                  texte: "Un message pré-rempli s'ouvre. Envoyez-le et payez 9 900 FCFA par Mobile Money après confirmation.",
-                },
-                {
-                  step: "4",
-                  titre: "Recevez votre BD sous 24h",
-                  texte: "Nous personnalisons et livrons votre BD. Vous payez 1 000 FCFA au livreur à la réception.",
-                },
-              ].map(({ step, titre, texte }) => (
-                <div key={step} className="flex gap-4 items-start">
-                  <div className="w-8 h-8 rounded-full bg-green-600 text-white font-extrabold text-sm flex items-center justify-center shrink-0">
-                    {step}
+        {bd.avis.length > 0 && (
+          <div id="avis-parents">
+            <FullWidthSection title={`Avis parents · ${bd.note}/5`} tone="white" wide>
+              <div className="grid gap-8 md:grid-cols-[220px_minmax(0,1fr)] md:gap-12">
+                <div className="border-b border-green-100 pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-8">
+                  <div className="text-6xl font-extrabold leading-none text-green-900">{bd.note}</div>
+                  <div className="mt-3">
+                    <Stars note={bd.note} />
                   </div>
-                  <div>
-                    <div className="font-semibold text-gray-800 text-sm">{titre}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">{texte}</div>
+                  <div className="mt-2 text-sm font-semibold text-gray-600">{bd.nombreAvis} avis parents</div>
+                  <div className="mt-5 space-y-2">
+                    {[5, 4, 3].map((n) => {
+                      const count = bd.avis.filter((a) => a.note === n).length;
+                      const pct = bd.avis.length > 0 ? Math.round((count / bd.avis.length) * 100) : 0;
+                      return (
+                        <div key={n} className="flex items-center gap-2">
+                          <span className="w-3 text-sm font-semibold text-gray-600">{n}</span>
+                          <div className="h-2 flex-1 rounded-full bg-gray-100">
+                            <div className="h-2 rounded-full bg-yellow-400" style={{ width: `${pct}%` }} />
+                          </div>
+                          <span className="w-8 text-sm font-medium text-gray-600">{pct}%</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
+
+                <div className="divide-y divide-green-100">
+                  {bd.avis.map((avis, i) => (
+                    <article key={i} className={i === 0 ? "pb-6" : "py-6"}>
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <div className="text-base font-extrabold text-gray-950">{avis.nom}</div>
+                          <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-600">
+                            <span>{avis.ville} · {avis.date}</span>
+                            <span className="font-bold text-green-700">Achat vérifié</span>
+                          </div>
+                        </div>
+                        <Stars note={avis.note} small />
+                      </div>
+                      <p className="mt-3 text-sm leading-7 text-gray-700">« {avis.commentaire} »</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </FullWidthSection>
+          </div>
+        )}
+
+        <FullWidthSection title="Questions fréquentes" tone="warm">
+          <FaqAccordion />
+        </FullWidthSection>
+
+        {autresSeries.length > 0 && (
+          <FullWidthSection title="Découvrir nos autres séries" tone="white" wide>
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+              {autresSeries.map((autre) => (
+                <Link
+                  key={autre.id}
+                  href={`/bd/${autre.id}`}
+                  className="group grid grid-cols-[112px_minmax(0,1fr)] gap-4 transition-colors duration-200 sm:block"
+                >
+                  <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-amber-100 sm:mb-4">
+                    <Image
+                      src={autre.couverture}
+                      alt={`Couverture de ${autre.serie}`}
+                      fill
+                      sizes="(min-width: 768px) 300px, 112px"
+                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    />
+                  </div>
+                  <div className="self-center">
+                    <div className="text-lg font-extrabold leading-tight text-gray-950 transition-colors duration-200 group-hover:text-green-800">
+                      {autre.serie}
+                    </div>
+                    <div className="mt-2">
+                      <Stars note={autre.note} small />
+                    </div>
+                    <div className="mt-2 text-sm font-extrabold text-green-700">{autre.prix.toLocaleString("fr-FR")} FCFA</div>
+                  </div>
+                </Link>
               ))}
             </div>
-          </Section>
+          </FullWidthSection>
+        )}
 
-          {/* ── AVIS CLIENTS ── */}
-          {bd.avis.length > 0 && (
-            <Section titre={`⭐ Avis parents · ${bd.note}/5`}>
-              <div className="flex items-center gap-3 mb-4 bg-white rounded-xl p-4 border border-gray-100">
-                <div className="text-center">
-                  <div className="text-4xl font-extrabold text-green-800">{bd.note}</div>
-                  <Stars note={bd.note} />
-                  <div className="text-xs text-gray-400 mt-0.5">{bd.nombreAvis} avis</div>
-                </div>
-                <div className="flex-1 space-y-1.5 pl-2">
-                  {[5, 4, 3].map((n) => {
-                    const count = bd.avis.filter((a) => a.note === n).length;
-                    const pct = bd.avis.length > 0 ? Math.round((count / bd.avis.length) * 100) : 0;
-                    return (
-                      <div key={n} className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400 w-2">{n}</span>
-                        <div className="flex-1 bg-gray-100 rounded-full h-2">
-                          <div className="bg-yellow-400 h-2 rounded-full" style={{ width: `${pct}%` }} />
-                        </div>
-                        <span className="text-xs text-gray-400 w-6">{pct}%</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                {bd.avis.map((avis, i) => (
-                  <div key={i} className="bg-white rounded-xl border border-gray-100 p-4">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-9 h-9 rounded-full bg-green-600 text-white font-bold flex items-center justify-center text-sm shrink-0">
-                        {avis.avatar}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-gray-800 text-sm">{avis.nom}</div>
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
-                          <span>{avis.ville} · {avis.date}</span>
-                          <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-2 py-0.5 font-semibold text-green-700">
-                            Achat vérifié
-                          </span>
-                        </div>
-                      </div>
-                      <Stars note={avis.note} small />
-                    </div>
-                    <p className="text-sm text-gray-600 leading-relaxed">« {avis.commentaire} »</p>
-                  </div>
-                ))}
-              </div>
-            </Section>
-          )}
-
-          {/* ── FAQ ── */}
-          <Section titre="❓ Questions fréquentes">
-            <FaqAccordion />
-          </Section>
-
-          {/* ── AUTRES SÉRIES ── */}
-          {autresSeries.length > 0 && (
-            <Section titre="📚 Découvrir nos autres séries">
-              <div className="grid grid-cols-2 gap-3">
-                {autresSeries.map((autre) => (
-                  <Link
-                    key={autre.id}
-                    href={`/bd/${autre.id}`}
-                    className="bg-white rounded-xl border border-gray-100 p-3 hover:border-green-300 hover:shadow-md transition-all"
-                  >
-                    <div className="relative aspect-[2/3] bg-amber-100 rounded-lg overflow-hidden mb-2">
-                      <Image
-                        src={autre.couverture}
-                        alt={`Couverture de ${autre.serie}`}
-                        fill
-                        sizes="(min-width: 768px) 300px, 50vw"
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="font-semibold text-sm text-gray-800 leading-tight">{autre.serie}</div>
-                    <Stars note={autre.note} small />
-                    <div className="text-green-700 font-bold text-sm mt-0.5">
-                      {autre.prix.toLocaleString("fr-FR")} FCFA
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </Section>
-          )}
-
-          {/* ── CTA FINAL ── */}
-          <div className="bg-green-800 rounded-2xl p-6 text-center text-white mt-6">
-            <div className="text-3xl mb-2">✨</div>
-            <h3 className="font-extrabold text-xl mb-1">Offrez-lui son livre à lui</h3>
-            <p className="text-green-200 text-sm mb-4">
-              Personnalisé avec son prénom · Livré en 24h · Mobile Money
-            </p>
+        <FullWidthSection title="Offrez-lui son livre à lui" tone="dark">
+          <div className="mx-auto max-w-2xl text-center">
+            <p className="text-base leading-7 text-green-100">Personnalisé avec son prénom · Livré en 24h · Mobile Money</p>
             <button
               onClick={() => setModalOuvert(true)}
-              className="inline-flex items-center gap-2 bg-white text-green-800 font-extrabold px-8 py-4 rounded-2xl text-base hover:bg-green-50 transition-colors shadow-lg w-full justify-center"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
             >
               <span>✨</span> Personnalisez pour mon enfant
             </button>
-            <p className="text-green-400 text-xs mt-2">
+            <p className="mt-3 text-sm font-medium text-green-100">
               {bd.prix.toLocaleString("fr-FR")} FCFA + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA livraison
             </p>
           </div>
+        </FullWidthSection>
 
-          {/* ── BADGES RÉASSURANCE ── */}
-          <div className="grid grid-cols-1 min-[360px]:grid-cols-3 gap-2 mt-5">
+        <FullWidthSection title="Cette BD vous plaira si…" tone="green">
+          <ul className="grid gap-x-10 gap-y-4 md:grid-cols-2">
+            {bd.pourQui.map((item) => (
+              <li key={item} className="flex items-start gap-3 border-t border-green-200 pt-4 text-sm leading-7 text-gray-700">
+                <span className="mt-0.5 shrink-0 font-bold text-green-700">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </FullWidthSection>
+
+        <div className="bg-white px-4 py-8">
+          <div className="mx-auto grid max-w-4xl gap-4 border-y border-amber-200 py-5 text-center sm:grid-cols-3">
             {[
               { icon: "📱", label: "Commande via WhatsApp" },
               { icon: "💳", label: "Paiement Mobile Money" },
               { icon: "🚀", label: "Livraison en 24h" },
             ].map(({ icon, label }) => (
-              <div key={label} className="bg-white rounded-xl border border-gray-100 p-3 text-center">
-                <div className="text-2xl mb-1">{icon}</div>
-                <div className="text-xs text-gray-600 font-medium leading-tight break-words">{label}</div>
+              <div key={label} className="flex items-center justify-center gap-2 text-sm font-bold text-gray-700">
+                <span className="text-xl">{icon}</span>
+                <span>{label}</span>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </main>
 
-      {/* Barre sticky */}
-      <StickyCommanderBar prix={bd.prix} onCommander={() => setModalOuvert(true)} />
-
-      {/* Modal checkout */}
+      <StickyCommanderBar onCommander={() => setModalOuvert(true)} shakeStartId="avis-parents" />
       {modalOuvert && <CheckoutModal bd={bd} onClose={() => setModalOuvert(false)} />}
     </>
   );
 }
 
-function Section({ titre, children }: { titre: string; children: React.ReactNode }) {
+type SectionTone = "white" | "warm" | "green" | "dark";
+
+const sectionTones: Record<SectionTone, string> = {
+  white: "bg-white text-gray-950",
+  warm: "bg-amber-50 text-gray-950",
+  green: "bg-green-50 text-gray-950",
+  dark: "bg-green-900 text-white",
+};
+
+function FullWidthSection({
+  title,
+  children,
+  tone = "white",
+  wide = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  tone?: SectionTone;
+  wide?: boolean;
+}) {
+  const isDark = tone === "dark";
+
   return (
-    <div className="mb-6">
-      <h2 className="font-extrabold text-gray-900 text-base mb-3">{titre}</h2>
-      {children}
-    </div>
+    <section className={`${sectionTones[tone]} px-4 py-12 md:py-16 ${isDark ? "md:py-20" : ""}`}>
+      <div className={`mx-auto ${wide ? "max-w-6xl" : "max-w-4xl"}`}>
+        <div className="mb-8 md:mb-10">
+          <div className={`mb-4 h-1 w-14 ${isDark ? "bg-yellow-300" : "bg-green-700"}`} />
+          <h2 className={`text-2xl font-extrabold leading-tight md:text-3xl ${isDark ? "text-white" : "text-gray-950"}`}>
+            {title}
+          </h2>
+        </div>
+        {children}
+      </div>
+    </section>
   );
 }
 
@@ -331,13 +368,11 @@ function Stars({ note, small }: { note: number; small?: boolean }) {
   const full = Math.floor(note);
   const half = note % 1 >= 0.5;
   return (
-    <div className={`flex items-center gap-0.5 ${small ? "text-xs" : "text-sm"}`}>
+    <div className={`flex items-center gap-0.5 ${small ? "text-sm" : "text-base"}`}>
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}
-          className={
-            i < full ? "text-yellow-400" : half && i === full ? "text-yellow-300" : "text-gray-200"
-          }
+          className={i < full ? "text-yellow-400" : half && i === full ? "text-yellow-300" : "text-gray-200"}
         >
           ★
         </span>

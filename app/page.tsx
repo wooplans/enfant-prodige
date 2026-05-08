@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { catalogue, WHATSAPP_NUMBER } from "@/lib/catalogue";
+import { WHATSAPP_NUMBER } from "@/lib/catalogue";
+import { getPublicCatalogue } from "@/lib/series";
 import CarteBD from "@/components/CarteBC";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const catalogue = await getPublicCatalogue();
+
   return (
     <>
       {/* ── HERO ── */}
@@ -76,16 +81,21 @@ export default function Home() {
       <section className="py-14 px-4 bg-amber-50">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">✨ Nos 3 séries personnalisées</h2>
+            <h2 className="text-2xl font-bold text-gray-800">✨ Nos séries personnalisées</h2>
             <Link href="/catalogue" className="text-green-700 hover:text-green-600 text-sm font-medium">
               Voir tout →
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {catalogue.map((bd) => (
               <CarteBD key={bd.id} bd={bd} />
             ))}
           </div>
+          {catalogue.length === 0 && (
+            <div className="rounded-2xl border border-amber-200 bg-white p-6 text-center text-gray-600">
+              Les séries seront bientôt disponibles.
+            </div>
+          )}
           <div className="text-center mt-10">
             <Link
               href="/catalogue"

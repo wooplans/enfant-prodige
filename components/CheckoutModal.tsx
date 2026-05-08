@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { BD, CommandeData, buildWhatsAppMessage } from "@/lib/catalogue";
+import type { BD, CommandeData } from "@/lib/catalogue";
+import { buildWhatsAppMessage } from "@/lib/catalogue";
+import { fbqTrack } from "@/components/FacebookPixel";
 
 interface Props {
   bd: BD;
@@ -35,6 +37,16 @@ export default function CheckoutModal({ bd, onClose }: Props) {
       document.body.style.overflow = "";
     };
   }, [onClose]);
+
+  useEffect(() => {
+    fbqTrack("InitiateCheckout", {
+      content_name: bd.serie,
+      content_ids: [bd.id],
+      content_type: "product",
+      value: bd.prix,
+      currency: "XAF",
+    });
+  }, [bd.id, bd.prix, bd.serie]);
 
   const prenomValide = data.prenom.trim().length >= 2;
   const sexeValide = data.sexe !== null;
@@ -70,7 +82,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                 {step === 2 && "Adresse de livraison"}
                 {step === 3 && "Récapitulatif"}
               </div>
-              <div className="text-xs text-gray-400">Étape {step} sur 3</div>
+              <div className="text-sm text-gray-600">Étape {step} sur 3</div>
             </div>
           </div>
           <button
@@ -100,7 +112,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               <div>
                 <div className="text-2xl mb-1">👶</div>
                 <h2 className="text-lg font-extrabold text-gray-900">Parlez-nous de l&apos;enfant</h2>
-                <p className="text-sm text-gray-500 mt-0.5">
+                <p className="text-sm text-gray-600 mt-0.5">
                   Son prénom apparaîtra sur la couverture et dans les dialogues.
                 </p>
               </div>
@@ -125,9 +137,9 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                   }`}
                 />
                 {prenomTouche && !prenomValide && (
-                  <p className="text-xs text-red-500 mt-1">Veuillez entrer au moins 2 caractères</p>
+                  <p className="text-sm text-red-600 mt-1">Veuillez entrer au moins 2 caractères</p>
                 )}
-                <p className="text-xs text-green-700 mt-1 font-medium">
+                <p className="text-sm text-green-700 mt-1 font-medium">
                   ✨ Le prénom sera intégré dans la BD personnalisée
                 </p>
               </div>
@@ -158,7 +170,16 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               <button
                 onClick={() => {
                   setPrenomTouche(true);
-                  if (etape1Valide) setStep(2);
+                  if (etape1Valide) {
+                    fbqTrack("Lead", {
+                      content_name: bd.serie,
+                      content_ids: [bd.id],
+                      content_type: "product",
+                      value: bd.prix,
+                      currency: "XAF",
+                    });
+                    setStep(2);
+                  }
                 }}
                 disabled={!etape1Valide}
                 className={`w-full py-4 rounded-2xl font-bold text-base transition-colors ${
@@ -178,7 +199,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               <div>
                 <div className="text-2xl mb-1">📍</div>
                 <h2 className="text-lg font-extrabold text-gray-900">Adresse de livraison</h2>
-                <p className="text-sm text-gray-500 mt-0.5">
+                <p className="text-sm text-gray-600 mt-0.5">
                   Nous livrons à Yaoundé et Douala sous 24h après paiement.
                 </p>
               </div>
@@ -201,7 +222,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                   }`}
                 />
                 {quartierTouche && !etape2Valide && (
-                  <p className="text-xs text-red-500 mt-1">Veuillez entrer votre quartier</p>
+                  <p className="text-sm text-red-600 mt-1">Veuillez entrer votre quartier</p>
                 )}
               </div>
 
@@ -209,7 +230,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                   Rue / Précision{" "}
-                  <span className="text-gray-400 font-normal">(optionnel)</span>
+                  <span className="text-gray-600 font-normal">(optionnel)</span>
                 </label>
                 <input
                   type="text"
@@ -243,7 +264,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               <div>
                 <div className="text-2xl mb-1">✅</div>
                 <h2 className="text-lg font-extrabold text-gray-900">Votre commande</h2>
-                <p className="text-sm text-gray-500 mt-0.5">
+                <p className="text-sm text-gray-600 mt-0.5">
                   Vérifiez les informations puis envoyez votre commande sur WhatsApp.
                 </p>
               </div>
@@ -253,47 +274,47 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                 <div className="flex items-start gap-3 px-4 py-3.5">
                   <span className="text-lg mt-0.5">📚</span>
                   <div>
-                    <div className="text-xs text-gray-400 font-medium uppercase tracking-wide">Série</div>
+                    <div className="text-sm text-gray-700 font-medium uppercase tracking-wide">Série</div>
                     <div className="font-semibold text-gray-900 text-sm">{bd.serie}</div>
-                    <div className="text-xs text-gray-500">{bd.nombrePages} pages illustrées · Personnalisée</div>
+                    <div className="text-sm text-gray-700">{bd.nombrePages} pages illustrées · Personnalisée</div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 px-4 py-3.5">
                   <span className="text-lg mt-0.5">👶</span>
                   <div>
-                    <div className="text-xs text-gray-400 font-medium uppercase tracking-wide">Enfant</div>
+                    <div className="text-sm text-gray-700 font-medium uppercase tracking-wide">Enfant</div>
                     <div className="font-semibold text-gray-900 text-sm">
-                      {data.prenom} <span className="text-gray-500 font-normal">( {data.sexe} )</span>
+                      {data.prenom} <span className="text-gray-700 font-normal">( {data.sexe} )</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 px-4 py-3.5">
                   <span className="text-lg mt-0.5">📍</span>
                   <div>
-                    <div className="text-xs text-gray-400 font-medium uppercase tracking-wide">Livraison</div>
+                    <div className="text-sm text-gray-700 font-medium uppercase tracking-wide">Livraison</div>
                     <div className="font-semibold text-gray-900 text-sm">
                       {data.quartier}
-                      {data.rue && <span className="text-gray-500 font-normal">, {data.rue}</span>}
+                      {data.rue && <span className="text-gray-700 font-normal">, {data.rue}</span>}
                     </div>
-                    <div className="text-xs text-gray-500">Sous 24h après paiement</div>
+                    <div className="text-sm text-gray-700">Sous 24h après paiement</div>
                   </div>
                 </div>
                 <div className="px-4 py-3.5">
-                  <div className="flex justify-between items-center mb-1">
+                  <div className="flex flex-col items-start gap-1 mb-2 sm:flex-row sm:justify-between sm:items-center">
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <span>💰</span> BD personnalisée
                     </div>
                     <div className="font-bold text-gray-900">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
                   </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:items-center">
                     <div className="flex items-center gap-2 text-sm text-gray-500">
                       <span>📦</span> Frais de livraison
                     </div>
-                    <div className="text-gray-500 text-sm">+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA <span className="text-xs">(à la réception)</span></div>
+                    <div className="text-gray-700 text-sm">+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA <span className="text-sm">(à la réception)</span></div>
                   </div>
                 </div>
                 <div className="px-4 py-3.5 bg-green-50 rounded-b-2xl">
-                  <div className="flex justify-between items-center">
+                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:items-center">
                     <div className="text-sm font-semibold text-green-800">💳 À payer par Mobile Money</div>
                     <div className="font-extrabold text-green-800 text-lg">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
                   </div>
@@ -305,12 +326,21 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  fbqTrack("Contact", {
+                    content_name: bd.serie,
+                    content_ids: [bd.id],
+                    content_type: "product",
+                    value: bd.prix,
+                    currency: "XAF",
+                  })
+                }
                 className="w-full bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-bold text-base py-4 rounded-2xl flex items-center justify-center gap-3 transition-colors shadow-lg"
               >
                 <WhatsAppIcon />
                 Envoyer ma commande sur WhatsApp
               </a>
-              <p className="text-xs text-gray-400 text-center">
+              <p className="text-sm text-gray-600 text-center">
                 Votre message est déjà rédigé — envoyez-le et attendez notre confirmation sous quelques minutes.
               </p>
             </div>
