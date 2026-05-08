@@ -52,6 +52,7 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
     bd.id === "apprentis-explorateurs"
       ? "Votre enfant est invité à rejoindre l'équipe des Apprentis Explorateurs pour une expédition à travers les plus beaux paysages d'Afrique : la savane du Cameroun, les chutes de la Lobé, le lac Tchad et bien plus encore. Guidé par ses compagnons, il découvre la géographie, les animaux et les cultures de son continent."
       : bd.descriptionLongue;
+  const ratingBreakdown = getRatingBreakdown(bd.note, bd.nombreAvis);
 
   return (
     <>
@@ -143,23 +144,23 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
         <FullWidthSection title="À propos de cette série" tone="white">
           <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_280px] md:items-start">
             <p className="max-w-3xl text-base leading-8 text-gray-700 md:text-lg md:leading-9">{synopsisTexte}</p>
-            <div className="border-t border-green-200 pt-5 md:border-l md:border-t-0 md:pl-7 md:pt-0">
-              <div className="text-sm font-bold uppercase tracking-wide text-green-700">Prix personnalisé</div>
-              <div className="mt-2 text-3xl font-extrabold leading-none text-green-900">
+            <div className="border-t border-green-200 pt-5 text-center md:border-l md:border-t-0 md:pl-7 md:pt-0">
+              <div className="text-sm font-bold text-gray-400 line-through">15 000 FCFA</div>
+              <div className="mt-1 text-3xl font-extrabold leading-none text-green-900">
                 {bd.prix.toLocaleString("fr-FR")} FCFA
               </div>
               <button
                 onClick={() => setModalOuvert(true)}
                 className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-700 px-5 py-3.5 text-base font-bold text-white transition-colors duration-200 hover:bg-green-600 active:bg-green-800"
               >
-                <span>*</span> Personnaliser maintenant
+                Personnaliser maintenant <span aria-hidden="true">→</span>
               </button>
             </div>
           </div>
         </FullWidthSection>
 
         <FullWidthSection title="Comment commander ?" tone="warm" wide>
-          <ol className="grid gap-8 md:grid-cols-4 md:gap-6">
+          <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
             {[
               {
                 step: "1",
@@ -168,16 +169,11 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
               },
               {
                 step: "2",
-                titre: "Indiquez votre adresse",
-                texte: "Renseignez votre quartier pour que le livreur vous trouve facilement.",
-              },
-              {
-                step: "3",
                 titre: "Envoyez sur WhatsApp et payez",
                 texte: "Un message pré-rempli s'ouvre. Envoyez-le et payez 9 900 FCFA par Mobile Money après confirmation.",
               },
               {
-                step: "4",
+                step: "3",
                 titre: "Recevez votre BD sous 24h",
                 texte: "Nous personnalisons et livrons votre BD. Vous payez 1 000 FCFA au livreur à la réception.",
               },
@@ -204,16 +200,14 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                   </div>
                   <div className="mt-2 text-sm font-semibold text-gray-600">{bd.nombreAvis} avis parents</div>
                   <div className="mt-5 space-y-2">
-                    {[5, 4, 3].map((n) => {
-                      const count = bd.avis.filter((a) => a.note === n).length;
-                      const pct = bd.avis.length > 0 ? Math.round((count / bd.avis.length) * 100) : 0;
+                    {ratingBreakdown.map(({ count, note, pct }) => {
                       return (
-                        <div key={n} className="flex items-center gap-2">
-                          <span className="w-3 text-sm font-semibold text-gray-600">{n}</span>
+                        <div key={note} className="flex items-center gap-2">
+                          <span className="w-3 text-sm font-semibold text-gray-600">{note}</span>
                           <div className="h-2 flex-1 rounded-full bg-gray-100">
                             <div className="h-2 rounded-full bg-yellow-400" style={{ width: `${pct}%` }} />
                           </div>
-                          <span className="w-8 text-sm font-medium text-gray-600">{pct}%</span>
+                          <span className="w-12 text-right text-sm font-medium text-gray-600">{count} avis</span>
                         </div>
                       );
                     })}
@@ -279,18 +273,15 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
           </FullWidthSection>
         )}
 
-        <FullWidthSection title="Offrez-lui son livre à lui" tone="dark">
+        <FullWidthSection title="C'est à vous de réveillez l'imagination de votre enfant." tone="dark">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-base leading-7 text-green-100">Personnalisé avec son prénom · Livré en 24h · Mobile Money</p>
+            <p className="text-base leading-7 text-green-100">Faites de votre enfant le héros de sa propre histoire !</p>
             <button
               onClick={() => setModalOuvert(true)}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
             >
-              <span>✨</span> Personnalisez pour mon enfant
+              Personnalisez pour mon enfant <span aria-hidden="true">→</span>
             </button>
-            <p className="mt-3 text-sm font-medium text-green-100">
-              {bd.prix.toLocaleString("fr-FR")} FCFA + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA livraison
-            </p>
           </div>
         </FullWidthSection>
 
@@ -362,6 +353,40 @@ function FullWidthSection({
       </div>
     </section>
   );
+}
+
+function getRatingBreakdown(note: number, total: number) {
+  const levels = [5, 4, 3];
+  const safeTotal = Math.max(0, total);
+
+  if (safeTotal === 0) {
+    return levels.map((level) => ({ note: level, count: 0, pct: 0 }));
+  }
+
+  let bestCounts = [safeTotal, 0, 0];
+  let bestScore = Number.POSITIVE_INFINITY;
+
+  for (let fiveStars = 0; fiveStars <= safeTotal; fiveStars += 1) {
+    for (let fourStars = 0; fourStars <= safeTotal - fiveStars; fourStars += 1) {
+      const threeStars = safeTotal - fiveStars - fourStars;
+      const average = (fiveStars * 5 + fourStars * 4 + threeStars * 3) / safeTotal;
+      const score = Math.abs(average - note);
+
+      if (score < bestScore) {
+        bestScore = score;
+        bestCounts = [fiveStars, fourStars, threeStars];
+      }
+    }
+  }
+
+  return levels.map((level, index) => {
+    const count = bestCounts[index];
+    return {
+      note: level,
+      count,
+      pct: Math.round((count / safeTotal) * 100),
+    };
+  });
 }
 
 function Stars({ note, small }: { note: number; small?: boolean }) {

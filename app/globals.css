@@ -68,6 +68,23 @@ body {
   }
 }
 
+.cta-flash-light {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-140%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.14) 42%, rgb(255 255 255 / 0.58) 50%, rgb(255 255 255 / 0.14) 58%, transparent 100%);
+  animation: cta-flash-light 2.8s ease-in-out infinite;
+}
+
+@keyframes cta-flash-light {
+  0%, 38% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  68%, 100% {
+    transform: translateX(140%) skewX(-18deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation: none !important;
