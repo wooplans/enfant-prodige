@@ -25,10 +25,6 @@ const defaultSlideLabels = ["Couverture", "Apercu histoire", "Heros", "Details"]
 const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
   "academie-genies": [
     {
-      src: "/covers/hero-personalized/academie-genies-studio-produit.webp",
-      label: "Studio produit",
-    },
-    {
       src: "/covers/hero-personalized/academie-genies-kylian.webp",
       label: "Kylian",
     },
@@ -84,6 +80,16 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
       currency: "XAF",
     });
   }, [bd.id, bd.prix, bd.serie]);
+
+  useEffect(() => {
+    if (slides.length <= 1) return;
+
+    const intervalId = window.setInterval(() => {
+      setSlideActif((current) => (current + 1) % slides.length);
+    }, 4500);
+
+    return () => window.clearInterval(intervalId);
+  }, [slides.length]);
 
   const synopsisTexte =
     bd.id === "apprentis-explorateurs"
