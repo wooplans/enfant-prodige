@@ -151,7 +151,6 @@ for (const item of catalogue) {
       disponible: true,
       published: true,
       archived_at: null,
-      landing_page_mode: false,
       note: item.note,
       nombre_avis: item.nombre_avis,
       nombre_commandes_semaine: item.nombre_commandes_semaine,
