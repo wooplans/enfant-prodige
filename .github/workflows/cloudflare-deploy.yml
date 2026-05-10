@@ -42,9 +42,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Seed series
-        run: node scripts/seed-series.mjs
-
       - name: Lint
         run: npm run lint
 
