@@ -5,6 +5,8 @@ import { requireAdminPage } from "@/lib/admin-auth";
 import { getAdminSeries } from "@/lib/series";
 import { hasSupabaseAdminConfig } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   await requireAdminPage();
   const configured = hasSupabaseAdminConfig();

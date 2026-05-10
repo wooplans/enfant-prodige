@@ -2,6 +2,8 @@ import AdminSeriesForm from "@/components/AdminSeriesForm";
 import SiteChrome from "@/components/SiteChrome";
 import { requireAdminPage } from "@/lib/admin-auth";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewSeriesPage() {
   await requireAdminPage();
 
