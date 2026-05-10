@@ -190,7 +190,12 @@ export async function getAdminSeries(): Promise<AdminSeries[]> {
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
 
-  if (error) throw new Error(`Impossible de charger les séries: ${error.message}`);
+  if (error) {
+    if (!isMissingLandingPageModeColumn(error)) {
+      console.error("Unable to load admin series", error);
+    }
+    return [];
+  }
 
   return ((data ?? []) as unknown as SeriesRow[]).map(toAdminSeries);
 }
@@ -216,7 +221,8 @@ export async function getAdminSeriesById(id: string): Promise<AdminSeries | null
       }
     }
 
-    throw new Error(`Impossible de charger la série: ${error.message}`);
+    console.error("Unable to load admin series by id", error);
+    return null;
   }
 
   return data ? toAdminSeries(data as unknown as SeriesRow) : null;
