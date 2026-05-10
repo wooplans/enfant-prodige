@@ -58,5 +58,5 @@ export default async function PageBD({ params }: Props) {
 
   if (bd.landingPageMode) return page;
 
-  return <SiteChrome>{page}</SiteChrome>;
+  return <SiteChrome showFooter={false}>{page}</SiteChrome>;
 }

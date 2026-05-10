@@ -204,7 +204,7 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
               {
                 step: "1",
                 titre: "Entrez le prénom de l'enfant",
-                texte: "Cliquez sur « Commander cette BD » et renseignez le prénom et le sexe de l'enfant. Il apparaîtra sur la couverture.",
+                texte: "Cliquez sur « Personnaliser pour mon enfant » et renseignez le prénom et le sexe de l'enfant. Il apparaîtra sur la couverture.",
               },
               {
                 step: "2",
@@ -319,7 +319,7 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
               onClick={() => setModalOuvert(true)}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
             >
-              Personnalisez pour mon enfant <span aria-hidden="true">→</span>
+              Personnaliser pour mon enfant <span aria-hidden="true">→</span>
             </button>
           </div>
         </FullWidthSection>
