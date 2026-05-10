@@ -33,7 +33,7 @@ type SeriesRow = {
   updated_at: string;
 };
 
-const SELECT_COLUMNS = [
+const BASE_SELECT_COLUMNS = [
   "id",
   "slug",
   "serie",
@@ -50,7 +50,6 @@ const SELECT_COLUMNS = [
   "age_min",
   "age_max",
   "disponible",
-  "landing_page_mode",
   "published",
   "archived_at",
   "note",
@@ -61,6 +60,13 @@ const SELECT_COLUMNS = [
   "created_at",
   "updated_at",
 ].join(",");
+
+const SELECT_COLUMNS_WITH_LANDING = `${BASE_SELECT_COLUMNS},landing_page_mode`;
+
+function isMissingLandingPageModeColumn(error: { message?: string } | null | undefined) {
+  const message = error?.message ?? "";
+  return message.includes("landing_page_mode") && message.includes("does not exist");
+}
 
 function toPublicSeries(row: SeriesRow): BD {
   const galerie = row.galerie_urls?.length ? row.galerie_urls : [row.couverture_url].filter(Boolean);
@@ -108,7 +114,7 @@ export async function getPublicCatalogue(): Promise<BD[]> {
 
   const { data, error } = await supabase
     .from("series")
-    .select(SELECT_COLUMNS)
+    .select(SELECT_COLUMNS_WITH_LANDING)
     .eq("published", true)
     .eq("disponible", true)
     .is("archived_at", null)
@@ -116,6 +122,21 @@ export async function getPublicCatalogue(): Promise<BD[]> {
     .order("created_at", { ascending: false });
 
   if (error) {
+    if (isMissingLandingPageModeColumn(error)) {
+      const fallback = await supabase
+        .from("series")
+        .select(BASE_SELECT_COLUMNS)
+        .eq("published", true)
+        .eq("disponible", true)
+        .is("archived_at", null)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+
+      if (!fallback.error) {
+        return ((fallback.data ?? []) as unknown as SeriesRow[]).map(toPublicSeries);
+      }
+    }
+
     console.error("Unable to load public catalogue", error);
     return localCatalogue;
   }
@@ -130,7 +151,7 @@ export async function getPublicSeriesBySlug(slug: string): Promise<BD | null> {
 
   const { data, error } = await supabase
     .from("series")
-    .select(SELECT_COLUMNS)
+    .select(SELECT_COLUMNS_WITH_LANDING)
     .eq("slug", slug)
     .eq("published", true)
     .eq("disponible", true)
@@ -138,6 +159,21 @@ export async function getPublicSeriesBySlug(slug: string): Promise<BD | null> {
     .maybeSingle();
 
   if (error) {
+    if (isMissingLandingPageModeColumn(error)) {
+      const fallback = await supabase
+        .from("series")
+        .select(BASE_SELECT_COLUMNS)
+        .eq("slug", slug)
+        .eq("published", true)
+        .eq("disponible", true)
+        .is("archived_at", null)
+        .maybeSingle();
+
+      if (!fallback.error) {
+        return fallback.data ? toPublicSeries(fallback.data as unknown as SeriesRow) : localSeries;
+      }
+    }
+
     console.error("Unable to load public series", error);
     return localSeries;
   }
@@ -149,7 +185,7 @@ export async function getAdminSeries(): Promise<AdminSeries[]> {
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("series")
-    .select(SELECT_COLUMNS)
+    .select(SELECT_COLUMNS_WITH_LANDING)
     .order("archived_at", { ascending: true, nullsFirst: true })
     .order("sort_order", { ascending: true })
     .order("created_at", { ascending: false });
@@ -163,11 +199,25 @@ export async function getAdminSeriesById(id: string): Promise<AdminSeries | null
   const supabase = getSupabaseAdmin();
   const { data, error } = await supabase
     .from("series")
-    .select(SELECT_COLUMNS)
+    .select(SELECT_COLUMNS_WITH_LANDING)
     .eq("id", id)
     .maybeSingle();
 
-  if (error) throw new Error(`Impossible de charger la série: ${error.message}`);
+  if (error) {
+    if (isMissingLandingPageModeColumn(error)) {
+      const fallback = await supabase
+        .from("series")
+        .select(BASE_SELECT_COLUMNS)
+        .eq("id", id)
+        .maybeSingle();
+
+      if (!fallback.error) {
+        return fallback.data ? toAdminSeries(fallback.data as unknown as SeriesRow) : null;
+      }
+    }
+
+    throw new Error(`Impossible de charger la série: ${error.message}`);
+  }
 
   return data ? toAdminSeries(data as unknown as SeriesRow) : null;
 }
