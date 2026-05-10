@@ -14,12 +14,48 @@ interface Props {
   autresSeries: BD[];
 }
 
+type HeroSlide = {
+  src: string;
+  label: string;
+};
+
+const defaultSlideLabels = ["Couverture", "Apercu histoire", "Heros", "Details"];
+
+const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
+  "academie-genies": [
+    {
+      src: "/covers/hero-personalized/academie-genies-studio-produit.webp",
+      label: "Studio produit",
+    },
+    {
+      src: "/covers/hero-personalized/academie-genies-kylian.webp",
+      label: "Kylian",
+    },
+    {
+      src: "/covers/hero-personalized/academie-genies-william.webp",
+      label: "William",
+    },
+    {
+      src: "/covers/hero-personalized/academie-genies-christelle.webp",
+      label: "Christelle",
+    },
+    {
+      src: "/covers/hero-personalized/academie-genies-paul.webp",
+      label: "Paul",
+    },
+  ],
+};
+
 export default function BDDetailClient({ bd, autresSeries }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const slides = bd.galerie.slice(0, 4);
-  const slideLabels = ["Couverture", "Aperçu histoire", "Héros", "Détails"];
+  const slides =
+    personalizedHeroSlidesBySeries[bd.id] ??
+    bd.galerie.slice(0, 4).map((src, index) => ({
+      src,
+      label: defaultSlideLabels[index] ?? `Image ${index + 1}`,
+    }));
 
   const slideSuivant = () => setSlideActif((current) => (current + 1) % slides.length);
   const slidePrecedent = () => setSlideActif((current) => (current - 1 + slides.length) % slides.length);
@@ -87,18 +123,18 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
 
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
               <div
-                className="relative w-full h-72 sm:h-[420px] lg:h-auto lg:aspect-[4/5] overflow-hidden bg-green-950 shadow-2xl border-y border-white/15 lg:rounded-2xl lg:border"
+                className="relative aspect-square w-full overflow-hidden bg-green-950 shadow-2xl border-y border-white/15 lg:rounded-2xl lg:border"
                 style={{ minHeight: "18rem" }}
                 onTouchStart={(event) => setTouchStartX(event.changedTouches[0].clientX)}
                 onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
               >
-                {slides.map((src, index) => (
+                {slides.map((slide, index) => (
                   <Image
-                    key={src}
-                    src={src}
-                    alt={`${slideLabels[index]} de ${bd.serie}`}
+                    key={slide.src}
+                    src={slide.src}
+                    alt={`${slide.label} de ${bd.serie}`}
                     fill
-                    priority={index === 0}
+                    preload={index === 0}
                     sizes="(min-width: 1024px) 480px, 100vw"
                     className={`object-cover transition-opacity duration-500 ${slideActif === index ? "opacity-100" : "opacity-0"}`}
                   />
@@ -119,12 +155,12 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                 </button>
 
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                  <div className="text-sm font-bold">{slideLabels[slideActif]}</div>
+                  <div className="text-sm font-bold">{slides[slideActif]?.label}</div>
                   <div className="mt-3 flex items-center justify-between gap-3">
                     <div className="flex gap-1.5">
-                      {slides.map((src, index) => (
+                      {slides.map((slide, index) => (
                         <button
-                          key={src}
+                          key={slide.src}
                           onClick={() => setSlideActif(index)}
                           aria-label={`Voir l'image ${index + 1}`}
                           className={`h-2 rounded-full transition-all ${slideActif === index ? "w-8 bg-yellow-300" : "w-2 bg-white/50 hover:bg-white"}`}
