@@ -1,10 +1,8 @@
-﻿import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const bucket = process.env.SUPABASE_SERIES_BUCKET || "series-images";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bd.wooplans.com";
 
 if (!supabaseUrl || !serviceRoleKey) {
   console.error("Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY before running this script.");
@@ -126,32 +124,12 @@ const catalogue = [
   },
 ];
 
-function contentTypeFor(filePath) {
-  const ext = path.extname(filePath).toLowerCase();
-  if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
-  if (ext === ".png") return "image/png";
-  if (ext === ".webp") return "image/webp";
-  return "application/octet-stream";
-}
-
-async function uploadPublicAsset(publicPath, slug) {
-  const relativePath = publicPath.replace(/^\//, "");
-  const absolutePath = path.join(process.cwd(), "public", relativePath);
-  const buffer = await readFile(absolutePath);
-  const storagePath = `${slug}/${path.basename(relativePath)}`;
-
-  const { error } = await supabase.storage.from(bucket).upload(storagePath, buffer, {
-    contentType: contentTypeFor(relativePath),
-    upsert: true,
-  });
-
-  if (error) throw new Error(`Storage upload failed for ${publicPath}: ${error.message}`);
-
-  return supabase.storage.from(bucket).getPublicUrl(storagePath).data.publicUrl;
+function publicAssetUrl(publicPath) {
+  return new URL(publicPath, siteUrl).toString();
 }
 
 for (const item of catalogue) {
-  const imageUrls = await Promise.all(item.images.map((image) => uploadPublicAsset(image, item.slug)));
+  const imageUrls = item.images.map((image) => publicAssetUrl(image));
   const [coverUrl] = imageUrls;
 
   const { error } = await supabase.from("series").upsert(
