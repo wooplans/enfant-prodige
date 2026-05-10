@@ -21,6 +21,7 @@ type SeriesRow = {
   age_min: number;
   age_max: number;
   disponible: boolean;
+  landing_page_mode: boolean | null;
   published: boolean;
   archived_at: string | null;
   note: number | string | null;
@@ -49,6 +50,7 @@ const SELECT_COLUMNS = [
   "age_min",
   "age_max",
   "disponible",
+  "landing_page_mode",
   "published",
   "archived_at",
   "note",
@@ -80,6 +82,7 @@ function toPublicSeries(row: SeriesRow): BD {
     ageMin: row.age_min,
     ageMax: row.age_max,
     disponible: row.disponible,
+    landingPageMode: row.landing_page_mode ?? false,
     note: Number(row.note ?? 0),
     nombreAvis: row.nombre_avis ?? 0,
     nombreCommandesSemaine: row.nombre_commandes_semaine ?? 0,

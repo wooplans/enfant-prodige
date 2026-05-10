@@ -2,6 +2,7 @@ import Link from "next/link";
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 import { getPublicCatalogue } from "@/lib/series";
 import CarteBD from "@/components/CarteBC";
+import SiteChrome from "@/components/SiteChrome";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +10,7 @@ export default async function Home() {
   const catalogue = await getPublicCatalogue();
 
   return (
-    <>
+    <SiteChrome>
       {/* ── HERO ── */}
       <section className="bg-gradient-to-br from-green-800 to-green-600 text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
@@ -145,6 +146,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-    </>
+    </SiteChrome>
   );
 }

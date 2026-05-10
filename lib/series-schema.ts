@@ -24,6 +24,7 @@ export const seriesFormSchema = z.object({
   sortOrder: z.coerce.number().int().min(0),
   published: z.coerce.boolean().default(false),
   disponible: z.coerce.boolean().default(true),
+  landingPageMode: z.coerce.boolean().default(false),
   currentCover: z.string().trim().optional(),
   galleryText: z.string().trim().optional(),
 });

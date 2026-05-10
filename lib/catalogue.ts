@@ -23,6 +23,7 @@ export interface BD {
   ageMin: number;
   ageMax: number;
   disponible: boolean;
+  landingPageMode: boolean;
   note: number;
   nombreAvis: number;
   nombreCommandesSemaine: number;

@@ -1,5 +1,6 @@
 import { getPublicCatalogue, getPublicSeriesBySlug } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
+import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
@@ -53,6 +54,9 @@ export default async function PageBD({ params }: Props) {
 
   const catalogue = await getPublicCatalogue();
   const autresSeries = catalogue.filter((b) => b.id !== bd.id);
+  const page = <BDDetailClient bd={bd} autresSeries={autresSeries} landingPageMode={bd.landingPageMode} />;
 
-  return <BDDetailClient bd={bd} autresSeries={autresSeries} />;
+  if (bd.landingPageMode) return page;
+
+  return <SiteChrome>{page}</SiteChrome>;
 }

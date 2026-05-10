@@ -10,6 +10,9 @@
     "nodejs_compat",
     "global_fetch_strictly_public"
   ],
+  "vars": {
+    "ADMIN_PASSWORD_BYPASS": "true"
+  },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

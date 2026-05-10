@@ -1,5 +1,6 @@
 ﻿import Link from "next/link";
 import { archiveSeriesAction, logoutAction, restoreSeriesAction, togglePublishSeriesAction } from "@/app/admin/actions";
+import SiteChrome from "@/components/SiteChrome";
 import { requireAdminPage } from "@/lib/admin-auth";
 import { getAdminSeries } from "@/lib/series";
 import { hasSupabaseAdminConfig } from "@/lib/supabase/server";
@@ -10,6 +11,7 @@ export default async function AdminPage() {
   const series = configured ? await getAdminSeries() : [];
 
   return (
+    <SiteChrome>
     <div className="mx-auto max-w-6xl px-4 py-10">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -46,6 +48,7 @@ export default async function AdminPage() {
                   <h2 className="text-lg font-extrabold text-gray-950">{item.serie}</h2>
                   <StatusBadge label={item.archivedAt ? "Archivée" : item.published ? "Publiée" : "Brouillon"} tone={item.archivedAt ? "gray" : item.published ? "green" : "amber"} />
                   {!item.disponible && <StatusBadge label="Indisponible" tone="gray" />}
+                  {item.landingPageMode && <StatusBadge label="Landing page" tone="green" />}
                 </div>
                 <p className="mt-1 text-sm text-gray-600">/{item.slug} · {item.prix.toLocaleString("fr-FR")} FCFA · ordre {item.sortOrder}</p>
                 <p className="mt-2 line-clamp-2 text-sm text-gray-500">{item.description}</p>
@@ -84,6 +87,7 @@ export default async function AdminPage() {
         </div>
       </div>
     </div>
+    </SiteChrome>
   );
 }
 

@@ -105,6 +105,7 @@ export async function saveSeriesAction(
     sortOrder: formData.get("sortOrder") ?? "0",
     published: formData.get("published") === "on",
     disponible: formData.get("disponible") === "on",
+    landingPageMode: formData.get("landingPageMode") === "on",
     currentCover: formData.get("currentCover") ?? "",
     galleryText: formData.get("galleryText") ?? "",
   };
@@ -159,6 +160,7 @@ export async function saveSeriesAction(
       age_min: values.ageMin,
       age_max: values.ageMax,
       disponible: values.disponible,
+      landing_page_mode: values.landingPageMode,
       published: values.published,
       note: values.note,
       nombre_avis: values.nombreAvis,

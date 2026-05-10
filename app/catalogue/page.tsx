@@ -1,5 +1,6 @@
 import { getPublicCatalogue } from "@/lib/series";
 import CarteBD from "@/components/CarteBC";
+import SiteChrome from "@/components/SiteChrome";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,6 +14,7 @@ export default async function CataloguePage() {
   const catalogue = await getPublicCatalogue();
 
   return (
+    <SiteChrome>
     <div className="max-w-6xl mx-auto px-4 py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">✨ Nos séries personnalisées</h1>
@@ -61,5 +63,6 @@ export default async function CataloguePage() {
         ))}
       </div>
     </div>
+    </SiteChrome>
   );
 }

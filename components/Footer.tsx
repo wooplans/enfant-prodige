@@ -34,6 +34,11 @@ export default function Footer() {
                 Contact
               </Link>
             </li>
+            <li>
+              <Link href="/admin" className="hover:text-white transition-colors">
+                Admin
+              </Link>
+            </li>
           </ul>
         </div>
 
