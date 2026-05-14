@@ -5,11 +5,11 @@ import { useState } from "react";
 const faqs = [
   {
     q: "Comment fonctionne la personnalisation ?",
-    a: "Après votre commande WhatsApp, vous indiquez le prénom de votre enfant (et son sexe). Notre équipe insère ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez ensuite votre livre unique, imprimé et livré sous 24h.",
+    a: "Après avoir rempli le prénom de votre enfant (et son sexe), vous êtes redirigé vers Monetbil pour payer en toute sécurité. Notre équipe insère ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 24h.",
   },
   {
     q: "Quand est-ce que je paye ?",
-    a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) après confirmation de votre commande sur WhatsApp — avant la personnalisation. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
+    a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) directement via Monetbil avant la personnalisation. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
   },
   {
     q: "Quel est le délai de livraison ?",
@@ -17,11 +17,11 @@ const faqs = [
   },
   {
     q: "Ma commande est-elle garantie ?",
-    a: "Oui. Si votre BD arrive abîmée ou si le prénom est mal orthographié, contactez-nous immédiatement sur WhatsApp. Nous corrigeons et relivrons sans frais supplémentaires.",
+    a: "Oui. Si votre BD arrive abîmée ou si le prénom est mal orthographié, contactez-nous immédiatement. Nous corrigeons et relivrons sans frais supplémentaires.",
   },
   {
     q: "Livrez-vous en dehors de Yaoundé et Douala ?",
-    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous sur WhatsApp pour connaître les possibilités pour votre ville — nous faisons de notre mieux pour servir tout le Cameroun.",
+    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous pour connaître les possibilités pour votre ville — nous faisons de notre mieux pour servir tout le Cameroun.",
   },
 ];
 

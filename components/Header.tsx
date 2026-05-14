@@ -38,7 +38,7 @@ export default function Header() {
             className="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-full flex items-center gap-2 transition-colors"
           >
             <WhatsAppIcon />
-            WhatsApp
+            Assistance
           </a>
         </nav>
 
@@ -79,7 +79,7 @@ export default function Header() {
             className="bg-green-500 text-white px-4 py-2 rounded-full flex items-center gap-2 w-fit"
           >
             <WhatsAppIcon />
-            Nous contacter
+            Assistance
           </a>
         </div>
       )}

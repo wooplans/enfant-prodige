@@ -52,9 +52,8 @@ export default async function PageBD({ params }: Props) {
     notFound();
   }
 
-  const catalogue = await getPublicCatalogue();
-  const autresSeries = catalogue.filter((b) => b.id !== bd.id);
-  const page = <BDDetailClient bd={bd} autresSeries={autresSeries} landingPageMode={bd.landingPageMode} />;
+  await getPublicCatalogue();
+  const page = <BDDetailClient bd={bd} landingPageMode={bd.landingPageMode} />;
 
   if (bd.landingPageMode) return page;
 

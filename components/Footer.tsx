@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 
 export default function Footer() {
   return (
@@ -45,16 +44,14 @@ export default function Footer() {
         <div>
           <h3 className="font-bold mb-3">Commander</h3>
           <p className="text-green-100 text-sm mb-3">
-            Commandez via WhatsApp. Payez par Mobile Money après confirmation. Livraison en 24h.
+            Paiement direct via Monetbil. Assistance WhatsApp disponible si besoin. Livraison en 24h.
           </p>
-          <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}`}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/contact"
             className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-full text-sm transition-colors"
           >
-            📱 Nous contacter
-          </a>
+            📱 Support
+          </Link>
         </div>
       </div>
 

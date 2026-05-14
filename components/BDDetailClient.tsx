@@ -11,7 +11,6 @@ import { fbqTrack } from "@/components/FacebookPixel";
 
 interface Props {
   bd: BD;
-  autresSeries: BD[];
   landingPageMode?: boolean;
 }
 
@@ -19,6 +18,23 @@ type HeroSlide = {
   src: string;
   label: string;
 };
+
+function getNextHourFomoState(now: Date) {
+  const nextHour = new Date(now);
+  nextHour.setMinutes(0, 0, 0);
+  nextHour.setHours(nextHour.getHours() + 1);
+
+  const remainingSeconds = Math.max(0, Math.floor((nextHour.getTime() - now.getTime()) / 1000));
+  const hours = Math.floor(remainingSeconds / 3600);
+  const minutes = Math.floor((remainingSeconds % 3600) / 60);
+  const seconds = remainingSeconds % 60;
+  const pad = (value: number) => String(value).padStart(2, "0");
+
+  return {
+    timer: `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
+    progress: Math.max(8, Math.round((remainingSeconds / 3600) * 100)),
+  };
+}
 
 const defaultSlideLabels = ["Couverture", "Apercu histoire", "Heros", "Details"];
 
@@ -43,7 +59,7 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
   ],
 };
 
-export default function BDDetailClient({ bd, autresSeries, landingPageMode = false }: Props) {
+export default function BDDetailClient({ bd, landingPageMode = false }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -91,10 +107,34 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
     return () => window.clearInterval(intervalId);
   }, [slides.length]);
 
+  useEffect(() => {
+    if (bd.id !== "academie-genies") return;
+
+    const updateTimer = () => {
+      const next = getNextHourFomoState(new Date());
+      setFomoTimer(next.timer);
+    };
+    updateTimer();
+
+    const timerId = window.setInterval(updateTimer, 1000);
+    return () => window.clearInterval(timerId);
+  }, [bd.id]);
+
   const synopsisTexte =
     bd.id === "apprentis-explorateurs"
       ? "Votre enfant est invité à rejoindre l'équipe des Apprentis Explorateurs pour une expédition à travers les plus beaux paysages d'Afrique : la savane du Cameroun, les chutes de la Lobé, le lac Tchad et bien plus encore. Guidé par ses compagnons, il découvre la géographie, les animaux et les cultures de son continent."
       : bd.descriptionLongue;
+  const heroTitle = bd.id === "academie-genies" ? "Votre enfant à l'Académie des Génies" : bd.serie;
+  const heroSubtitle =
+    bd.id === "academie-genies"
+      ? "Une bande dessinée 100% personnalisée avec le prénom de votre enfant. Imprimée en couleur, livrée chez vous."
+      : bd.description;
+  const fomoRemaining = bd.id === "academie-genies" ? 13 : null;
+  const fomoSold = bd.id === "academie-genies" ? 483 : null;
+  const fomoTotal = fomoRemaining !== null && fomoSold !== null ? fomoRemaining + fomoSold : null;
+  const fomoRemainingPct =
+    fomoTotal && fomoRemaining !== null ? Math.max(3, Math.round((fomoRemaining / fomoTotal) * 100)) : 0;
+  const [fomoTimer, setFomoTimer] = useState("00:00:00");
   const ratingBreakdown = getRatingBreakdown(bd.note, bd.nombreAvis);
 
   return (
@@ -117,7 +157,7 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
 
           <div className="grid lg:grid-cols-[1fr_480px] gap-6 lg:gap-12 items-center">
             <div className="max-w-2xl lg:col-start-1 lg:row-start-1">
-              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">{bd.serie}</h1>
+              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">{heroTitle}</h1>
               <div className="mt-4">
                 {bd.nombreAvis > 0 && (
                   <div className="inline-flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-4 py-2 shadow-lg border border-yellow-200">
@@ -127,7 +167,7 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
                   </div>
                 )}
               </div>
-              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{bd.description}</p>
+              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{heroSubtitle}</p>
             </div>
 
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -200,11 +240,29 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
               >
                 Personnaliser maintenant <span aria-hidden="true">→</span>
               </button>
+              {bd.id === "academie-genies" && (
+                <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">
+                  <div className="flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wide text-gray-600">
+                    <span>Plus que 13 exemplaires</span>
+                    <span>483 vendus</span>
+                  </div>
+                  <div className="mt-3 h-3 overflow-hidden rounded-full border border-amber-200 bg-white">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-amber-300 via-orange-500 to-red-500 transition-all duration-700 animate-pulse"
+                      style={{ width: `${fomoRemainingPct}%` }}
+                    />
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
+                    <span>Fin de l'offre promo dans {fomoTimer}</span>
+                    <span>Retour à 15 000 FCFA</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </FullWidthSection>
 
-        <FullWidthSection title="Comment commander ?" tone="warm" wide>
+        <FullWidthSection title="Sa BD personnalisée en 3 étapes simples" tone="warm" wide>
           <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
             {[
               {
@@ -214,8 +272,8 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
               },
               {
                 step: "2",
-                titre: "Envoyez sur WhatsApp et payez",
-                texte: "Un message pré-rempli s'ouvre. Envoyez-le et payez 9 900 FCFA par Mobile Money après confirmation.",
+                titre: "Payer en ligne",
+                texte: "Payez 9 900 FCFA par Mobile Money (Orange ou MTN) après confirmation.",
               },
               {
                 step: "3",
@@ -232,6 +290,30 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
               </li>
             ))}
           </ol>
+        </FullWidthSection>
+
+        <FullWidthSection title="Commandez l'esprit tranquille." tone="white" wide>
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                titre: "Livraison 48h",
+                texte: "Votre BD est préparée rapidement et livrée sous 48h après confirmation.",
+              },
+              {
+                titre: "Garantie de 7 jours",
+                texte: "Si la BD ne fait pas sourire votre enfant, nous vous remboursons intégralement.",
+              },
+              {
+                titre: "Histoire éducative",
+                texte: "Une aventure pensée pour éveiller la curiosité, la confiance et l'envie d'apprendre.",
+              },
+            ].map(({ titre, texte }) => (
+              <div key={titre} className="border-t border-green-200 pt-5">
+                <h3 className="text-base font-extrabold leading-snug text-gray-950">{titre}</h3>
+                <p className="mt-2 text-sm leading-6 text-gray-600">{texte}</p>
+              </div>
+            ))}
+          </div>
         </FullWidthSection>
 
         {bd.avis.length > 0 && (
@@ -285,39 +367,6 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
           <FaqAccordion />
         </FullWidthSection>
 
-        {!landingPageMode && autresSeries.length > 0 && (
-          <FullWidthSection title="Découvrir nos autres séries" tone="white" wide>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-              {autresSeries.map((autre) => (
-                <Link
-                  key={autre.id}
-                  href={`/bd/${autre.id}`}
-                  className="group grid grid-cols-[112px_minmax(0,1fr)] gap-4 transition-colors duration-200 sm:block"
-                >
-                  <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-amber-100 sm:mb-4">
-                    <Image
-                      src={autre.couverture}
-                      alt={`Couverture de ${autre.serie}`}
-                      fill
-                      sizes="(min-width: 768px) 300px, 112px"
-                      className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                    />
-                  </div>
-                  <div className="self-center">
-                    <div className="text-lg font-extrabold leading-tight text-gray-950 transition-colors duration-200 group-hover:text-green-800">
-                      {autre.serie}
-                    </div>
-                    <div className="mt-2">
-                      <Stars note={autre.note} small />
-                    </div>
-                    <div className="mt-2 text-sm font-extrabold text-green-700">{autre.prix.toLocaleString("fr-FR")} FCFA</div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </FullWidthSection>
-        )}
-
         <FullWidthSection title="C'est à vous de réveillez l'imagination de votre enfant." tone="dark">
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-base leading-7 text-green-100">Faites de votre enfant le héros de sa propre histoire !</p>
@@ -344,9 +393,9 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
         <div className="bg-white px-4 py-8">
           <div className="mx-auto grid max-w-4xl gap-4 border-y border-amber-200 py-5 text-center sm:grid-cols-3">
             {[
-              { icon: "📱", label: "Commande via WhatsApp" },
-              { icon: "💳", label: "Paiement Mobile Money" },
-              { icon: "🚀", label: "Livraison en 24h" },
+              { icon: "📱", label: "Commande rapide" },
+              { icon: "💳", label: "Paiement par mobile money" },
+              { icon: "🚀", label: "Livraison en 48h" },
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center justify-center gap-2 text-sm font-bold text-gray-700">
                 <span className="text-xl">{icon}</span>
@@ -355,6 +404,44 @@ export default function BDDetailClient({ bd, autresSeries, landingPageMode = fal
             ))}
           </div>
         </div>
+
+        <FullWidthSection title="Offrez-lui une aventure à son prénom" tone="dark">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-base leading-8 text-green-100 md:text-lg">
+              Sa BD personnalisée, imprimée, et livrée chez vous en 48h. Un cadeau qu&apos;il gardera toute sa vie.
+            </p>
+            <div className="mt-6 text-sm font-semibold uppercase tracking-[0.18em] text-yellow-300">
+              à seulement
+            </div>
+            <div className="mt-2 text-4xl font-extrabold leading-none text-white md:text-5xl">
+              9 900 FCFA
+            </div>
+            {bd.id === "academie-genies" && (
+              <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">
+                <div className="flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wide text-gray-600">
+                  <span>Plus que 13 exemplaires</span>
+                  <span>483 vendus</span>
+                </div>
+                <div className="mt-3 h-3 overflow-hidden rounded-full border border-amber-200 bg-white">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-amber-300 via-orange-500 to-red-500 transition-all duration-700 animate-pulse"
+                    style={{ width: `${fomoRemainingPct}%` }}
+                  />
+                </div>
+                <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
+                  <span>Fin de l'offre promo dans {fomoTimer}</span>
+                  <span>Retour à 15 000 FCFA</span>
+                </div>
+              </div>
+            )}
+            <button
+              onClick={() => setModalOuvert(true)}
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
+            >
+              Personnaliser pour mon enfant <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </FullWidthSection>
       </main>
 
       <StickyCommanderBar onCommander={() => setModalOuvert(true)} shakeStartId="avis-parents" />
@@ -450,3 +537,6 @@ function Stars({ note, small }: { note: number; small?: boolean }) {
     </div>
   );
 }
+
+
+

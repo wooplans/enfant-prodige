@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 import { getPublicCatalogue } from "@/lib/series";
 import CarteBD from "@/components/CarteBC";
 import SiteChrome from "@/components/SiteChrome";
@@ -30,14 +29,12 @@ export default async function Home() {
             >
               Choisir une série
             </Link>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/bd/academie-genies"
               className="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-8 py-3 rounded-full text-lg transition-colors flex items-center gap-2"
             >
-              <span>📱</span> Commander sur WhatsApp
-            </a>
+              <span>📘</span> Voir l&apos;exemple personnalisé
+            </Link>
           </div>
         </div>
       </section>
@@ -57,8 +54,8 @@ export default async function Home() {
               },
               {
                 icon: "📱",
-                titre: "Entrez le prénom et commandez",
-                texte: "Tapez le prénom de l'enfant, choisissez votre adresse, puis envoyez sur WhatsApp. Payez 9 900 FCFA par Mobile Money.",
+                titre: "Entrez le prénom et payez",
+                texte: "Tapez le prénom de l&apos;enfant, choisissez votre adresse, puis validez le paiement sécurisé via Monetbil. Payez 9 900 FCFA par Mobile Money.",
               },
               {
                 icon: "🚀",
@@ -131,8 +128,8 @@ export default async function Home() {
               },
               {
                 icon: "📱",
-                titre: "Commande facile",
-                texte: "Commandez en quelques clics via WhatsApp, sans formulaire compliqué.",
+                titre: "Paiement simple",
+                texte: "Commandez en quelques clics, puis finalisez le paiement direct par Monetbil sans détour inutile.",
               },
             ].map(({ icon, titre, texte }) => (
               <div key={titre} className="flex gap-4 items-start">
