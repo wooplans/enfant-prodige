@@ -6,8 +6,6 @@ import PurchasePixelTracker from "@/components/PurchasePixelTracker";
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = Record<string, string | string[] | undefined>;
-
 function firstValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
