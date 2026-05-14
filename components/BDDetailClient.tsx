@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { BD } from "@/lib/catalogue";
 import type { PaymentSettings } from "@/lib/payment-settings";
 import StickyCommanderBar from "@/components/StickyCommanderBar";
 import CheckoutModal from "@/components/CheckoutModal";
 import FaqAccordion from "@/components/FaqAccordion";
 import { fbqTrack } from "@/components/FacebookPixel";
+import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 
 interface Props {
   bd: BD;
@@ -63,6 +64,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [fomoTimer, setFomoTimer] = useState("00:00:00");
+  const lastCheckoutOpenAt = useRef(0);
   const slides =
     personalizedHeroSlidesBySeries[bd.id] ??
     bd.galerie.slice(0, 4).map((src, index) => ({
@@ -70,8 +72,44 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
       label: defaultSlideLabels[index] ?? `Image ${index + 1}`,
     }));
 
-  const slideSuivant = () => setSlideActif((current) => (current + 1) % slides.length);
-  const slidePrecedent = () => setSlideActif((current) => (current - 1 + slides.length) % slides.length);
+  const trackProductEvent = (
+    eventType: "cta_click" | "checkout_open" | "carousel_interaction",
+    source: string,
+    extra?: Record<string, string | number>
+  ) => {
+    trackAnalyticsEvent({
+      eventType,
+      metadata: {
+        source,
+        seriesId: bd.id,
+        seriesSlug: bd.slug || bd.id,
+        seriesTitle: bd.serie,
+        ...extra,
+      },
+    });
+  };
+
+  const openCheckout = (source: string) => {
+    const now = Date.now();
+    if (now - lastCheckoutOpenAt.current < 500) {
+      setModalOuvert(true);
+      return;
+    }
+
+    lastCheckoutOpenAt.current = now;
+    trackProductEvent("cta_click", source);
+    trackProductEvent("checkout_open", source);
+    setModalOuvert(true);
+  };
+
+  const slideSuivant = () => {
+    trackProductEvent("carousel_interaction", "hero_next", { slideIndex: slideActif });
+    setSlideActif((current) => (current + 1) % slides.length);
+  };
+  const slidePrecedent = () => {
+    trackProductEvent("carousel_interaction", "hero_previous", { slideIndex: slideActif });
+    setSlideActif((current) => (current - 1 + slides.length) % slides.length);
+  };
 
   const handleSwipeEnd = (x: number) => {
     if (touchStartX === null) return;
@@ -221,7 +259,13 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                       {slides.map((slide, index) => (
                         <button
                           key={slide.src}
-                          onClick={() => setSlideActif(index)}
+                          onClick={() => {
+                            trackProductEvent("carousel_interaction", "hero_dot", {
+                              slideIndex: index,
+                              slideLabel: slide.label,
+                            });
+                            setSlideActif(index);
+                          }}
                           aria-label={`Voir l'image ${index + 1}`}
                           className={`h-2 rounded-full transition-all ${slideActif === index ? "w-8 bg-yellow-300" : "w-2 bg-white/50 hover:bg-white"}`}
                         />
@@ -246,7 +290,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                 {bd.prix.toLocaleString("fr-FR")} FCFA
               </div>
               <button
-                onClick={() => setModalOuvert(true)}
+                onClick={() => openCheckout("price_block")}
                 className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-700 px-5 py-3.5 text-base font-bold text-white transition-colors duration-200 hover:bg-green-600 active:bg-green-800"
               >
                 Personnaliser maintenant <span aria-hidden="true">→</span>
@@ -392,7 +436,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                 : "Faites de votre enfant le héros de sa propre histoire !"}
             </p>
             <button
-              onClick={() => setModalOuvert(true)}
+              onClick={() => openCheckout("mid_page_dark_section")}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
             >
               {primaryCtaText} <span aria-hidden="true">→</span>
@@ -457,8 +501,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
             )}
             <button
               type="button"
-              onPointerDown={() => setModalOuvert(true)}
-              onClick={() => setModalOuvert(true)}
+              onClick={() => openCheckout("bottom_offer")}
               className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
             >
               {primaryCtaText} <span aria-hidden="true">→</span>
@@ -468,7 +511,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
       </main>
 
       <StickyCommanderBar
-        onCommander={() => setModalOuvert(true)}
+        onCommander={() => openCheckout("sticky_bar")}
         shakeStartId="avis-parents"
         label={primaryCtaText}
       />

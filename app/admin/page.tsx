@@ -1,19 +1,32 @@
 import Link from "next/link";
 import { archiveSeriesAction, logoutAction, restoreSeriesAction, togglePublishSeriesAction } from "@/app/admin/actions";
+import AdminAnalyticsPanel from "@/components/AdminAnalyticsPanel";
 import AdminPaymentSettingsForm from "@/components/AdminPaymentSettingsForm";
 import SiteChrome from "@/components/SiteChrome";
 import { requireAdminPage } from "@/lib/admin-auth";
+import { getAnalyticsSummary, parseAnalyticsRange } from "@/lib/analytics";
 import { getAdminSeries } from "@/lib/series";
 import { hasSupabaseAdminConfig } from "@/lib/supabase/server";
 import { getPaymentSettings } from "@/lib/payment-settings";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminPage() {
+type AdminPageProps = {
+  searchParams?: Promise<{
+    analyticsRange?: string | string[];
+  }>;
+};
+
+export default async function AdminPage({ searchParams }: AdminPageProps) {
   await requireAdminPage();
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const analyticsRange = parseAnalyticsRange(resolvedSearchParams.analyticsRange);
   const configured = hasSupabaseAdminConfig();
-  const series = configured ? await getAdminSeries() : [];
-  const paymentSettings = await getPaymentSettings();
+  const [series, paymentSettings, analyticsSummary] = await Promise.all([
+    configured ? getAdminSeries() : Promise.resolve([]),
+    getPaymentSettings(),
+    getAnalyticsSummary(analyticsRange),
+  ]);
 
   return (
     <SiteChrome>
@@ -44,6 +57,8 @@ export default async function AdminPage() {
         <div className="mb-8">
           <AdminPaymentSettingsForm settings={paymentSettings} />
         </div>
+
+        <AdminAnalyticsPanel summary={analyticsSummary} />
 
         <div className="overflow-hidden rounded-3xl border border-amber-100 bg-white shadow-sm">
           <div className="grid grid-cols-1 divide-y divide-gray-100">
