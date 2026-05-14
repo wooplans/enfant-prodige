@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { BD } from "@/lib/catalogue";
+import type { PaymentSettings } from "@/lib/payment-settings";
 import StickyCommanderBar from "@/components/StickyCommanderBar";
 import CheckoutModal from "@/components/CheckoutModal";
 import FaqAccordion from "@/components/FaqAccordion";
@@ -12,6 +13,7 @@ import { fbqTrack } from "@/components/FacebookPixel";
 interface Props {
   bd: BD;
   landingPageMode?: boolean;
+  paymentSettings: PaymentSettings;
 }
 
 type HeroSlide = {
@@ -59,10 +61,11 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
   ],
 };
 
-export default function BDDetailClient({ bd, landingPageMode = false }: Props) {
+export default function BDDetailClient({ bd, landingPageMode = false, paymentSettings }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [fomoTimer, setFomoTimer] = useState("00:00:00");
   const slides =
     personalizedHeroSlidesBySeries[bd.id] ??
     bd.galerie.slice(0, 4).map((src, index) => ({
@@ -134,7 +137,6 @@ export default function BDDetailClient({ bd, landingPageMode = false }: Props) {
   const fomoTotal = fomoRemaining !== null && fomoSold !== null ? fomoRemaining + fomoSold : null;
   const fomoRemainingPct =
     fomoTotal && fomoRemaining !== null ? Math.max(3, Math.round((fomoRemaining / fomoTotal) * 100)) : 0;
-  const [fomoTimer, setFomoTimer] = useState("00:00:00");
   const ratingBreakdown = getRatingBreakdown(bd.note, bd.nombreAvis);
 
   return (
@@ -253,7 +255,7 @@ export default function BDDetailClient({ bd, landingPageMode = false }: Props) {
                     />
                   </div>
                   <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
-                    <span>Fin de l'offre promo dans {fomoTimer}</span>
+                    <span>Fin de l&apos;offre promo dans {fomoTimer}</span>
                     <span>Retour à 15 000 FCFA</span>
                   </div>
                 </div>
@@ -429,7 +431,7 @@ export default function BDDetailClient({ bd, landingPageMode = false }: Props) {
                   />
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
-                  <span>Fin de l'offre promo dans {fomoTimer}</span>
+                  <span>Fin de l&apos;offre promo dans {fomoTimer}</span>
                   <span>Retour à 15 000 FCFA</span>
                 </div>
               </div>
@@ -445,7 +447,7 @@ export default function BDDetailClient({ bd, landingPageMode = false }: Props) {
       </main>
 
       <StickyCommanderBar onCommander={() => setModalOuvert(true)} shakeStartId="avis-parents" />
-      {modalOuvert && <CheckoutModal bd={bd} onClose={() => setModalOuvert(false)} />}
+      {modalOuvert && <CheckoutModal bd={bd} paymentSettings={paymentSettings} onClose={() => setModalOuvert(false)} />}
     </>
   );
 }

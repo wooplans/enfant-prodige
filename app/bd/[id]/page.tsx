@@ -3,6 +3,7 @@ import BDDetailClient from "@/components/BDDetailClient";
 import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getPaymentSettings } from "@/lib/payment-settings";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -53,7 +54,8 @@ export default async function PageBD({ params }: Props) {
   }
 
   await getPublicCatalogue();
-  const page = <BDDetailClient bd={bd} landingPageMode={bd.landingPageMode} />;
+  const paymentSettings = await getPaymentSettings();
+  const page = <BDDetailClient bd={bd} landingPageMode={bd.landingPageMode} paymentSettings={paymentSettings} />;
 
   if (bd.landingPageMode) return page;
 

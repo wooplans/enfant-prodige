@@ -7,6 +7,7 @@ import { z } from "zod";
 import { assertAdminAction, clearAdminSession, createAdminSession, verifyAdminPassword } from "@/lib/admin-auth";
 import { linesToList, seriesFormSchema, type SeriesFormState } from "@/lib/series-schema";
 import { getSupabaseAdmin, SERIES_BUCKET } from "@/lib/supabase/server";
+import { paymentSettingsSchema, type PaymentSettingsFormState, upsertPaymentSettings } from "@/lib/payment-settings";
 
 const loginSchema = z.object({
   password: z.string().min(1, "Mot de passe obligatoire."),
@@ -93,7 +94,8 @@ async function writeSeries(payload: Record<string, unknown>, id?: string) {
     return result;
   }
 
-  const { landing_page_mode, ...fallbackPayload } = payload;
+  const fallbackPayload = { ...payload };
+  delete fallbackPayload.landing_page_mode;
   const fallbackQuery = id
     ? supabase.from("series").update(fallbackPayload).eq("id", id)
     : supabase.from("series").insert(fallbackPayload);
@@ -254,4 +256,50 @@ export async function togglePublishSeriesAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/catalogue");
   redirect("/admin");
+}
+
+const paymentSettingsActionSchema = z.object({
+  defaultProvider: z.enum(["chariow", "monetbil"]),
+  monetbilEnabled: z.boolean(),
+  chariowProductCode: z.string().min(1),
+  chariowProductUrl: z.string().url(),
+  chariowSnapSnippet: z.string(),
+});
+
+export async function savePaymentSettingsAction(
+  _state: PaymentSettingsFormState,
+  formData: FormData
+): Promise<PaymentSettingsFormState> {
+  await assertAdminAction();
+
+  const parsed = paymentSettingsActionSchema.safeParse({
+    defaultProvider: String(formData.get("defaultProvider") ?? "chariow"),
+    monetbilEnabled: formData.get("monetbilEnabled") === "on",
+    chariowProductCode: String(formData.get("chariowProductCode") ?? ""),
+    chariowProductUrl: String(formData.get("chariowProductUrl") ?? ""),
+    chariowSnapSnippet: String(formData.get("chariowSnapSnippet") ?? ""),
+  });
+
+  if (!parsed.success) {
+    return { ok: false, message: "Corrigez les champs de paiement." };
+  }
+
+  const result = paymentSettingsSchema.safeParse(parsed.data);
+  if (!result.success) {
+    return { ok: false, message: "Configuration de paiement invalide." };
+  }
+
+  try {
+    await upsertPaymentSettings(result.data);
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Enregistrement du paiement impossible.",
+    };
+  }
+
+  revalidatePath("/admin");
+  revalidatePath("/bd/academie-genies");
+  revalidatePath("/");
+  return { ok: true, message: "Réglages de paiement enregistrés." };
 }

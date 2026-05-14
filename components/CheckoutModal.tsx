@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { BD, CommandeData } from "@/lib/catalogue";
+import type { PaymentProvider, PaymentSettings } from "@/lib/payment-settings";
+import ChariowWidgetEmbed from "@/components/ChariowWidgetEmbed";
 import { fbqTrack } from "@/components/FacebookPixel";
 
 interface Props {
   bd: BD;
+  paymentSettings: PaymentSettings;
   onClose: () => void;
 }
 
@@ -18,13 +21,36 @@ const INITIAL_DATA: CommandeData = {
   rue: "",
 };
 
-export default function CheckoutModal({ bd, onClose }: Props) {
+type CheckoutStartResponse =
+  | {
+      ok: true;
+      provider: "chariow";
+      payment_ref: string;
+      checkout_url: string;
+      product_code: string;
+      snap_snippet: string;
+    }
+  | {
+      ok: true;
+      provider: "monetbil";
+      payment_ref: string;
+      payment_url: string;
+      return_url: string;
+      notify_url: string;
+    }
+  | {
+      ok: false;
+      message: string;
+    };
+
+export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
   const [step, setStep] = useState<Step>(1);
   const [data, setData] = useState<CommandeData>(INITIAL_DATA);
   const [prenomTouched, setPrenomTouched] = useState(false);
   const [quartierTouched, setQuartierTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [checkoutInfo, setCheckoutInfo] = useState<CheckoutStartResponse | null>(null);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -54,52 +80,67 @@ export default function CheckoutModal({ bd, onClose }: Props) {
   const sexeValide = data.sexe !== null;
   const etape1Valide = prenomValide && sexeValide;
   const etape2Valide = data.quartier.trim().length >= 2;
-
   const adresseComplete = useMemo(() => {
     return data.rue.trim().length > 0 ? `${data.quartier}, ${data.rue}` : data.quartier;
   }, [data.quartier, data.rue]);
 
-  const startMonetbilCheckout = async () => {
-    setErrorMessage(null);
-    setIsSubmitting(true);
+  const activeProvider: PaymentProvider =
+    paymentSettings.defaultProvider === "monetbil" && paymentSettings.monetbilEnabled
+      ? "monetbil"
+      : "chariow";
 
-    try {
-      const response = await fetch("/api/monetbil/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          bdSlug: bd.slug || bd.id,
-          prenom: data.prenom.trim(),
-          sexe: data.sexe,
-          quartier: data.quartier.trim(),
-          rue: data.rue.trim(),
-        }),
-      });
+  useEffect(() => {
+    if (step !== 3 || checkoutInfo || isSubmitting) return;
 
-      const payload = (await response.json().catch(() => null)) as
-        | { ok?: boolean; message?: string; payment_url?: string }
-        | null;
+    let cancelled = false;
 
-      if (!response.ok || !payload?.payment_url) {
-        throw new Error(payload?.message || "Impossible de démarrer le paiement Monetbil.");
+    const startCheckout = async () => {
+      setErrorMessage(null);
+      setIsSubmitting(true);
+
+      try {
+        const response = await fetch("/api/payments/start", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            bdSlug: bd.slug || bd.id,
+            prenom: data.prenom.trim(),
+            sexe: data.sexe,
+            quartier: data.quartier.trim(),
+            rue: data.rue.trim(),
+          }),
+        });
+
+        const payload = (await response.json().catch(() => null)) as CheckoutStartResponse | null;
+        if (!response.ok || !payload || !payload.ok) {
+          throw new Error(payload && "message" in payload ? payload.message : "Impossible de préparer le paiement.");
+        }
+
+        if (cancelled) return;
+
+        setCheckoutInfo(payload);
+
+        if (payload.provider === "monetbil") {
+          window.location.assign(payload.payment_url);
+        } else {
+          setIsSubmitting(false);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setErrorMessage(error instanceof Error ? error.message : "Paiement indisponible.");
+          setIsSubmitting(false);
+        }
       }
+    };
 
-      fbqTrack("AddPaymentInfo", {
-        content_name: bd.serie,
-        content_ids: [bd.id],
-        content_type: "product",
-        value: bd.prix,
-        currency: "XAF",
-      });
+    void startCheckout();
 
-      window.location.assign(payload.payment_url);
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Paiement indisponible.");
-      setIsSubmitting(false);
-    }
-  };
+    return () => {
+      cancelled = true;
+    };
+  }, [step, checkoutInfo, isSubmitting, bd.id, bd.prix, bd.serie, bd.slug, data.prenom, data.quartier, data.rue, data.sexe]);
 
   return (
     <div
@@ -126,7 +167,8 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               <div className="text-sm font-bold text-gray-900">
                 {step === 1 && "L&apos;enfant"}
                 {step === 2 && "Adresse de livraison"}
-                {step === 3 && "Paiement Monetbil"}
+                {step === 3 && activeProvider === "chariow" && "Paiement Chariow"}
+                {step === 3 && activeProvider === "monetbil" && "Paiement Monetbil"}
               </div>
               <div className="text-sm text-gray-600">Étape {step} sur 3</div>
             </div>
@@ -297,7 +339,9 @@ export default function CheckoutModal({ bd, onClose }: Props) {
             <div className="space-y-5">
               <div>
                 <div className="mb-1 text-2xl">💳</div>
-                <h2 className="text-lg font-extrabold text-gray-900">Paiement Monetbil</h2>
+                <h2 className="text-lg font-extrabold text-gray-900">
+                  {activeProvider === "chariow" ? "Paiement Chariow" : "Paiement Monetbil"}
+                </h2>
                 <p className="mt-0.5 text-sm text-gray-600">
                   Vérifiez les informations puis poursuivez vers le paiement sécurisé.
                 </p>
@@ -327,9 +371,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                   <span className="mt-0.5 text-lg">📍</span>
                   <div>
                     <div className="text-sm font-medium uppercase tracking-wide text-gray-700">Livraison</div>
-                    <div className="text-sm font-semibold text-gray-900">
-                      {adresseComplete}
-                    </div>
+                    <div className="text-sm font-semibold text-gray-900">{adresseComplete}</div>
                     <div className="text-sm text-gray-700">Sous 24h après paiement</div>
                   </div>
                 </div>
@@ -351,7 +393,9 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                 </div>
                 <div className="rounded-b-2xl bg-green-50 px-4 py-3.5">
                   <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="text-sm font-semibold text-green-800">💳 À payer via Monetbil</div>
+                    <div className="text-sm font-semibold text-green-800">
+                      {activeProvider === "chariow" ? "🛍️ Paiement via Chariow" : "💳 À payer via Monetbil"}
+                    </div>
                     <div className="text-lg font-extrabold text-green-800">
                       {bd.prix.toLocaleString("fr-FR")} FCFA
                     </div>
@@ -365,17 +409,30 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                 </div>
               )}
 
-              <button
-                onClick={startMonetbilCheckout}
-                disabled={isSubmitting}
-                className="flex w-full items-center justify-center gap-3 rounded-2xl bg-green-600 py-4 text-base font-bold text-white shadow-lg transition-colors hover:bg-green-500 active:bg-green-700 disabled:cursor-not-allowed disabled:bg-green-400"
-              >
-                {isSubmitting ? "Préparation du paiement..." : "Payer avec Monetbil"}
-              </button>
-
-              <p className="text-center text-sm text-gray-600">
-                Paiement direct par Mobile Money. Vous serez redirigé vers Monetbil.
-              </p>
+              {activeProvider === "chariow" ? (
+                <div className="space-y-4">
+                  <ChariowWidgetEmbed
+                    html={checkoutInfo && checkoutInfo.ok && checkoutInfo.provider === "chariow" ? checkoutInfo.snap_snippet : paymentSettings.chariowSnapSnippet}
+                    productUrl={paymentSettings.chariowProductUrl}
+                    productCode={paymentSettings.chariowProductCode}
+                  />
+                  <p className="text-center text-sm text-gray-600">
+                    Paiement Chariow activé par défaut pour cette boutique.
+                  </p>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    if (checkoutInfo && checkoutInfo.ok && checkoutInfo.provider === "monetbil") {
+                      window.location.assign(checkoutInfo.payment_url);
+                    }
+                  }}
+                  disabled={isSubmitting}
+                  className="flex w-full items-center justify-center gap-3 rounded-2xl bg-green-600 py-4 text-base font-bold text-white shadow-lg transition-colors hover:bg-green-500 active:bg-green-700 disabled:cursor-not-allowed disabled:bg-green-400"
+                >
+                  {isSubmitting ? "Préparation du paiement..." : "Payer avec Monetbil"}
+                </button>
+              )}
             </div>
           )}
         </div>

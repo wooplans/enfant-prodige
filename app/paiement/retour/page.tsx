@@ -13,10 +13,11 @@ function firstValue(value: string | string[] | undefined) {
 export default async function PaymentReturnPage({
   searchParams,
 }: {
-  searchParams?: SearchParams;
+  searchParams?: Promise<SearchParams>;
 }) {
-  const paymentRef = firstValue(searchParams?.payment_ref) || "";
-  const bdSlug = firstValue(searchParams?.bd) || "";
+  const params = (await searchParams) ?? {};
+  const paymentRef = firstValue(params.payment_ref) || "";
+  const bdSlug = firstValue(params.bd) || "";
   let paymentStatus: string | null = null;
   let seriesTitle = "votre BD";
 
