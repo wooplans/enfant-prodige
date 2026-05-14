@@ -24,6 +24,8 @@ type PaymentOrder = {
   currency: string | null;
 };
 
+type PaymentReturnPageProps = PageProps<"/paiement/retour">;
+
 function formatStatus(status: string | null) {
   switch (status) {
     case "paid":
@@ -59,11 +61,7 @@ function formatMessage(order: PaymentOrder, bdSlug: string) {
   return lines.join("\n");
 }
 
-export default async function PaymentReturnPage({
-  searchParams,
-}: {
-  searchParams?: Promise<SearchParams>;
-}) {
+export default async function PaymentReturnPage({ searchParams }: PaymentReturnPageProps) {
   const params = (await searchParams) ?? {};
   const paymentRef = firstValue(params.payment_ref) || "";
   const bdSlug = firstValue(params.bd) || "";
