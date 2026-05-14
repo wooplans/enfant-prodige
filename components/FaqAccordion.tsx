@@ -5,7 +5,7 @@ import { useState } from "react";
 const faqs = [
   {
     q: "Comment fonctionne la personnalisation ?",
-    a: "Après avoir rempli le prénom de votre enfant et le lieu de livraison, vous êtes redirigé vers le paiement sécurisé. Notre équipe insère ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 24h.",
+    a: "Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom de votre enfant et le lieu de livraison. Nous insérons ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 48h.",
   },
   {
     q: "Quand est-ce que je paye ?",
@@ -25,8 +25,15 @@ const faqs = [
   },
 ];
 
-export default function FaqAccordion() {
+interface Props {
+  deliveryDateLabel?: string;
+}
+
+export default function FaqAccordion({ deliveryDateLabel }: Props) {
   const [ouvert, setOuvert] = useState<number | null>(null);
+  const deliveryAnswer = deliveryDateLabel
+    ? `En payant maintenant, on vous livre ${deliveryDateLabel}. Vous recevez ensuite votre BD personnalisée sous 48h à Yaoundé et Douala.`
+    : "Une fois votre paiement Mobile Money confirmé, nous personnalisons et imprimons votre BD, puis la livrons sous 48h à Yaoundé et Douala.";
 
   return (
     <div className="divide-y divide-amber-200 border-y border-amber-200">
@@ -47,7 +54,9 @@ export default function FaqAccordion() {
           </button>
           {ouvert === i && (
             <div className="pb-5">
-              <p className="max-w-3xl text-sm leading-7 text-gray-700">{faq.a}</p>
+              <p className="max-w-3xl text-sm leading-7 text-gray-700">
+                {faq.q === "Quel est le délai de livraison ?" ? deliveryAnswer : faq.a}
+              </p>
             </div>
           )}
         </div>

@@ -14,6 +14,7 @@ interface Props {
   bd: BD;
   landingPageMode?: boolean;
   paymentSettings: PaymentSettings;
+  deliveryDateLabel: string;
 }
 
 type HeroSlide = {
@@ -57,7 +58,7 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
   ],
 };
 
-export default function BDDetailClient({ bd, landingPageMode = false, paymentSettings }: Props) {
+export default function BDDetailClient({ bd, landingPageMode = false, paymentSettings, deliveryDateLabel }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -283,12 +284,12 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               {
                 step: "2",
                 titre: "Payer en ligne",
-                texte: "Payez 9 900 FCFA par Mobile Money (Orange ou MTN) après confirmation.",
+                texte: "Payez 9 900 FCFA par Mobile Money (Orange ou MTN) en ligne.",
               },
               {
                 step: "3",
-                titre: "Recevez votre BD sous 24h",
-                texte: "Nous personnalisons et livrons votre BD. Vous payez 1 000 FCFA au livreur à la réception.",
+                titre: "Confirmation WhatsApp",
+                texte: "Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom et le lieu de livraison.",
               },
             ].map(({ step, titre, texte }) => (
               <li key={step} className="relative border-t border-amber-200 pt-5">
@@ -307,7 +308,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
             {[
               {
                 titre: "Livraison 48h",
-                texte: "Votre BD est préparée rapidement et livrée sous 48h après confirmation.",
+                texte: `En payant maintenant, on vous livre ${deliveryDateLabel}.`,
               },
               {
                 titre: "Garantie de 7 jours",
@@ -377,7 +378,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         )}
 
         <FullWidthSection title="Questions fréquentes" tone="warm">
-          <FaqAccordion />
+          <FaqAccordion deliveryDateLabel={deliveryDateLabel} />
         </FullWidthSection>
 
         <FullWidthSection

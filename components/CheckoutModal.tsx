@@ -306,7 +306,9 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                 <h2 className="text-lg font-extrabold text-gray-900">
                   {activeProvider === "chariow" ? "Paiement Chariow" : "Paiement Monetbil"}
                 </h2>
-                <p className="mt-0.5 text-sm text-gray-600">Vérifiez les informations puis poursuivez vers le paiement sécurisé.</p>
+                <p className="mt-0.5 text-sm text-gray-600">
+                  Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom et le lieu de livraison.
+                </p>
               </div>
 
               <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-gray-50">

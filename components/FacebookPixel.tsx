@@ -7,7 +7,7 @@ import Script from "next/script";
 export const FB_PIXEL_ID = "833064112599949";
 
 type FbqCommand = "track" | "trackCustom" | "init";
-type FacebookEventName = "PageView" | "ViewContent" | "InitiateCheckout" | "Lead" | "Contact";
+type FacebookEventName = "PageView" | "ViewContent" | "InitiateCheckout" | "Lead" | "Contact" | "Purchase";
 
 type FbqFunction = (
   command: FbqCommand,

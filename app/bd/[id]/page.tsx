@@ -4,6 +4,7 @@ import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getPaymentSettings } from "@/lib/payment-settings";
+import { getDeliveryDateLabel } from "@/lib/delivery";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -55,7 +56,15 @@ export default async function PageBD({ params }: Props) {
 
   await getPublicCatalogue();
   const paymentSettings = await getPaymentSettings();
-  const page = <BDDetailClient bd={bd} landingPageMode={bd.landingPageMode} paymentSettings={paymentSettings} />;
+  const deliveryDateLabel = getDeliveryDateLabel(new Date(), 48);
+  const page = (
+    <BDDetailClient
+      bd={bd}
+      landingPageMode={bd.landingPageMode}
+      paymentSettings={paymentSettings}
+      deliveryDateLabel={deliveryDateLabel}
+    />
+  );
 
   if (bd.landingPageMode) return page;
 
