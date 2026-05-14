@@ -8,14 +8,14 @@ export const localCatalogue: BD[] = [
     titre: "Académie des Génies",
     genre: "Science · Entrepreneuriat · Ambition",
     description:
-      "Votre enfant rejoint l'Académie des Génies pour résoudre une grande énigme scientifique qui menace toute l'Afrique. Son prénom apparaît sur la couverture et dans les dialogues.",
+      "Votre garçon rejoint l'Académie des Génies pour résoudre une grande énigme scientifique qui menace toute l'Afrique. Son prénom apparaît sur la couverture et dans les dialogues.",
     descriptionLongue:
-      "Dans cette aventure sur mesure, votre enfant est recruté par l'Académie des Génies — une école secrète pour les jeunes esprits les plus brillants d'Afrique. Armé de sa curiosité et de son intelligence, il doit déchiffrer un mystère scientifique qui menace tout le continent. Son prénom apparaît sur la couverture, dans les bulles de dialogue et au cœur de l'histoire. 32 pages illustrées pleine couleur, format A4, style sketch vibrant.",
+      "Dans cette aventure sur mesure, votre garçon est recruté par l'Académie des Génies — une école secrète pour les jeunes esprits les plus brillants d'Afrique. Armé de sa curiosité et de son intelligence, il doit déchiffrer un mystère scientifique qui menace tout le continent. Son prénom apparaît sur la couverture, dans les bulles de dialogue et au cœur de l'histoire. 32 pages illustrées pleine couleur, format A4, style sketch vibrant.",
     pourQui: [
-      "Votre enfant est curieux, aime les sciences et les expériences",
+      "Votre garçon est curieux, aime les sciences et les expériences",
       "Vous voulez l'encourager à croire en ses capacités",
       "Vous cherchez un cadeau unique, mémorable et personnalisé",
-      "Vous voulez un livre où votre enfant se voit comme un héros",
+      "Vous voulez un livre où votre garçon se voit comme un héros",
     ],
     prix: 9900,
     fraisLivraison: 1000,
@@ -57,7 +57,7 @@ export const localCatalogue: BD[] = [
         nom: "Aminata F.",
         note: 4,
         commentaire:
-          "Cadeau d'anniversaire pour ma fille de 7 ans. Elle a adoré ! Le paiement Mobile Money était simple et rapide. Je recommande.",
+          "Cadeau d'anniversaire pour mon fils de 7 ans. Il a adoré ! Le paiement Mobile Money était simple et rapide. Je recommande.",
         ville: "Yaoundé",
         date: "il y a 2 semaines",
         avatar: "A",

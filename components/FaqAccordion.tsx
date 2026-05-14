@@ -5,7 +5,7 @@ import { useState } from "react";
 const faqs = [
   {
     q: "Comment fonctionne la personnalisation ?",
-    a: "Après avoir rempli le prénom de votre enfant (et son sexe), vous êtes redirigé vers Monetbil pour payer en toute sécurité. Notre équipe insère ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 24h.",
+    a: "Après avoir rempli le prénom de votre enfant et le lieu de livraison, vous êtes redirigé vers le paiement sécurisé. Notre équipe insère ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 24h.",
   },
   {
     q: "Quand est-ce que je paye ?",

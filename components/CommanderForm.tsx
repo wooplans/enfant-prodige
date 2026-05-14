@@ -23,6 +23,8 @@ export default function CommanderForm({ prix, fraisLivraison, onCommander }: Pro
       </p>
 
       <button
+        type="button"
+        onPointerDown={onCommander}
         onClick={onCommander}
         className="w-full bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-bold text-lg py-4 rounded-2xl flex items-center justify-center gap-3 transition-colors shadow-lg"
       >

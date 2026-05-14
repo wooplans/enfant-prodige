@@ -11,7 +11,6 @@ export const dynamic = "force-dynamic";
 const startCheckoutSchema = z.object({
   bdSlug: z.string().min(1),
   prenom: z.string().min(2),
-  sexe: z.enum(["Garçon", "Fille"]),
   quartier: z.string().min(2),
   rue: z.string().optional().default(""),
 });
@@ -50,7 +49,7 @@ export async function POST(request: Request) {
       amount: series.prix,
       slug: series.slug,
       prenom: parsed.data.prenom,
-      sexe: parsed.data.sexe,
+      sexe: null,
       quartier: parsed.data.quartier,
       rue: parsed.data.rue,
     });
@@ -63,7 +62,7 @@ export async function POST(request: Request) {
         series_slug: series.slug,
         series_title: series.serie,
         child_name: parsed.data.prenom,
-        child_gender: parsed.data.sexe,
+        child_gender: null,
         delivery_quartier: parsed.data.quartier,
         delivery_rue: parsed.data.rue || null,
         amount: series.prix,
@@ -112,7 +111,7 @@ export async function POST(request: Request) {
       series_slug: series.slug,
       series_title: series.serie,
       child_name: parsed.data.prenom,
-      child_gender: parsed.data.sexe,
+      child_gender: null,
       delivery_quartier: parsed.data.quartier,
       delivery_rue: parsed.data.rue || null,
       amount: series.prix,

@@ -51,10 +51,6 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
       label: "William",
     },
     {
-      src: "/covers/hero-personalized/academie-genies-christelle.webp",
-      label: "Christelle",
-    },
-    {
       src: "/covers/hero-personalized/academie-genies-paul.webp",
       label: "Paul",
     },
@@ -126,12 +122,24 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
   const synopsisTexte =
     bd.id === "apprentis-explorateurs"
       ? "Votre enfant est invité à rejoindre l'équipe des Apprentis Explorateurs pour une expédition à travers les plus beaux paysages d'Afrique : la savane du Cameroun, les chutes de la Lobé, le lac Tchad et bien plus encore. Guidé par ses compagnons, il découvre la géographie, les animaux et les cultures de son continent."
-      : bd.descriptionLongue;
-  const heroTitle = bd.id === "academie-genies" ? "Votre enfant à l'Académie des Génies" : bd.serie;
+      : bd.id === "academie-genies"
+        ? "Votre garçon est invité à rejoindre l'Académie des Génies pour résoudre une grande énigme scientifique qui menace toute l'Afrique. Son prénom apparaît sur la couverture et dans les dialogues."
+        : bd.descriptionLongue;
+  const heroTitle = bd.id === "academie-genies" ? "Votre garçon à l'Académie des Génies" : bd.serie;
   const heroSubtitle =
     bd.id === "academie-genies"
-      ? "Une bande dessinée 100% personnalisée avec le prénom de votre enfant. Imprimée en couleur, livrée chez vous."
+      ? "Une bande dessinée 100% personnalisée avec le prénom de votre garçon. Imprimée en couleur, livrée chez vous."
       : bd.description;
+  const primaryCtaText = bd.id === "academie-genies" ? "Personnaliser pour mon garçon" : "Personnaliser pour mon enfant";
+  const academieGeniesReasons =
+    bd.id === "academie-genies"
+      ? [
+          "Votre garçon est curieux, aime les sciences et les expériences",
+          "Vous voulez l'encourager à croire en ses capacités",
+          "Vous cherchez un cadeau unique, mémorable et personnalisé",
+          "Vous voulez un livre où votre garçon se voit comme un héros",
+        ]
+      : bd.pourQui;
   const fomoRemaining = bd.id === "academie-genies" ? 13 : null;
   const fomoSold = bd.id === "academie-genies" ? 483 : null;
   const fomoTotal = fomoRemaining !== null && fomoSold !== null ? fomoRemaining + fomoSold : null;
@@ -270,7 +278,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               {
                 step: "1",
                 titre: "Entrez le prénom de l'enfant",
-                texte: "Cliquez sur « Personnaliser pour mon enfant » et renseignez le prénom et le sexe de l'enfant. Il apparaîtra sur la couverture.",
+                texte: "Cliquez sur « Personnaliser pour mon garçon » et renseignez le prénom du garçon. Il apparaîtra sur la couverture.",
               },
               {
                 step: "2",
@@ -303,7 +311,10 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               },
               {
                 titre: "Garantie de 7 jours",
-                texte: "Si la BD ne fait pas sourire votre enfant, nous vous remboursons intégralement.",
+                texte:
+                  bd.id === "academie-genies"
+                    ? "Si la BD ne fait pas sourire votre garçon, nous vous remboursons intégralement."
+                    : "Si la BD ne fait pas sourire votre enfant, nous vous remboursons intégralement.",
               },
               {
                 titre: "Histoire éducative",
@@ -369,21 +380,28 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
           <FaqAccordion />
         </FullWidthSection>
 
-        <FullWidthSection title="C'est à vous de réveillez l'imagination de votre enfant." tone="dark">
+        <FullWidthSection
+          title={bd.id === "academie-genies" ? "C'est à vous de réveillez l'imagination de votre garçon." : "C'est à vous de réveillez l'imagination de votre enfant."}
+          tone="dark"
+        >
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-base leading-7 text-green-100">Faites de votre enfant le héros de sa propre histoire !</p>
+            <p className="text-base leading-7 text-green-100">
+              {bd.id === "academie-genies"
+                ? "Faites de votre garçon le héros de sa propre histoire !"
+                : "Faites de votre enfant le héros de sa propre histoire !"}
+            </p>
             <button
               onClick={() => setModalOuvert(true)}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
             >
-              Personnaliser pour mon enfant <span aria-hidden="true">→</span>
+              {primaryCtaText} <span aria-hidden="true">→</span>
             </button>
           </div>
         </FullWidthSection>
 
         <FullWidthSection title="Cette BD vous plaira si…" tone="green">
           <ul className="grid gap-x-10 gap-y-4 md:grid-cols-2">
-            {bd.pourQui.map((item) => (
+            {academieGeniesReasons.map((item) => (
               <li key={item} className="flex items-start gap-3 border-t border-green-200 pt-4 text-sm leading-7 text-gray-700">
                 <span className="mt-0.5 shrink-0 font-bold text-green-700">✓</span>
                 <span>{item}</span>
@@ -437,16 +455,22 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               </div>
             )}
             <button
+              type="button"
+              onPointerDown={() => setModalOuvert(true)}
               onClick={() => setModalOuvert(true)}
               className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
             >
-              Personnaliser pour mon enfant <span aria-hidden="true">→</span>
+              {primaryCtaText} <span aria-hidden="true">→</span>
             </button>
           </div>
         </FullWidthSection>
       </main>
 
-      <StickyCommanderBar onCommander={() => setModalOuvert(true)} shakeStartId="avis-parents" />
+      <StickyCommanderBar
+        onCommander={() => setModalOuvert(true)}
+        shakeStartId="avis-parents"
+        label={primaryCtaText}
+      />
       {modalOuvert && <CheckoutModal bd={bd} paymentSettings={paymentSettings} onClose={() => setModalOuvert(false)} />}
     </>
   );

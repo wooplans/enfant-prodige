@@ -6,7 +6,7 @@ import { z } from "zod";
 export const monetbilCheckoutSchema = z.object({
   bdSlug: z.string().min(1),
   prenom: z.string().min(2),
-  sexe: z.enum(["Garçon", "Fille"]),
+  sexe: z.enum(["Garçon", "Fille"]).optional(),
   quartier: z.string().min(2),
   rue: z.string().optional().default(""),
 });
@@ -66,11 +66,12 @@ export function getMonetbilConfig() {
 }
 
 export function buildMonetbilPaymentRef(slug: string) {
-  const safeSlug = slug
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 24) || "bd";
+  const safeSlug =
+    slug
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 24) || "bd";
 
   return `EP-${safeSlug}-${Date.now().toString(36)}-${crypto.randomUUID().slice(0, 8)}`.toUpperCase();
 }
@@ -109,23 +110,14 @@ export function normalizeMonetbilStatus(value: string | undefined | null): Monet
 }
 
 export function extractMonetbilPaymentRef(payload: Record<string, unknown>, fallback?: string | null) {
-  const candidate =
-    payload.payment_ref ??
-    payload.paymentRef ??
-    payload.reference ??
-    fallback ??
-    null;
+  const candidate = payload.payment_ref ?? payload.paymentRef ?? payload.reference ?? fallback ?? null;
 
   return typeof candidate === "string" && candidate.trim().length > 0 ? candidate.trim() : null;
 }
 
 export function extractMonetbilTransactionRef(payload: Record<string, unknown>) {
   const candidate =
-    payload.transaction_ref ??
-    payload.transactionRef ??
-    payload.transaction_id ??
-    payload.transactionId ??
-    null;
+    payload.transaction_ref ?? payload.transactionRef ?? payload.transaction_id ?? payload.transactionId ?? null;
 
   return typeof candidate === "string" && candidate.trim().length > 0 ? candidate.trim() : null;
 }
@@ -136,7 +128,7 @@ export async function createMonetbilPaymentLink(options: {
   amount: number;
   slug: string;
   prenom: string;
-  sexe: "Garçon" | "Fille";
+  sexe?: "Garçon" | "Fille" | null;
   quartier: string;
   rue?: string;
 }) {

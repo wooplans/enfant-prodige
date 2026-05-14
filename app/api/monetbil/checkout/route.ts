@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   const amount = Number(series.prix);
   const requestUrl = request.url;
   const metadata = {
-    childGender: parsed.data.sexe,
+    childGender: parsed.data.sexe ?? null,
     deliveryQuartier: parsed.data.quartier,
     deliveryRue: parsed.data.rue,
   };
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     series_slug: series.slug,
     series_title: series.serie || series.titre,
     child_name: parsed.data.prenom,
-    child_gender: parsed.data.sexe,
+    child_gender: parsed.data.sexe ?? null,
     delivery_quartier: parsed.data.quartier,
     delivery_rue: parsed.data.rue || null,
     amount,
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
       amount,
       slug: series.slug,
       prenom: parsed.data.prenom,
-      sexe: parsed.data.sexe,
+      sexe: parsed.data.sexe ?? null,
       quartier: parsed.data.quartier,
       rue: parsed.data.rue,
     });
