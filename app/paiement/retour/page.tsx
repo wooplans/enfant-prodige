@@ -1,4 +1,3 @@
-import Link from "next/link";
 import SiteChrome from "@/components/SiteChrome";
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
@@ -148,28 +147,14 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {displayOrder.series_slug ? (
-              <Link
-                href={`/bd/${displayOrder.series_slug}`}
-                className="inline-flex items-center justify-center rounded-xl bg-green-700 px-5 py-3 font-bold text-white transition-colors hover:bg-green-600"
-              >
-                Revenir à la BD
-              </Link>
-            ) : null}
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center justify-center rounded-xl bg-green-600 px-5 py-3 font-bold text-white transition-colors hover:bg-green-500"
             >
-              Envoyer la commande sur WhatsApp
+              Contacter sur WhatsApp
             </a>
-            <Link
-              href="/catalogue"
-              className="inline-flex items-center justify-center rounded-xl border border-gray-200 px-5 py-3 font-bold text-gray-900 transition-colors hover:bg-gray-50"
-            >
-              Voir le catalogue
-            </Link>
           </div>
         </section>
       </main>
