@@ -54,6 +54,8 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
   const [emailTouched, setEmailTouched] = useState(false);
   const [telephoneTouched, setTelephoneTouched] = useState(false);
   const [quartierTouched, setQuartierTouched] = useState(false);
+  const [promoOpen, setPromoOpen] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [checkoutInfo, setCheckoutInfo] = useState<CheckoutStartResponse | null>(null);
@@ -73,7 +75,8 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
 
   const prenomValide = data.prenom.trim().length >= 2;
   const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
-  const telephoneValide = data.telephone.replace(/\D+/g, "").length >= 8;
+  const telephoneDigits = data.telephone.replace(/\D+/g, "");
+  const telephoneValide = telephoneDigits.length === 9;
   const lieuLivraisonValide = data.quartier.trim().length >= 2;
   const detailsValides =
     prenomValide &&
@@ -154,6 +157,7 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
           telephone: data.telephone.trim(),
           quartier: data.quartier.trim(),
           rue: data.rue.trim(),
+          promoCode: promoCode.trim(),
         }),
       });
 
@@ -221,14 +225,6 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
           {step === "details" && (
             <div className="space-y-5">
               <div>
-                <div className="mb-1 text-2xl">👶</div>
-                <h2 className="text-lg font-extrabold text-gray-900">Personnaliser la BD</h2>
-                <p className="mt-0.5 text-sm text-gray-600">
-                  Entrez le prénom de l’enfant et le lieu de livraison, puis passez au paiement.
-                </p>
-              </div>
-
-              <div>
                 <label className="mb-1.5 block text-sm font-semibold text-gray-700">
                   Prénom de l’enfant <span className="text-red-500">*</span>
                 </label>
@@ -247,7 +243,7 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                 {prenomTouched && !prenomValide && (
                   <p className="mt-1 text-sm text-red-600">Veuillez entrer au moins 2 caractères.</p>
                 )}
-                <p className="mt-1 text-sm font-medium text-green-700">Le prénom sera intégré dans la BD personnalisée.</p>
+                <p className="mt-1 text-sm font-medium text-green-700">Le prénom sera intégré dans la bande dessinée.</p>
               </div>
 
               {activeProvider === "chariow" ? (
@@ -274,21 +270,31 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
 
                   <div>
                     <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                      Numero Mobile Money <span className="text-red-500">*</span>
+                      Numéro <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="tel"
                       value={data.telephone}
-                      onChange={(event) => setData({ ...data, telephone: event.target.value })}
+                      onChange={(event) => {
+                        const telephone = event.target.value.replace(/\D+/g, "");
+                        setData({ ...data, telephone });
+                        if (!telephoneTouched && telephone.length > 0) {
+                          setTelephoneTouched(true);
+                        }
+                      }}
                       onBlur={() => setTelephoneTouched(true)}
                       placeholder="Ex : 6 99 00 11 22"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={9}
+                      autoComplete="tel"
                       autoCapitalize="off"
                       className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
                         telephoneTouched && !telephoneValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
                       }`}
                     />
                     {telephoneTouched && !telephoneValide && (
-                      <p className="mt-1 text-sm text-red-600">Veuillez entrer un numero valide.</p>
+                      <p className="mt-1 text-sm text-red-600">Veuillez entrer un numero de 9 chiffres.</p>
                     )}
                   </div>
                 </>
@@ -313,22 +319,32 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                 )}
               </div>
 
-              <div>
-                <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                  Précision de livraison <span className="font-normal text-gray-600">(optionnel)</span>
-                </label>
-                <input
-                  type="text"
-                  value={data.rue}
-                  onChange={(event) => setData({ ...data, rue: event.target.value })}
-                  placeholder="Ex : Rue des Manguiers, près de la pharmacie..."
-                  className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-
               {errorMessage && (
                 <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{errorMessage}</div>
               )}
+
+              <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3">
+                <button
+                  type="button"
+                  onClick={() => setPromoOpen((value) => !value)}
+                  className="flex w-full items-center justify-between text-left"
+                >
+                  <span className="text-sm font-semibold text-gray-800">Code promo</span>
+                  <span className="text-sm font-semibold text-green-700">{promoOpen ? "Masquer" : "Ajouter"}</span>
+                </button>
+                {promoOpen && (
+                  <div className="mt-3">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(event) => setPromoCode(event.target.value)}
+                      placeholder="Entrez votre code promo"
+                      autoCapitalize="characters"
+                      className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
+                    />
+                  </div>
+                )}
+              </div>
 
               <button
                 type="button"
@@ -342,6 +358,9 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
               >
                 {isSubmitting ? "Préparation du paiement..." : "Payer par Mobile Money"}
               </button>
+              <p className="text-center text-xs leading-5 text-gray-500">
+                Vous allez utiliser votre numéro Mobile Money dans la suite.
+              </p>
             </div>
           )}
 

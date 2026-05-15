@@ -17,6 +17,7 @@ const startCheckoutSchema = z.object({
   telephone: z.string().optional().default(""),
   quartier: z.string().min(2),
   rue: z.string().optional().default(""),
+  promoCode: z.string().optional().default(""),
 });
 
 export async function POST(request: Request) {
@@ -96,6 +97,7 @@ export async function POST(request: Request) {
         metadata: {
           provider: "monetbil",
           source: "checkout-start",
+          promoCode: parsed.data.promoCode.trim() || null,
         },
         created_at: now,
         updated_at: now,
@@ -151,10 +153,12 @@ export async function POST(request: Request) {
         productUrl: settings.chariowProductUrl,
         email: parsed.data.email.trim().toLowerCase(),
         telephone: parsed.data.telephone.trim(),
+        promoCode: parsed.data.promoCode.trim(),
       },
       metadata: {
         provider: "chariow",
         source: "checkout-start",
+        promoCode: parsed.data.promoCode.trim() || null,
       },
       created_at: now,
       updated_at: now,
