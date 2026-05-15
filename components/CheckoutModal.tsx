@@ -18,6 +18,8 @@ type Step = "details" | "payment";
 const INITIAL_DATA: CommandeData = {
   prenom: "",
   sexe: null,
+  email: "",
+  telephone: "",
   quartier: "",
   rue: "",
 };
@@ -30,6 +32,7 @@ type CheckoutStartResponse =
       checkout_url: string;
       product_code: string;
       snap_snippet: string;
+      redirect_mode?: "hosted" | "widget";
     }
   | {
       ok: true;
@@ -48,6 +51,8 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
   const [step, setStep] = useState<Step>("details");
   const [data, setData] = useState<CommandeData>(INITIAL_DATA);
   const [prenomTouched, setPrenomTouched] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [telephoneTouched, setTelephoneTouched] = useState(false);
   const [quartierTouched, setQuartierTouched] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -63,15 +68,20 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
     });
   }, [bd.id, bd.prix, bd.serie]);
 
+  const activeProvider: PaymentProvider =
+    paymentSettings.defaultProvider === "monetbil" && paymentSettings.monetbilEnabled ? "monetbil" : "chariow";
+
   const prenomValide = data.prenom.trim().length >= 2;
+  const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
+  const telephoneValide = data.telephone.replace(/\D+/g, "").length >= 8;
   const lieuLivraisonValide = data.quartier.trim().length >= 2;
-  const detailsValides = prenomValide && lieuLivraisonValide;
+  const detailsValides =
+    prenomValide &&
+    lieuLivraisonValide &&
+    (activeProvider !== "chariow" || (emailValide && telephoneValide));
   const adresseComplete = useMemo(() => {
     return data.rue.trim().length > 0 ? `${data.quartier}, ${data.rue}` : data.quartier;
   }, [data.quartier, data.rue]);
-
-  const activeProvider: PaymentProvider =
-    paymentSettings.defaultProvider === "monetbil" && paymentSettings.monetbilEnabled ? "monetbil" : "chariow";
 
   const closeCheckout = useCallback(() => {
     trackAnalyticsEvent({
@@ -102,6 +112,8 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
 
   const startCheckout = async () => {
     setPrenomTouched(true);
+    setEmailTouched(true);
+    setTelephoneTouched(true);
     setQuartierTouched(true);
 
     if (!detailsValides || isSubmitting) return;
@@ -138,6 +150,8 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
         body: JSON.stringify({
           bdSlug: bd.slug || bd.id,
           prenom: data.prenom.trim(),
+          email: data.email.trim(),
+          telephone: data.telephone.trim(),
           quartier: data.quartier.trim(),
           rue: data.rue.trim(),
         }),
@@ -152,6 +166,8 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
 
       if (payload.provider === "monetbil") {
         window.location.assign(payload.payment_url);
+      } else if (payload.redirect_mode === "hosted") {
+        window.location.assign(payload.checkout_url);
       } else {
         setIsSubmitting(false);
       }
@@ -233,6 +249,50 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                 )}
                 <p className="mt-1 text-sm font-medium text-green-700">Le prénom sera intégré dans la BD personnalisée.</p>
               </div>
+
+              {activeProvider === "chariow" ? (
+                <>
+                  <div>
+                    <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={data.email}
+                      onChange={(event) => setData({ ...data, email: event.target.value })}
+                      onBlur={() => setEmailTouched(true)}
+                      placeholder="Ex : parent@email.com"
+                      autoCapitalize="off"
+                      className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        emailTouched && !emailValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
+                      }`}
+                    />
+                    {emailTouched && !emailValide && (
+                      <p className="mt-1 text-sm text-red-600">Veuillez entrer un email valide.</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+                      Numero Mobile Money <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      value={data.telephone}
+                      onChange={(event) => setData({ ...data, telephone: event.target.value })}
+                      onBlur={() => setTelephoneTouched(true)}
+                      placeholder="Ex : 6 99 00 11 22"
+                      autoCapitalize="off"
+                      className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                        telephoneTouched && !telephoneValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
+                      }`}
+                    />
+                    {telephoneTouched && !telephoneValide && (
+                      <p className="mt-1 text-sm text-red-600">Veuillez entrer un numero valide.</p>
+                    )}
+                  </div>
+                </>
+              ) : null}
 
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-gray-700">

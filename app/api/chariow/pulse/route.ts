@@ -44,6 +44,10 @@ function asText(value: unknown) {
   return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 }
 
+function asRecord(value: unknown) {
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as Record<string, unknown>) : null;
+}
+
 export async function POST(request: Request) {
   let payload: Record<string, unknown>;
 
@@ -56,22 +60,38 @@ export async function POST(request: Request) {
   const canPersist = hasSupabaseAdminConfig();
   const supabase = canPersist ? getSupabaseAdmin() : null;
   const paymentSettings = await getPaymentSettings();
+  const purchase = asRecord(payload.purchase);
+  const payment = asRecord(payload.payment);
+  const customMetadata = asRecord(payload.custom_metadata) ?? asRecord(purchase?.custom_metadata);
   const status = normalizeChariowStatus(
-    asText(payload.event) || asText(payload.status) || asText(payload.state) || asText(payload.sale_status)
+    asText(payload.event) ||
+      asText(payload.status) ||
+      asText(payload.state) ||
+      asText(payload.sale_status) ||
+      asText(purchase?.status) ||
+      asText(payment?.status)
   );
   const productCode =
     asText(payload.product_code) ||
     asText(payload.productCode) ||
     asText(payload.product_ref) ||
     asText(payload.productRef) ||
+    asText(purchase?.product_id) ||
+    asText(purchase?.product_code) ||
     paymentSettings.chariowProductCode;
   const externalReference =
     asText(payload.order_ref) ||
     asText(payload.orderRef) ||
     asText(payload.reference) ||
     asText(payload.transaction_id) ||
-    asText(payload.transactionId);
-  const paymentRef = asText(payload.payment_ref) || asText(payload.paymentRef);
+    asText(payload.transactionId) ||
+    asText(purchase?.id) ||
+    asText(payment?.transaction_id);
+  const paymentRef =
+    asText(payload.payment_ref) ||
+    asText(payload.paymentRef) ||
+    asText(customMetadata?.payment_ref) ||
+    asText(customMetadata?.paymentRef);
   const now = new Date().toISOString();
 
   if (!supabase) {

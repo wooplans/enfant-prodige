@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { createChariowCheckout, hasChariowApiKey } from "@/lib/chariow";
 import { getPublicSeriesBySlug } from "@/lib/series";
 import { createMonetbilPaymentLink, buildMonetbilPaymentRef } from "@/lib/monetbil";
 import { getPaymentSettings, resolveActivePaymentProvider } from "@/lib/payment-settings";
@@ -12,6 +13,8 @@ export const dynamic = "force-dynamic";
 const startCheckoutSchema = z.object({
   bdSlug: z.string().min(1),
   prenom: z.string().min(2),
+  email: z.string().email().optional().or(z.literal("")).default(""),
+  telephone: z.string().optional().default(""),
   quartier: z.string().min(2),
   rue: z.string().optional().default(""),
 });
@@ -37,6 +40,18 @@ export async function POST(request: Request) {
 
   const settings = await getPaymentSettings();
   const provider = resolveActivePaymentProvider(settings);
+  if (provider === "chariow") {
+    const email = parsed.data.email.trim();
+    const phoneDigits = parsed.data.telephone.replace(/\D+/g, "");
+
+    if (!email || phoneDigits.length < 8) {
+      return NextResponse.json(
+        { ok: false, message: "Email et numero Mobile Money requis pour le paiement Chariow." },
+        { status: 400 }
+      );
+    }
+  }
+
   const paymentRef = buildMonetbilPaymentRef(series.slug);
   const requestUrl = request.url;
   const canPersist = hasSupabaseAdminConfig();
@@ -109,6 +124,9 @@ export async function POST(request: Request) {
   }
 
   if (supabase) {
+    const returnUrl = hasChariowApiKey()
+      ? `${new URL(requestUrl).origin.replace(/\/$/, "")}/paiement/retour?bd=${encodeURIComponent(series.slug)}&payment_ref=${encodeURIComponent(paymentRef)}`
+      : null;
     const { error } = await supabase.from("payment_orders").insert({
       payment_ref: paymentRef,
       provider: "chariow",
@@ -126,10 +144,13 @@ export async function POST(request: Request) {
       provider_product_code: settings.chariowProductCode,
       status: "pending",
       checkout_url: settings.chariowProductUrl,
+      return_url: returnUrl,
       provider_payload: {
         snapSnippet: Boolean(settings.chariowSnapSnippet),
         productCode: settings.chariowProductCode,
         productUrl: settings.chariowProductUrl,
+        email: parsed.data.email.trim().toLowerCase(),
+        telephone: parsed.data.telephone.trim(),
       },
       metadata: {
         provider: "chariow",
@@ -148,6 +169,58 @@ export async function POST(request: Request) {
     }
   }
 
+  if (hasChariowApiKey()) {
+    try {
+      const checkout = await createChariowCheckout({
+        requestUrl,
+        productId: settings.chariowProductCode,
+        paymentRef,
+        slug: series.slug,
+        prenom: parsed.data.prenom,
+        email: parsed.data.email,
+        telephone: parsed.data.telephone,
+        quartier: parsed.data.quartier,
+        rue: parsed.data.rue,
+      });
+
+      if (supabase) {
+        const { error } = await supabase
+          .from("payment_orders")
+          .update({
+            provider_order_ref: checkout.saleId,
+            checkout_url: checkout.checkoutUrl,
+            return_url: checkout.redirectUrl,
+            provider_payload: checkout.requestPayload,
+            notification_payload: checkout.raw,
+            updated_at: now,
+          })
+          .eq("payment_ref", paymentRef);
+
+        if (error && !isMissingTableError(error, "payment_orders")) {
+          return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+        }
+      }
+
+      return NextResponse.json({
+        ok: true,
+        provider: "chariow",
+        payment_ref: paymentRef,
+        checkout_url: checkout.checkoutUrl,
+        product_code: settings.chariowProductCode,
+        snap_snippet: "",
+        redirect_mode: "hosted",
+      });
+    } catch (error) {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: error instanceof Error ? error.message : "Impossible de préparer le paiement Chariow.",
+        },
+        { status: 502 }
+      );
+    }
+  }
+
   return NextResponse.json({
     ok: true,
     provider: "chariow",
@@ -155,6 +228,7 @@ export async function POST(request: Request) {
     checkout_url: settings.chariowProductUrl,
     product_code: settings.chariowProductCode,
     snap_snippet: settings.chariowSnapSnippet,
+    redirect_mode: "widget",
     amount: series.prix,
     currency: "XAF",
   });
