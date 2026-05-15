@@ -23,6 +23,7 @@ export async function createChariowCheckout(options: {
   telephone: string;
   quartier: string;
   rue?: string;
+  discountCode?: string;
 }) {
   const apiKey = process.env.CHARIOW_API_KEY?.trim();
   if (!apiKey) {
@@ -45,6 +46,7 @@ export async function createChariowCheckout(options: {
       country_code: "CM",
     },
     redirect_url: redirectUrl,
+    ...(options.discountCode?.trim() ? { discount_code: options.discountCode.trim() } : {}),
     custom_metadata: {
       payment_ref: options.paymentRef,
       series_slug: options.slug,

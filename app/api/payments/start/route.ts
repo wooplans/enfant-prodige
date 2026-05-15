@@ -185,6 +185,7 @@ export async function POST(request: Request) {
         telephone: parsed.data.telephone,
         quartier: parsed.data.quartier,
         rue: parsed.data.rue,
+        discountCode: parsed.data.promoCode.trim(),
       });
 
       if (supabase) {
