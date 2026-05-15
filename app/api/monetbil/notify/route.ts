@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { isMissingTableError } from "@/lib/supabase-errors";
 import {
   buildMonetbilToken,
   extractMonetbilPaymentRef,
@@ -77,6 +78,11 @@ export async function POST(request: Request) {
     .maybeSingle();
 
   if (fetchError) {
+    if (isMissingTableError(fetchError, "payment_orders")) {
+      console.warn("payment_orders table missing during Monetbil notification fetch", fetchError.message);
+      return NextResponse.json({ ok: true, status: "pending", payment_ref: paymentRef, persisted: false });
+    }
+
     return NextResponse.json(
       { ok: false, message: `Commande introuvable: ${fetchError.message}` },
       { status: 500 }
@@ -127,6 +133,11 @@ export async function POST(request: Request) {
     .eq("payment_ref", paymentRef);
 
   if (updateError) {
+    if (isMissingTableError(updateError, "payment_orders")) {
+      console.warn("payment_orders table missing during Monetbil notification update", updateError.message);
+      return NextResponse.json({ ok: true, status, payment_ref: paymentRef, persisted: false });
+    }
+
     return NextResponse.json(
       { ok: false, message: `Mise à jour impossible: ${updateError.message}` },
       { status: 500 }

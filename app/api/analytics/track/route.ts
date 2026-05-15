@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { analyticsEventTypes } from "@/lib/analytics";
+import { isMissingTableError } from "@/lib/supabase-errors";
 import { getSupabaseAdmin, hasSupabaseAdminConfig } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -182,6 +183,14 @@ export async function POST(request: Request) {
   );
 
   if (sessionInsert.error) {
+    if (
+      isMissingTableError(sessionInsert.error, "analytics_sessions") ||
+      isMissingTableError(sessionInsert.error, "analytics_events")
+    ) {
+      console.warn("Analytics tables missing during session upsert", sessionInsert.error.message);
+      return NextResponse.json({ ok: true, persisted: false });
+    }
+
     return NextResponse.json({ ok: false, message: sessionInsert.error.message }, { status: 500 });
   }
 
@@ -191,6 +200,11 @@ export async function POST(request: Request) {
     .eq("session_id", parsed.data.sessionId);
 
   if (sessionUpdate.error) {
+    if (isMissingTableError(sessionUpdate.error, "analytics_sessions")) {
+      console.warn("analytics_sessions table missing during session update", sessionUpdate.error.message);
+      return NextResponse.json({ ok: true, persisted: false });
+    }
+
     return NextResponse.json({ ok: false, message: sessionUpdate.error.message }, { status: 500 });
   }
 
@@ -206,6 +220,11 @@ export async function POST(request: Request) {
   });
 
   if (eventError) {
+    if (isMissingTableError(eventError, "analytics_events")) {
+      console.warn("analytics_events table missing during event insert", eventError.message);
+      return NextResponse.json({ ok: true, persisted: false });
+    }
+
     return NextResponse.json({ ok: false, message: eventError.message }, { status: 500 });
   }
 

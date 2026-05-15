@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { getSupabaseAdmin, hasSupabaseAdminConfig } from "@/lib/supabase/server";
 import { getPaymentSettings } from "@/lib/payment-settings";
+import { isMissingTableError } from "@/lib/supabase-errors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -89,16 +90,26 @@ export async function POST(request: Request) {
     | null;
 
   if (paymentRef) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("payment_orders")
       .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at")
       .eq("payment_ref", paymentRef)
       .maybeSingle();
+
+    if (error) {
+      if (isMissingTableError(error, "payment_orders")) {
+        console.warn("payment_orders table missing during Chariow webhook fetch", error.message);
+        return NextResponse.json({ ok: true, status, provider: "chariow", persisted: false });
+      }
+
+      return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+    }
+
     targetOrder = data ?? null;
   }
 
   if (!targetOrder) {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("payment_orders")
       .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at")
       .eq("provider", "chariow")
@@ -107,6 +118,16 @@ export async function POST(request: Request) {
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
+
+    if (error) {
+      if (isMissingTableError(error, "payment_orders")) {
+        console.warn("payment_orders table missing during Chariow webhook lookup", error.message);
+        return NextResponse.json({ ok: true, status, provider: "chariow", persisted: false });
+      }
+
+      return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+    }
+
     targetOrder = data ?? null;
   }
 
@@ -146,6 +167,11 @@ export async function POST(request: Request) {
     .eq("payment_ref", targetOrder.payment_ref);
 
   if (error) {
+    if (isMissingTableError(error, "payment_orders")) {
+      console.warn("payment_orders table missing during Chariow webhook update", error.message);
+      return NextResponse.json({ ok: true, status, provider: "chariow", persisted: false });
+    }
+
     return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
   }
 

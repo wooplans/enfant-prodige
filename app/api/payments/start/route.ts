@@ -3,6 +3,7 @@ import { z } from "zod";
 import { getPublicSeriesBySlug } from "@/lib/series";
 import { createMonetbilPaymentLink, buildMonetbilPaymentRef } from "@/lib/monetbil";
 import { getPaymentSettings, resolveActivePaymentProvider } from "@/lib/payment-settings";
+import { isMissingTableError } from "@/lib/supabase-errors";
 import { hasSupabaseAdminConfig, getSupabaseAdmin } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -86,7 +87,11 @@ export async function POST(request: Request) {
       });
 
       if (error) {
-        return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+        if (isMissingTableError(error, "payment_orders")) {
+          console.warn("payment_orders table missing during checkout start", error.message);
+        } else {
+          return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+        }
       }
     }
 
@@ -135,7 +140,11 @@ export async function POST(request: Request) {
     });
 
     if (error) {
-      return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+      if (isMissingTableError(error, "payment_orders")) {
+        console.warn("payment_orders table missing during checkout start", error.message);
+      } else {
+        return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+      }
     }
   }
 

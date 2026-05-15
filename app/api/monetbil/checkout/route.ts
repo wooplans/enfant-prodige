@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
+import { isMissingTableError } from "@/lib/supabase-errors";
 import {
   buildMonetbilPaymentRef,
   createMonetbilPaymentLink,
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
   const parsed = checkoutRequestSchema.safeParse(parsedBody);
   if (!parsed.success) {
     return NextResponse.json(
-      { ok: false, message: "Les informations de commande sont incomplètes." },
+      { ok: false, message: "Les informations de commande sont incompletes." },
       { status: 400 }
     );
   }
@@ -53,13 +54,13 @@ export async function POST(request: Request) {
 
   if (seriesError) {
     return NextResponse.json(
-      { ok: false, message: `Série introuvable: ${seriesError.message}` },
+      { ok: false, message: `Serie introuvable: ${seriesError.message}` },
       { status: 500 }
     );
   }
 
   if (!series) {
-    return NextResponse.json({ ok: false, message: "Cette série n'est plus disponible." }, { status: 404 });
+    return NextResponse.json({ ok: false, message: "Cette serie n'est plus disponible." }, { status: 404 });
   }
 
   const paymentRef = buildMonetbilPaymentRef(series.slug);
@@ -70,6 +71,7 @@ export async function POST(request: Request) {
     deliveryQuartier: parsed.data.quartier,
     deliveryRue: parsed.data.rue,
   };
+  let persistedOrder = true;
 
   const checkoutRow = {
     payment_ref: paymentRef,
@@ -94,10 +96,15 @@ export async function POST(request: Request) {
 
   const { error: insertError } = await supabase.from("payment_orders").insert(checkoutRow);
   if (insertError) {
-    return NextResponse.json(
-      { ok: false, message: `Impossible d'enregistrer la commande: ${insertError.message}` },
-      { status: 500 }
-    );
+    if (isMissingTableError(insertError, "payment_orders")) {
+      persistedOrder = false;
+      console.warn("payment_orders table missing during Monetbil checkout insert", insertError.message);
+    } else {
+      return NextResponse.json(
+        { ok: false, message: `Impossible d'enregistrer la commande: ${insertError.message}` },
+        { status: 500 }
+      );
+    }
   }
 
   try {
@@ -112,28 +119,36 @@ export async function POST(request: Request) {
       rue: parsed.data.rue,
     });
 
-    const { error: updateError } = await supabase
-      .from("payment_orders")
-      .update({
-        payment_url: monetbil.payment_url,
-        return_url: monetbil.returnUrl,
-        notify_url: monetbil.notifyUrl,
-        monetbil_request: monetbil.requestPayload,
-        monetbil_response: monetbil,
-        operator_code: process.env.MONETBIL_DEFAULT_OPERATOR?.trim() || null,
-        updated_at: new Date().toISOString(),
-      })
-      .eq("payment_ref", paymentRef);
+    if (persistedOrder) {
+      const { error: updateError } = await supabase
+        .from("payment_orders")
+        .update({
+          payment_url: monetbil.payment_url,
+          return_url: monetbil.returnUrl,
+          notify_url: monetbil.notifyUrl,
+          monetbil_request: monetbil.requestPayload,
+          monetbil_response: monetbil,
+          operator_code: process.env.MONETBIL_DEFAULT_OPERATOR?.trim() || null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("payment_ref", paymentRef);
 
-    if (updateError) {
-      return NextResponse.json(
-        { ok: false, message: `Commande créée mais non finalisée: ${updateError.message}` },
-        { status: 500 }
-      );
+      if (updateError) {
+        if (isMissingTableError(updateError, "payment_orders")) {
+          persistedOrder = false;
+          console.warn("payment_orders table missing during Monetbil checkout update", updateError.message);
+        } else {
+          return NextResponse.json(
+            { ok: false, message: `Commande creee mais non finalisee: ${updateError.message}` },
+            { status: 500 }
+          );
+        }
+      }
     }
 
     return NextResponse.json({
       ok: true,
+      persisted: persistedOrder,
       payment_ref: paymentRef,
       payment_url: monetbil.payment_url,
       return_url: monetbil.returnUrl,
@@ -146,15 +161,21 @@ export async function POST(request: Request) {
   } catch (error) {
     const message = error instanceof Error ? error.message : "Monetbil est indisponible.";
 
-    await supabase
-      .from("payment_orders")
-      .update({
-        status: "failed",
-        monetbil_response: { error: message },
-        failed_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq("payment_ref", paymentRef);
+    if (persistedOrder) {
+      const { error: updateError } = await supabase
+        .from("payment_orders")
+        .update({
+          status: "failed",
+          monetbil_response: { error: message },
+          failed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .eq("payment_ref", paymentRef);
+
+      if (updateError && isMissingTableError(updateError, "payment_orders")) {
+        console.warn("payment_orders table missing during Monetbil failure update", updateError.message);
+      }
+    }
 
     return NextResponse.json({ ok: false, message }, { status: 502 });
   }
