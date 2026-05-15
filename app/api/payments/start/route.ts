@@ -87,11 +87,15 @@ export async function POST(request: Request) {
         country: "CM",
         operator_code: process.env.MONETBIL_DEFAULT_OPERATOR?.trim() || null,
         status: "pending",
+        provider_payload: {
+          email: parsed.data.email.trim().toLowerCase(),
+          telephone: parsed.data.telephone.trim(),
+          promoCode: parsed.data.promoCode.trim(),
+        },
         payment_url: monetbil.payment_url,
         checkout_url: monetbil.payment_url,
         return_url: monetbil.returnUrl,
         notify_url: monetbil.notifyUrl,
-        provider_payload: monetbil.requestPayload,
         monetbil_request: monetbil.requestPayload,
         monetbil_response: monetbil,
         metadata: {
@@ -195,7 +199,12 @@ export async function POST(request: Request) {
             provider_order_ref: checkout.saleId,
             checkout_url: checkout.checkoutUrl,
             return_url: checkout.redirectUrl,
-            provider_payload: checkout.requestPayload,
+            provider_payload: {
+              ...checkout.requestPayload,
+              email: parsed.data.email.trim().toLowerCase(),
+              telephone: parsed.data.telephone.trim(),
+              promoCode: parsed.data.promoCode.trim(),
+            },
             notification_payload: checkout.raw,
             updated_at: now,
           })

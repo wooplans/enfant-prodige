@@ -10,6 +10,9 @@ type Props = {
   currency?: string | null;
   seriesTitle?: string | null;
   shouldTrackPurchase?: boolean;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
+  promoCode?: string | null;
 };
 
 export default function PurchasePixelTracker({
@@ -19,12 +22,16 @@ export default function PurchasePixelTracker({
   currency = "XAF",
   seriesTitle,
   shouldTrackPurchase = false,
+  customerEmail = null,
+  customerPhone = null,
+  promoCode = null,
 }: Props) {
   useEffect(() => {
     if (!paymentRef || (!shouldTrackPurchase && status !== "paid")) return;
 
     const storageKey = `fb_purchase_tracked:${paymentRef}`;
     if (window.sessionStorage.getItem(storageKey) === "1") return;
+    const eventId = `purchase:${paymentRef}`;
 
     fbqTrack("Purchase", {
       content_name: seriesTitle || paymentRef,
@@ -33,10 +40,31 @@ export default function PurchasePixelTracker({
       value: typeof value === "number" ? value : undefined,
       order_id: paymentRef,
       content_ids: seriesTitle ? [seriesTitle] : undefined,
+      eventID: eventId,
+    });
+
+    void fetch("/api/facebook/conversions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        eventId,
+        paymentRef,
+        eventSourceUrl: window.location.href,
+        status,
+        value,
+        currency,
+        seriesTitle,
+        promoCode,
+        email: customerEmail,
+        phone: customerPhone,
+      }),
+      keepalive: true,
     });
 
     window.sessionStorage.setItem(storageKey, "1");
-  }, [currency, paymentRef, seriesTitle, shouldTrackPurchase, status, value]);
+  }, [currency, customerEmail, customerPhone, paymentRef, promoCode, seriesTitle, shouldTrackPurchase, status, value]);
 
   return null;
 }

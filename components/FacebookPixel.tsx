@@ -3,8 +3,7 @@
 import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
-
-export const FB_PIXEL_ID = "833064112599949";
+import { FACEBOOK_PIXEL_ID } from "@/lib/facebook";
 
 type FbqCommand = "track" | "trackCustom" | "init";
 type FacebookEventName = "PageView" | "ViewContent" | "InitiateCheckout" | "Lead" | "Contact" | "Purchase";
@@ -56,7 +55,7 @@ export default function FacebookPixel() {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '${FB_PIXEL_ID}');
+          fbq('init', '${FACEBOOK_PIXEL_ID}');
           fbq('track', 'PageView');
         `}
       </Script>
@@ -67,7 +66,7 @@ export default function FacebookPixel() {
           width="1"
           style={{ display: "none" }}
           alt=""
-          src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
+          src={`https://www.facebook.com/tr?id=${FACEBOOK_PIXEL_ID}&ev=PageView&noscript=1`}
         />
       </noscript>
     </>

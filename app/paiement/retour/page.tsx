@@ -9,6 +9,10 @@ function firstValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+function readString(value: unknown) {
+  return typeof value === "string" ? value : null;
+}
+
 type PaymentOrder = {
   payment_ref: string;
   status: string;
@@ -19,6 +23,7 @@ type PaymentOrder = {
   delivery_rue: string | null;
   amount: number | null;
   currency: string | null;
+  provider_payload: Record<string, unknown> | null;
   metadata: {
     promoCode?: string | null;
   } | null;
@@ -72,7 +77,9 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
       const supabase = getSupabaseAdmin();
       const { data } = await supabase
         .from("payment_orders")
-        .select("payment_ref, status, series_title, series_slug, child_name, delivery_quartier, delivery_rue, amount, currency, metadata")
+        .select(
+          "payment_ref, status, series_title, series_slug, child_name, delivery_quartier, delivery_rue, amount, currency, provider_payload, metadata"
+        )
         .eq("payment_ref", paymentRef)
         .maybeSingle();
 
@@ -92,11 +99,20 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
     delivery_rue: order?.delivery_rue || null,
     amount: order?.amount || null,
     currency: order?.currency || "XAF",
+    provider_payload: (order?.provider_payload as Record<string, unknown> | null) || null,
     metadata: (order?.metadata as PaymentOrder["metadata"]) || null,
   };
 
   const isPaid = displayOrder.status === "paid";
   const hasPromoCode = Boolean(displayOrder.metadata?.promoCode?.trim());
+  const customerEmail = readString(displayOrder.provider_payload?.email);
+  const customerPhone =
+    readString(displayOrder.provider_payload?.telephone) ||
+    (displayOrder.provider_payload?.phone &&
+    typeof displayOrder.provider_payload.phone === "object" &&
+    "number" in displayOrder.provider_payload.phone
+      ? readString((displayOrder.provider_payload.phone as Record<string, unknown>).number)
+      : null);
   const headline = isPaid ? "Merci pour votre commande" : "Commande enregistrée";
   const message = isPaid
     ? "Votre paiement a bien été reçu. Notre équipe prépare la personnalisation et vous contacte sur WhatsApp pour la suite."
@@ -118,6 +134,9 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
         currency={displayOrder.currency}
         seriesTitle={displayOrder.series_title}
         shouldTrackPurchase={hasPromoCode}
+        customerEmail={customerEmail}
+        customerPhone={customerPhone}
+        promoCode={displayOrder.metadata?.promoCode || null}
       />
       <main className="mx-auto flex min-h-[70vh] w-full max-w-3xl items-center px-4 py-16">
         <section className="w-full rounded-3xl border border-green-200 bg-white p-6 shadow-sm md:p-8">
