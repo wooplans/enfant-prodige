@@ -9,11 +9,19 @@ type Props = {
   value: number | null;
   currency?: string | null;
   seriesTitle?: string | null;
+  shouldTrackPurchase?: boolean;
 };
 
-export default function PurchasePixelTracker({ paymentRef, status, value, currency = "XAF", seriesTitle }: Props) {
+export default function PurchasePixelTracker({
+  paymentRef,
+  status,
+  value,
+  currency = "XAF",
+  seriesTitle,
+  shouldTrackPurchase = false,
+}: Props) {
   useEffect(() => {
-    if (status !== "paid" || !paymentRef) return;
+    if (!paymentRef || (!shouldTrackPurchase && status !== "paid")) return;
 
     const storageKey = `fb_purchase_tracked:${paymentRef}`;
     if (window.sessionStorage.getItem(storageKey) === "1") return;
@@ -28,7 +36,7 @@ export default function PurchasePixelTracker({ paymentRef, status, value, curren
     });
 
     window.sessionStorage.setItem(storageKey, "1");
-  }, [currency, paymentRef, seriesTitle, status, value]);
+  }, [currency, paymentRef, seriesTitle, shouldTrackPurchase, status, value]);
 
   return null;
 }

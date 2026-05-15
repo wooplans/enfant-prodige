@@ -19,6 +19,9 @@ type PaymentOrder = {
   delivery_rue: string | null;
   amount: number | null;
   currency: string | null;
+  metadata: {
+    promoCode?: string | null;
+  } | null;
 };
 
 type PaymentReturnPageProps = PageProps<"/paiement/retour">;
@@ -69,7 +72,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
       const supabase = getSupabaseAdmin();
       const { data } = await supabase
         .from("payment_orders")
-        .select("payment_ref, status, series_title, series_slug, child_name, delivery_quartier, delivery_rue, amount, currency")
+        .select("payment_ref, status, series_title, series_slug, child_name, delivery_quartier, delivery_rue, amount, currency, metadata")
         .eq("payment_ref", paymentRef)
         .maybeSingle();
 
@@ -89,9 +92,11 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
     delivery_rue: order?.delivery_rue || null,
     amount: order?.amount || null,
     currency: order?.currency || "XAF",
+    metadata: (order?.metadata as PaymentOrder["metadata"]) || null,
   };
 
   const isPaid = displayOrder.status === "paid";
+  const hasPromoCode = Boolean(displayOrder.metadata?.promoCode?.trim());
   const headline = isPaid ? "Merci pour votre commande" : "Commande enregistrée";
   const message = isPaid
     ? "Votre paiement a bien été reçu. Notre équipe prépare la personnalisation et vous contacte sur WhatsApp pour la suite."
@@ -112,6 +117,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
         value={displayOrder.amount}
         currency={displayOrder.currency}
         seriesTitle={displayOrder.series_title}
+        shouldTrackPurchase={hasPromoCode}
       />
       <main className="mx-auto flex min-h-[70vh] w-full max-w-3xl items-center px-4 py-16">
         <section className="w-full rounded-3xl border border-green-200 bg-white p-6 shadow-sm md:p-8">
