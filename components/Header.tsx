@@ -16,7 +16,7 @@ export default function Header() {
             <div className="font-bold text-lg leading-tight group-hover:text-yellow-300 transition-colors">
               Enfant Prodige BD
             </div>
-            <div className="text-green-300 text-xs">Livres Personnalisés pour Enfants</div>
+            <div className="text-green-100 text-sm">Livres Personnalisés pour Enfants</div>
           </div>
         </Link>
 
@@ -38,7 +38,7 @@ export default function Header() {
             className="bg-green-500 hover:bg-green-400 text-white px-4 py-2 rounded-full flex items-center gap-2 transition-colors"
           >
             <WhatsAppIcon />
-            WhatsApp
+            Assistance
           </a>
         </nav>
 
@@ -79,7 +79,7 @@ export default function Header() {
             className="bg-green-500 text-white px-4 py-2 rounded-full flex items-center gap-2 w-fit"
           >
             <WhatsAppIcon />
-            Nous contacter
+            Assistance
           </a>
         </div>
       )}

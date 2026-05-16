@@ -1,0 +1,1 @@
+export const FACEBOOK_PIXEL_ID = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID?.trim() || "833064112599949";

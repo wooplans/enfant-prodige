@@ -25,3 +25,68 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 }
+
+.admin-input {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 0.75rem 1rem;
+  color: #111827;
+  outline: none;
+}
+
+.admin-input:focus {
+  border-color: #16a34a;
+  box-shadow: 0 0 0 3px rgb(22 163 74 / 0.18);
+}
+
+.admin-file {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px dashed #d1d5db;
+  background: #f9fafb;
+  padding: 0.75rem;
+  color: #374151;
+}
+
+@keyframes sticky-shake {
+  0%, 86%, 100% {
+    transform: translateX(0);
+  }
+  88% {
+    transform: translateX(-2px);
+  }
+  90% {
+    transform: translateX(2px);
+  }
+  92% {
+    transform: translateX(-1.5px);
+  }
+  94% {
+    transform: translateX(1.5px);
+  }
+}
+
+.cta-flash-light {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-140%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent 0%, rgb(255 255 255 / 0.14) 42%, rgb(255 255 255 / 0.58) 50%, rgb(255 255 255 / 0.14) 58%, transparent 100%);
+  animation: cta-flash-light 2.8s ease-in-out infinite;
+}
+
+@keyframes cta-flash-light {
+  0%, 38% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  68%, 100% {
+    transform: translateX(140%) skewX(-18deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}

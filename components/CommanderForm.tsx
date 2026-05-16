@@ -17,20 +17,22 @@ export default function CommanderForm({ prix, fraisLivraison, onCommander }: Pro
           En stock
         </span>
       </div>
-      <p className="text-xs text-gray-400 mb-5">
+      <p className="text-sm text-gray-600 mb-5">
         + {fraisLivraison.toLocaleString("fr-FR")} FCFA frais de livraison
         <span className="text-green-600 font-medium"> · payés à la réception</span>
       </p>
 
       <button
+        type="button"
+        onPointerDown={onCommander}
         onClick={onCommander}
         className="w-full bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-bold text-lg py-4 rounded-2xl flex items-center justify-center gap-3 transition-colors shadow-lg"
       >
         <span>✨</span>
-        Commander cette BD
+        Personnaliser pour mon enfant
       </button>
-      <p className="text-xs text-gray-400 text-center mt-2">
-        Personnalisation avec le prénom · Livraison 24h · Mobile Money
+      <p className="text-sm text-gray-600 text-center mt-2">
+        Personnalisation avec le prénom · Livraison 24h · Paiement Monetbil
       </p>
     </div>
   );

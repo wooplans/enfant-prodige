@@ -5,11 +5,11 @@ import { useState } from "react";
 const faqs = [
   {
     q: "Comment fonctionne la personnalisation ?",
-    a: "Après votre commande WhatsApp, vous indiquez le prénom de votre enfant (et son sexe). Notre équipe insère ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez ensuite votre livre unique, imprimé et livré sous 24h.",
+    a: "Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom de votre enfant et le lieu de livraison. Nous insérons ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 48h.",
   },
   {
     q: "Quand est-ce que je paye ?",
-    a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) après confirmation de votre commande sur WhatsApp — avant la personnalisation. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
+    a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) directement via Monetbil avant la personnalisation. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
   },
   {
     q: "Quel est le délai de livraison ?",
@@ -17,28 +17,35 @@ const faqs = [
   },
   {
     q: "Ma commande est-elle garantie ?",
-    a: "Oui. Si votre BD arrive abîmée ou si le prénom est mal orthographié, contactez-nous immédiatement sur WhatsApp. Nous corrigeons et relivrons sans frais supplémentaires.",
+    a: "Oui. Si votre BD arrive abîmée ou si le prénom est mal orthographié, contactez-nous immédiatement. Nous corrigeons et relivrons sans frais supplémentaires.",
   },
   {
     q: "Livrez-vous en dehors de Yaoundé et Douala ?",
-    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous sur WhatsApp pour connaître les possibilités pour votre ville — nous faisons de notre mieux pour servir tout le Cameroun.",
+    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous pour connaître les possibilités pour votre ville — nous faisons de notre mieux pour servir tout le Cameroun.",
   },
 ];
 
-export default function FaqAccordion() {
+interface Props {
+  deliveryDateLabel?: string;
+}
+
+export default function FaqAccordion({ deliveryDateLabel }: Props) {
   const [ouvert, setOuvert] = useState<number | null>(null);
+  const deliveryAnswer = deliveryDateLabel
+    ? `En payant maintenant, on vous livre ${deliveryDateLabel}. Vous recevez ensuite votre BD personnalisée sous 48h à Yaoundé et Douala.`
+    : "Une fois votre paiement Mobile Money confirmé, nous personnalisons et imprimons votre BD, puis la livrons sous 48h à Yaoundé et Douala.";
 
   return (
-    <div className="space-y-2">
+    <div className="divide-y divide-amber-200 border-y border-amber-200">
       {faqs.map((faq, i) => (
-        <div key={i} className="border border-gray-100 rounded-xl overflow-hidden">
+        <div key={i}>
           <button
-            className="w-full text-left px-4 py-4 flex justify-between items-center bg-white hover:bg-gray-50 transition-colors"
+            className="flex w-full items-center justify-between gap-6 py-5 text-left transition-colors duration-200 hover:text-green-800"
             onClick={() => setOuvert(ouvert === i ? null : i)}
           >
-            <span className="font-semibold text-gray-800 text-sm pr-4">{faq.q}</span>
+            <span className="pr-4 text-base font-extrabold leading-snug text-gray-950">{faq.q}</span>
             <span
-              className={`text-green-600 text-lg font-bold transition-transform shrink-0 ${
+              className={`shrink-0 text-xl font-bold text-green-700 transition-transform duration-200 ${
                 ouvert === i ? "rotate-45" : ""
               }`}
             >
@@ -46,8 +53,10 @@ export default function FaqAccordion() {
             </span>
           </button>
           {ouvert === i && (
-            <div className="px-4 pb-4 bg-white">
-              <p className="text-gray-500 text-sm leading-relaxed">{faq.a}</p>
+            <div className="pb-5">
+              <p className="max-w-3xl text-sm leading-7 text-gray-700">
+                {faq.q === "Quel est le délai de livraison ?" ? deliveryAnswer : faq.a}
+              </p>
             </div>
           )}
         </div>

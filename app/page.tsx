@@ -1,10 +1,15 @@
 import Link from "next/link";
-import { catalogue, WHATSAPP_NUMBER } from "@/lib/catalogue";
+import { getPublicCatalogue } from "@/lib/series";
 import CarteBD from "@/components/CarteBC";
+import SiteChrome from "@/components/SiteChrome";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const catalogue = await getPublicCatalogue();
+
   return (
-    <>
+    <SiteChrome>
       {/* ── HERO ── */}
       <section className="bg-gradient-to-br from-green-800 to-green-600 text-white py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
@@ -24,14 +29,12 @@ export default function Home() {
             >
               Choisir une série
             </Link>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/bd/academie-genies"
               className="bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-8 py-3 rounded-full text-lg transition-colors flex items-center gap-2"
             >
-              <span>📱</span> Commander sur WhatsApp
-            </a>
+              <span>📘</span> Voir l&apos;exemple personnalisé
+            </Link>
           </div>
         </div>
       </section>
@@ -51,8 +54,8 @@ export default function Home() {
               },
               {
                 icon: "📱",
-                titre: "Entrez le prénom et commandez",
-                texte: "Tapez le prénom de l'enfant, choisissez votre adresse, puis envoyez sur WhatsApp. Payez 9 900 FCFA par Mobile Money.",
+                titre: "Entrez le prénom et payez",
+                texte: "Tapez le prénom de l&apos;enfant, choisissez votre adresse, puis validez le paiement sécurisé via Monetbil. Payez 9 900 FCFA par Mobile Money.",
               },
               {
                 icon: "🚀",
@@ -76,16 +79,21 @@ export default function Home() {
       <section className="py-14 px-4 bg-amber-50">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">✨ Nos 3 séries personnalisées</h2>
+            <h2 className="text-2xl font-bold text-gray-800">✨ Nos séries personnalisées</h2>
             <Link href="/catalogue" className="text-green-700 hover:text-green-600 text-sm font-medium">
               Voir tout →
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
             {catalogue.map((bd) => (
               <CarteBD key={bd.id} bd={bd} />
             ))}
           </div>
+          {catalogue.length === 0 && (
+            <div className="rounded-2xl border border-amber-200 bg-white p-6 text-center text-gray-600">
+              Les séries seront bientôt disponibles.
+            </div>
+          )}
           <div className="text-center mt-10">
             <Link
               href="/catalogue"
@@ -120,8 +128,8 @@ export default function Home() {
               },
               {
                 icon: "📱",
-                titre: "Commande facile",
-                texte: "Commandez en quelques clics via WhatsApp, sans formulaire compliqué.",
+                titre: "Paiement simple",
+                texte: "Commandez en quelques clics, puis finalisez le paiement direct par Monetbil sans détour inutile.",
               },
             ].map(({ icon, titre, texte }) => (
               <div key={titre} className="flex gap-4 items-start">
@@ -135,6 +143,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </>
+    </SiteChrome>
   );
 }
