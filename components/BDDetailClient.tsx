@@ -328,7 +328,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               {
                 step: "2",
                 titre: "Payer en ligne",
-                texte: "Payez 9 900 FCFA par Mobile Money (Orange ou MTN) en ligne.",
+                texte: `Payez ${bd.prix.toLocaleString("fr-FR")} FCFA par Mobile Money (Orange ou MTN) en ligne.`,
               },
               {
                 step: "3",
@@ -479,7 +479,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               à seulement
             </div>
             <div className="mt-2 text-4xl font-extrabold leading-none text-white md:text-5xl">
-              9 900 FCFA
+              {bd.prix.toLocaleString("fr-FR")} FCFA
             </div>
             {bd.id === "academie-genies" && (
               <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">

@@ -54,7 +54,7 @@ export const DEFAULT_PAYMENT_SETTINGS: PaymentSettings = {
     data-border-style="rounded"
     data-cta-width="xs"
     data-cta-animation="none"
-    data-locale="en"
+    data-locale="fr"
     data-background-color="#FFFFFF"></div>
 <script>
 (function() {

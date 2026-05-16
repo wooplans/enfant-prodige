@@ -133,7 +133,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
         value={displayOrder.amount}
         currency={displayOrder.currency}
         seriesTitle={displayOrder.series_title}
-        shouldTrackPurchase={hasPromoCode}
+        shouldTrackPurchase={isPaid}
         customerEmail={customerEmail}
         customerPhone={customerPhone}
         promoCode={displayOrder.metadata?.promoCode || null}
