@@ -75,6 +75,7 @@ export async function POST(request: Request) {
 
   const checkoutRow = {
     payment_ref: paymentRef,
+    provider: "monetbil",
     series_id: series.id,
     series_slug: series.slug,
     series_title: series.serie || series.titre,

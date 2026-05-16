@@ -129,6 +129,28 @@ export async function POST(request: Request) {
   }
 
   if (!targetOrder) {
+    if (externalReference) {
+      const { data, error } = await supabase
+        .from("payment_orders")
+        .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at")
+        .eq("provider", "chariow")
+        .eq("provider_order_ref", externalReference)
+        .maybeSingle();
+
+      if (error) {
+        if (isMissingTableError(error, "payment_orders")) {
+          console.warn("payment_orders table missing during Chariow webhook external reference lookup", error.message);
+          return NextResponse.json({ ok: true, status, provider: "chariow", persisted: false });
+        }
+
+        return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+      }
+
+      targetOrder = data ?? null;
+    }
+  }
+
+  if (!targetOrder && !paymentRef && !externalReference) {
     const { data, error } = await supabase
       .from("payment_orders")
       .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at")
@@ -153,6 +175,16 @@ export async function POST(request: Request) {
 
   if (!targetOrder) {
     return NextResponse.json({ ok: false, message: "Commande Chariow introuvable." }, { status: 404 });
+  }
+
+  if (targetOrder.status === "paid" && status !== "paid") {
+    return NextResponse.json({
+      ok: true,
+      status: targetOrder.status,
+      provider: "chariow",
+      payment_ref: targetOrder.payment_ref,
+      preserved: true,
+    });
   }
 
   const updatePayload: Record<string, unknown> = {

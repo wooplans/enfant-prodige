@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { BD, CommandeData } from "@/lib/catalogue";
 import type { PaymentProvider, PaymentSettings } from "@/lib/payment-settings";
 import ChariowWidgetEmbed from "@/components/ChariowWidgetEmbed";
-import { fbqTrack } from "@/components/FacebookPixel";
+import { fbqTrack, fbqTrackCustom } from "@/components/FacebookPixel";
 import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 
 interface Props {
@@ -126,6 +126,15 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
     setIsSubmitting(true);
     setStep("payment");
 
+    fbqTrackCustom("MobileMoneyPaymentClick", {
+      content_name: bd.serie,
+      content_ids: [bd.id],
+      content_type: "product",
+      provider: activeProvider,
+      value: bd.prix,
+      currency: "XAF",
+      has_promo_code: Boolean(promoCode.trim()),
+    });
     fbqTrack("Lead", {
       content_name: bd.serie,
       content_ids: [bd.id],

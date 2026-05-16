@@ -191,9 +191,21 @@ export async function getAdminSeries(): Promise<AdminSeries[]> {
     .order("created_at", { ascending: false });
 
   if (error) {
-    if (!isMissingLandingPageModeColumn(error)) {
+    if (isMissingLandingPageModeColumn(error)) {
+      const fallback = await supabase
+        .from("series")
+        .select(BASE_SELECT_COLUMNS)
+        .order("archived_at", { ascending: true, nullsFirst: true })
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+
+      if (!fallback.error) {
+        return ((fallback.data ?? []) as unknown as SeriesRow[]).map(toAdminSeries);
+      }
+    } else {
       console.error("Unable to load admin series", error);
     }
+
     return [];
   }
 

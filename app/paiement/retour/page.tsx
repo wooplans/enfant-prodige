@@ -126,7 +126,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
   const amountLabel = displayOrder.amount ? `${displayOrder.amount.toLocaleString("fr-FR")} FCFA` : "—";
   const whatsappMessage = formatMessage(displayOrder, bdSlug);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
-  const shouldTrackPurchase = Boolean(paymentRef);
+  const shouldTrackPurchase = Boolean(paymentRef && isPaid);
   const purchaseAlreadySent = Boolean(displayOrder.metadata?.facebookPurchaseSentAt);
 
   if (paymentRef && shouldTrackPurchase && !purchaseAlreadySent && hasFacebookConversionsToken()) {

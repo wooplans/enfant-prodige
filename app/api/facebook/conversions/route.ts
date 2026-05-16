@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { hasFacebookConversionsToken, sendFacebookPurchaseEvent } from "@/lib/facebook-conversions";
+import { getSupabaseAdmin } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -37,6 +38,24 @@ export async function POST(request: Request) {
   }
 
   try {
+    const supabase = getSupabaseAdmin();
+    const { data: order, error: orderError } = await supabase
+      .from("payment_orders")
+      .select("payment_ref, status")
+      .eq("payment_ref", parsed.data.paymentRef)
+      .maybeSingle();
+
+    if (orderError) {
+      return NextResponse.json({ ok: false, message: orderError.message }, { status: 500 });
+    }
+
+    if (!order || order.status !== "paid" || parsed.data.status !== "paid") {
+      return NextResponse.json(
+        { ok: false, message: "Achat non confirme." },
+        { status: 409 }
+      );
+    }
+
     const forwardedFor = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || null;
     const userAgent = request.headers.get("user-agent") || null;
 
