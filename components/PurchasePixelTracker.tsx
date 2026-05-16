@@ -40,28 +40,7 @@ export default function PurchasePixelTracker({
       value: typeof value === "number" ? value : undefined,
       order_id: paymentRef,
       content_ids: seriesTitle ? [seriesTitle] : undefined,
-      eventID: eventId,
-    });
-
-    void fetch("/api/facebook/conversions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        eventId,
-        paymentRef,
-        eventSourceUrl: window.location.href,
-        status,
-        value,
-        currency,
-        seriesTitle,
-        promoCode,
-        email: customerEmail,
-        phone: customerPhone,
-      }),
-      keepalive: true,
-    });
+    }, { eventID: eventId });
 
     window.sessionStorage.setItem(storageKey, "1");
   }, [currency, customerEmail, customerPhone, paymentRef, promoCode, seriesTitle, shouldTrackPurchase, status, value]);

@@ -1,7 +1,9 @@
 import SiteChrome from "@/components/SiteChrome";
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
+import { hasFacebookConversionsToken, sendFacebookPurchaseEvent } from "@/lib/facebook-conversions";
 import { getSupabaseAdmin } from "@/lib/supabase/server";
 import PurchasePixelTracker from "@/components/PurchasePixelTracker";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +28,7 @@ type PaymentOrder = {
   provider_payload: Record<string, unknown> | null;
   metadata: {
     promoCode?: string | null;
+    facebookPurchaseSentAt?: string | null;
   } | null;
 };
 
@@ -124,6 +127,44 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
   const amountLabel = displayOrder.amount ? `${displayOrder.amount.toLocaleString("fr-FR")} FCFA` : "—";
   const whatsappMessage = formatMessage(displayOrder, bdSlug);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
+  const shouldTrackPurchase = isPaid || hasPromoCode;
+  const purchaseAlreadySent = Boolean(displayOrder.metadata?.facebookPurchaseSentAt);
+
+  if (paymentRef && shouldTrackPurchase && !purchaseAlreadySent && hasFacebookConversionsToken()) {
+    const requestHeaders = await headers();
+    const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host") || "localhost:3000";
+    const proto = requestHeaders.get("x-forwarded-proto") || "https";
+    const eventSourceUrl = `${proto}://${host}/paiement/retour?bd=${encodeURIComponent(bdSlug)}&payment_ref=${encodeURIComponent(paymentRef)}`;
+
+    try {
+      await sendFacebookPurchaseEvent({
+        eventId: `purchase:${paymentRef}`,
+        eventSourceUrl,
+        paymentRef,
+        status: displayOrder.status,
+        value: displayOrder.amount,
+        currency: displayOrder.currency,
+        seriesTitle: displayOrder.series_title,
+        promoCode: displayOrder.metadata?.promoCode || null,
+        email: customerEmail,
+        phone: customerPhone,
+      });
+
+      try {
+        const supabase = getSupabaseAdmin();
+        const nextMetadata = {
+          ...(displayOrder.metadata || {}),
+          facebookPurchaseSentAt: new Date().toISOString(),
+        };
+
+        await supabase.from("payment_orders").update({ metadata: nextMetadata }).eq("payment_ref", paymentRef);
+      } catch {
+        // Best effort only.
+      }
+    } catch {
+      // Browser tracking remains as fallback.
+    }
+  }
 
   return (
     <SiteChrome showFooter={false}>
@@ -133,7 +174,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
         value={displayOrder.amount}
         currency={displayOrder.currency}
         seriesTitle={displayOrder.series_title}
-        shouldTrackPurchase={hasPromoCode}
+        shouldTrackPurchase={shouldTrackPurchase}
         customerEmail={customerEmail}
         customerPhone={customerPhone}
         promoCode={displayOrder.metadata?.promoCode || null}

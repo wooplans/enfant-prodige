@@ -11,7 +11,8 @@ type FacebookEventName = "PageView" | "ViewContent" | "InitiateCheckout" | "Lead
 type FbqFunction = (
   command: FbqCommand,
   eventNameOrPixelId: string,
-  parameters?: Record<string, unknown>
+  parameters?: Record<string, unknown>,
+  options?: Record<string, unknown>
 ) => void;
 
 declare global {
@@ -21,12 +22,16 @@ declare global {
   }
 }
 
-export function fbqTrack(eventName: FacebookEventName, parameters?: Record<string, unknown>) {
+export function fbqTrack(
+  eventName: FacebookEventName,
+  parameters?: Record<string, unknown>,
+  options?: Record<string, unknown>
+) {
   if (typeof window === "undefined" || typeof window.fbq !== "function") {
     return;
   }
 
-  window.fbq("track", eventName, parameters);
+  window.fbq("track", eventName, parameters, options);
 }
 
 export default function FacebookPixel() {
