@@ -27,7 +27,7 @@ export default function PurchasePixelTracker({
   promoCode = null,
 }: Props) {
   useEffect(() => {
-    if (!paymentRef || (!shouldTrackPurchase && status !== "paid")) return;
+    if (!paymentRef || !shouldTrackPurchase) return;
 
     const storageKey = `fb_purchase_tracked:${paymentRef}`;
     if (window.sessionStorage.getItem(storageKey) === "1") return;

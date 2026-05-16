@@ -107,7 +107,6 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
   };
 
   const isPaid = displayOrder.status === "paid";
-  const hasPromoCode = Boolean(displayOrder.metadata?.promoCode?.trim());
   const customerEmail = readString(displayOrder.provider_payload?.email);
   const customerPhone =
     readString(displayOrder.provider_payload?.telephone) ||
@@ -127,7 +126,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
   const amountLabel = displayOrder.amount ? `${displayOrder.amount.toLocaleString("fr-FR")} FCFA` : "—";
   const whatsappMessage = formatMessage(displayOrder, bdSlug);
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsappMessage)}`;
-  const shouldTrackPurchase = isPaid || hasPromoCode;
+  const shouldTrackPurchase = Boolean(paymentRef);
   const purchaseAlreadySent = Boolean(displayOrder.metadata?.facebookPurchaseSentAt);
 
   if (paymentRef && shouldTrackPurchase && !purchaseAlreadySent && hasFacebookConversionsToken()) {
