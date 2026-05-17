@@ -4,24 +4,32 @@ import { useState } from "react";
 
 const faqs = [
   {
-    q: "Comment fonctionne la personnalisation ?",
-    a: "Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom de votre enfant et le lieu de livraison. Nous insérons ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 48h.",
+    q: "Est-ce vraiment personnalisé avec le prénom de MON fils ?",
+    a: "Oui, complètement. Le prénom de votre garçon est intégré directement dans les illustrations et dans les dialogues de la BD — pas juste sur une étiquette collée. Chaque exemplaire est imprimé spécialement pour lui.",
   },
   {
-    q: "Quand est-ce que je paye ?",
-    a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) directement via Monetbil avant la personnalisation. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
+    q: "Comment je paye ?",
+    a: "Vous payez 9 900 FCFA directement depuis votre téléphone par Orange Money ou MTN Mobile Money — sans avoir besoin d'aller à une agence. Les 1 000 FCFA de frais de livraison sont réglés au livreur à la réception.",
+  },
+  {
+    q: "Que se passe-t-il après le paiement ?",
+    a: "Notre équipe vous contacte sur WhatsApp dans les 30 minutes pour confirmer le prénom exact de votre garçon et valider le lieu de livraison. On imprime ensuite la BD et on vous livre sous 48h.",
   },
   {
     q: "Quel est le délai de livraison ?",
-    a: "Une fois votre paiement Mobile Money confirmé, nous personnalisons et imprimons votre BD, puis la livrons sous 24h à Yaoundé et Douala.",
+    a: "Une fois votre paiement confirmé, nous livrons sous 48h à Yaoundé et Douala. Nous couvrons tous les quartiers des deux villes.",
   },
   {
-    q: "Ma commande est-elle garantie ?",
-    a: "Oui. Si votre BD arrive abîmée ou si le prénom est mal orthographié, contactez-nous immédiatement. Nous corrigeons et relivrons sans frais supplémentaires.",
+    q: "Et si mon fils n'aime pas ?",
+    a: "Nous offrons une garantie satisfait ou remboursé de 7 jours. Si la BD ne fait pas sourire votre garçon, contactez-nous et nous vous remboursons intégralement — sans conditions.",
+  },
+  {
+    q: "Comment fonctionne la personnalisation en détail ?",
+    a: "Après le paiement, vous nous confirmez le prénom sur WhatsApp. Nos illustrateurs intègrent ce prénom sur la couverture et dans les dialogues. La BD est ensuite imprimée en couleur sur papier de qualité et livrée chez vous.",
   },
   {
     q: "Livrez-vous en dehors de Yaoundé et Douala ?",
-    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous pour connaître les possibilités pour votre ville — nous faisons de notre mieux pour servir tout le Cameroun.",
+    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous pour connaître les possibilités pour votre ville.",
   },
 ];
 
@@ -55,7 +63,7 @@ export default function FaqAccordion({ deliveryDateLabel }: Props) {
           {ouvert === i && (
             <div className="pb-5">
               <p className="max-w-3xl text-sm leading-7 text-gray-700">
-                {faq.q === "Quel est le délai de livraison ?" ? deliveryAnswer : faq.a}
+                {faq.q === "Quel est le délai de livraison ?" && deliveryDateLabel ? deliveryAnswer : faq.a}
               </p>
             </div>
           )}

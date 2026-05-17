@@ -56,6 +56,14 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
       src: "/covers/hero-personalized/academie-genies-paul.webp",
       label: "Paul",
     },
+    {
+      src: "/covers/hero-personalized/academie-genies-christelle.webp",
+      label: "Christelle",
+    },
+    {
+      src: "/covers/hero-personalized/academie-genies-studio-produit.webp",
+      label: "Aperçu produit",
+    },
   ],
 };
 
@@ -188,6 +196,23 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
   return (
     <>
+      {/* BANDEAU CONFIANCE */}
+      {bd.id === "academie-genies" && (
+        <div className="overflow-hidden bg-green-950 text-white py-2 px-4">
+          <div className="flex animate-[trust-scroll_20s_linear_infinite] whitespace-nowrap gap-8 text-xs font-semibold sm:justify-center sm:animate-none sm:whitespace-normal sm:flex-wrap sm:gap-6">
+            <span>⭐ {bd.note}/5 · {bd.nombreAvis} avis parents</span>
+            <span className="hidden sm:inline text-green-600">·</span>
+            <span>👪 {fomoSold} parents ont déjà commandé</span>
+            <span className="hidden sm:inline text-green-600">·</span>
+            <span>🚚 Livraison Yaoundé &amp; Douala</span>
+            <span className="hidden sm:inline text-green-600">·</span>
+            <span>✅ Garantie 7 jours satisfait ou remboursé</span>
+            <span className="sm:hidden">⭐ {bd.note}/5 · {bd.nombreAvis} avis parents</span>
+            <span className="sm:hidden">👪 {fomoSold} parents ont déjà commandé</span>
+          </div>
+        </div>
+      )}
+
       {/* HERO */}
       <section className="relative overflow-hidden bg-green-900 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.2),transparent_28%),linear-gradient(135deg,rgba(22,101,52,0.95),rgba(6,78,59,0.98))]" />
@@ -206,17 +231,40 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
           <div className="grid lg:grid-cols-[1fr_480px] gap-6 lg:gap-12 items-center">
             <div className="max-w-2xl lg:col-start-1 lg:row-start-1">
+              {bd.nombreAvis > 0 && (
+                <div className="inline-flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-3 py-1.5 shadow-lg border border-yellow-200 mb-4">
+                  <Stars note={bd.note} />
+                  <span className="text-sm font-extrabold text-green-900">{bd.note}/5</span>
+                  <span className="text-sm font-semibold text-green-700">({bd.nombreAvis} avis parents)</span>
+                </div>
+              )}
               <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">{heroTitle}</h1>
-              <div className="mt-4">
-                {bd.nombreAvis > 0 && (
-                  <div className="inline-flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-4 py-2 shadow-lg border border-yellow-200">
-                    <Stars note={bd.note} />
-                    <span className="text-sm font-extrabold text-green-900">{bd.note}/5</span>
-                    <span className="text-sm font-semibold text-green-700">({bd.nombreAvis} avis)</span>
-                  </div>
-                )}
-              </div>
               <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{heroSubtitle}</p>
+              {bd.id === "academie-genies" && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
+                    👪 {fomoSold} parents satisfaits
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
+                    📍 Yaoundé &amp; Douala
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
+                    🚀 Livraison {deliveryDateLabel}
+                  </span>
+                </div>
+              )}
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <button
+                  onClick={() => openCheckout("hero_cta")}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-400 px-6 py-4 text-base font-extrabold text-green-950 transition-colors hover:bg-yellow-300 active:bg-yellow-500 shadow-lg"
+                >
+                  {primaryCtaText} <span aria-hidden="true">→</span>
+                </button>
+              </div>
+              <div className="mt-3 flex items-center gap-3">
+                <MobileMoneyLogos />
+                <span className="text-xs text-green-200 font-medium">Paiement sécurisé par Mobile Money</span>
+              </div>
             </div>
 
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -317,23 +365,48 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
           </div>
         </FullWidthSection>
 
+        {/* SECTION ÉMOTIONNELLE */}
+        {bd.id === "academie-genies" && (
+          <section className="bg-amber-50 px-4 py-12 md:py-16">
+            <div className="mx-auto max-w-3xl text-center">
+              <div className="mb-4 h-1 w-14 bg-green-700 mx-auto" />
+              <h2 className="text-2xl font-extrabold leading-tight md:text-3xl text-gray-950">
+                Imaginez son visage quand il ouvre le livre…
+              </h2>
+              <p className="mt-5 text-base leading-8 text-gray-700 md:text-lg">
+                Il voit <strong>son prénom</strong> sur la couverture. Il se reconnaît dans les dialogues.
+                Il réalise que <strong>cette BD a été faite uniquement pour lui</strong>.
+              </p>
+              <p className="mt-4 text-base leading-8 text-gray-700 md:text-lg">
+                Vous ne lui offrez pas juste un livre. Vous lui offrez <strong>la certitude qu'il est capable de grandes choses</strong> — intelligent, courageux, un vrai génie.
+              </p>
+              <button
+                onClick={() => openCheckout("emotion_section")}
+                className="mt-8 inline-flex items-center justify-center gap-2 rounded-xl bg-green-700 px-7 py-4 text-base font-extrabold text-white transition-colors hover:bg-green-600 shadow-md"
+              >
+                {primaryCtaText} <span aria-hidden="true">→</span>
+              </button>
+            </div>
+          </section>
+        )}
+
         <FullWidthSection title="Sa BD personnalisée en 3 étapes simples" tone="warm" wide>
           <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
             {[
               {
                 step: "1",
-                titre: "Entrez le prénom de l'enfant",
-                texte: "Cliquez sur « Personnaliser pour mon garçon » et renseignez le prénom du garçon. Il apparaîtra sur la couverture.",
+                titre: "Tapez son prénom",
+                texte: "Entrez le prénom de votre garçon. Il apparaîtra sur la couverture et dans les dialogues — exactement comme vous l'écrivez.",
               },
               {
                 step: "2",
-                titre: "Payer en ligne",
-                texte: `Payez ${bd.prix.toLocaleString("fr-FR")} FCFA par Mobile Money (Orange ou MTN) en ligne.`,
+                titre: "Payez par Orange Money ou MTN",
+                texte: `Réglez ${bd.prix.toLocaleString("fr-FR")} FCFA directement depuis votre téléphone. Pas besoin d'aller à l'agence.`,
               },
               {
                 step: "3",
-                titre: "Confirmation WhatsApp",
-                texte: "Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom et le lieu de livraison.",
+                titre: "Reçu chez vous sous 48h",
+                texte: "Notre équipe vous contacte sur WhatsApp sous 30 min pour confirmer, puis vous livre à Yaoundé ou Douala.",
               },
             ].map(({ step, titre, texte }) => (
               <li key={step} className="relative border-t border-amber-200 pt-5">
@@ -345,6 +418,10 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               </li>
             ))}
           </ol>
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <MobileMoneyLogos />
+            <p className="text-xs text-gray-500 font-medium">Orange Money · MTN Mobile Money · Paiement sécurisé</p>
+          </div>
         </FullWidthSection>
 
         <FullWidthSection title="Commandez l'esprit tranquille." tone="white" wide>
@@ -421,6 +498,66 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
           </div>
         )}
 
+        {/* SECTION COMPARAISON */}
+        {bd.id === "academie-genies" && (
+          <FullWidthSection title="Pourquoi c'est différent d'un cadeau classique" tone="white" wide>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className="w-1/2 pb-4 text-left text-xs font-bold uppercase tracking-wide text-gray-400">Cadeau classique</th>
+                    <th className="w-1/2 pb-4 text-left text-xs font-bold uppercase tracking-wide text-green-700">BD Académie des Génies</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {[
+                    ["L'enfant l'oublie en quelques jours", "Il la relit encore et encore — c'est SA BD"],
+                    ["Rien de personnel, rien d'unique", "Son prénom sur la couverture et dans les dialogues"],
+                    ["Aucun message éducatif", "Il apprend que l'intelligence et l'ambition, ça paye"],
+                    ["Difficile à trouver au Cameroun", "Commandé en ligne, livré chez vous à Yaoundé ou Douala"],
+                  ].map(([bad, good]) => (
+                    <tr key={bad}>
+                      <td className="py-3 pr-6 text-gray-500">✗ {bad}</td>
+                      <td className="py-3 font-semibold text-green-800">✓ {good}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </FullWidthSection>
+        )}
+
+        {/* SECTION ZONE DE LIVRAISON */}
+        {bd.id === "academie-genies" && (
+          <section className="bg-green-50 px-4 py-12 md:py-16">
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-8">
+                <div className="mb-4 h-1 w-14 bg-green-700" />
+                <h2 className="text-2xl font-extrabold leading-tight md:text-3xl text-gray-950">
+                  📍 Nous livrons à Yaoundé et Douala
+                </h2>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="rounded-2xl border border-green-200 bg-white p-5">
+                  <h3 className="text-base font-extrabold text-green-900 mb-3">Yaoundé</h3>
+                  <p className="text-sm leading-7 text-gray-600">
+                    Bastos · Omnisport · Nlongkak · Biyem-Assi · Cité Verte · Mvan · Melen · Mvog-Mbi · Mokolo · Mendong · Ngoa-Ekelle · et tous les autres quartiers
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-green-200 bg-white p-5">
+                  <h3 className="text-base font-extrabold text-green-900 mb-3">Douala</h3>
+                  <p className="text-sm leading-7 text-gray-600">
+                    Akwa · Bonapriso · Bonanjo · Makepe · Ndokotti · Logbessou · Kotto · Deido · Bali · New-Bell · Bepanda · et tous les autres quartiers
+                  </p>
+                </div>
+              </div>
+              <p className="mt-5 text-sm font-semibold text-gray-700 text-center">
+                Frais de livraison : <strong>1 000 FCFA</strong> — réglés directement au livreur à la réception · Délai : <strong>48h</strong> après confirmation du paiement
+              </p>
+            </div>
+          </section>
+        )}
+
         <FullWidthSection title="Questions fréquentes" tone="warm">
           <FaqAccordion deliveryDateLabel={deliveryDateLabel} />
         </FullWidthSection>
@@ -473,14 +610,15 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         <FullWidthSection title="Offrez-lui une aventure à son prénom" tone="dark">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-base leading-8 text-green-100 md:text-lg">
-              Sa BD personnalisée, imprimée, et livrée chez vous en 48h. Un cadeau qu&apos;il gardera toute sa vie.
+              Sa BD personnalisée, imprimée en couleur, livrée chez vous à Yaoundé ou Douala en 48h. Un cadeau qu&apos;il gardera toute sa vie.
             </p>
             <div className="mt-6 text-sm font-semibold uppercase tracking-[0.18em] text-yellow-300">
-              à seulement
+              Offre de lancement
             </div>
             <div className="mt-2 text-4xl font-extrabold leading-none text-white md:text-5xl">
               {bd.prix.toLocaleString("fr-FR")} FCFA
             </div>
+            <div className="mt-3 text-sm font-semibold text-green-200">✅ Satisfait ou remboursé sous 7 jours</div>
             {bd.id === "academie-genies" && (
               <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">
                 <div className="flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wide text-gray-600">
@@ -506,6 +644,11 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
             >
               {primaryCtaText} <span aria-hidden="true">→</span>
             </button>
+            <div className="mt-4 flex flex-col items-center gap-2">
+              <MobileMoneyLogos light />
+              <p className="text-xs text-green-300">Orange Money · MTN Mobile Money · Paiement sécurisé</p>
+            </div>
+            <p className="mt-3 text-xs text-green-400">📍 Livraison Yaoundé &amp; Douala · {deliveryDateLabel}</p>
           </div>
         </FullWidthSection>
       </main>
@@ -589,6 +732,29 @@ function getRatingBreakdown(note: number, total: number) {
       pct: Math.round((count / safeTotal) * 100),
     };
   });
+}
+
+function MobileMoneyLogos({ light = false }: { light?: boolean }) {
+  return (
+    <div className="flex items-center gap-3">
+      {/* Orange Money */}
+      <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${light ? "bg-white/15 text-white" : "bg-orange-50 text-orange-700 border border-orange-200"}`}>
+        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
+          <circle cx="12" cy="12" r="12" className={light ? "fill-orange-400" : "fill-orange-500"} />
+          <text x="12" y="16" textAnchor="middle" fontSize="10" fontWeight="bold" fill="white">O</text>
+        </svg>
+        Orange Money
+      </div>
+      {/* MTN MoMo */}
+      <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${light ? "bg-white/15 text-white" : "bg-yellow-50 text-yellow-800 border border-yellow-200"}`}>
+        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
+          <circle cx="12" cy="12" r="12" className="fill-yellow-400" />
+          <text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="bold" fill="#1a1a1a">MTN</text>
+        </svg>
+        MTN MoMo
+      </div>
+    </div>
+  );
 }
 
 function Stars({ note, small }: { note: number; small?: boolean }) {

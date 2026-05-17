@@ -27,7 +27,7 @@ export default function StickyCommanderBar({ onCommander, shakeStartId, label = 
 
     const onScroll = () => {
       const currentY = window.scrollY;
-      setVisible(currentY > 400);
+      setVisible(currentY > 200);
       setShakeEnabled(currentY >= shakeStartY);
     };
 
@@ -49,7 +49,7 @@ export default function StickyCommanderBar({ onCommander, shakeStartId, label = 
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-2xl px-4 py-3 flex items-center justify-center">
+    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-2xl px-4 py-3 flex flex-col items-center gap-1.5">
       <button
         type="button"
         onPointerDown={onCommander}
@@ -61,6 +61,7 @@ export default function StickyCommanderBar({ onCommander, shakeStartId, label = 
         <span className="relative z-10">{label}</span>
         <span className="relative z-10" aria-hidden="true">→</span>
       </button>
+      <p className="text-xs font-semibold text-gray-500">📍 Livraison Yaoundé &amp; Douala · 9 900 FCFA</p>
     </div>
   );
 }
