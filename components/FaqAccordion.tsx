@@ -4,24 +4,36 @@ import { useState } from "react";
 
 const faqs = [
   {
-    q: "Comment fonctionne la personnalisation ?",
-    a: "Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom de votre enfant et le lieu de livraison. Nous insérons ensuite ce prénom sur la couverture et dans les bulles de dialogue de la BD. Vous recevez votre livre unique, imprimé et livré sous 48h.",
+    q: "Est-ce que mon garçon apparaît vraiment dans la BD ?",
+    a: "Oui. Son prénom apparaît sur la couverture et dans les bulles de dialogue de l'histoire. Après le paiement, notre équipe vous contacte sur WhatsApp pour confirmer l'orthographe exacte avant l'impression.",
+  },
+  {
+    q: "À quel âge cette BD est-elle adaptée ?",
+    a: "Académie des Génies est pensée pour les garçons de 7 à 12 ans. L'histoire est simple à suivre, valorisante et assez dynamique pour intéresser aussi les enfants qui ne lisent pas beaucoup.",
+  },
+  {
+    q: "Est-ce un livre physique ou un fichier numérique ?",
+    a: "Vous recevez une vraie BD imprimée en couleur. Ce n'est pas un PDF : c'est un livre personnalisé que votre garçon peut lire, garder et montrer autour de lui.",
   },
   {
     q: "Quand est-ce que je paye ?",
-    a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) directement via Monetbil avant la personnalisation. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
+    a: "Vous payez 9 900 FCFA par MTN Mobile Money ou Orange Money directement en ligne. Les 1 000 FCFA de frais de livraison sont réglés directement au livreur à la réception.",
   },
   {
     q: "Quel est le délai de livraison ?",
     a: "Une fois votre paiement Mobile Money confirmé, nous personnalisons et imprimons votre BD, puis la livrons sous 24h à Yaoundé et Douala.",
   },
   {
-    q: "Ma commande est-elle garantie ?",
-    a: "Oui. Si votre BD arrive abîmée ou si le prénom est mal orthographié, contactez-nous immédiatement. Nous corrigeons et relivrons sans frais supplémentaires.",
+    q: "Que se passe-t-il si je me trompe dans le prénom ?",
+    a: "Nous confirmons le prénom sur WhatsApp avant l'impression. Si une erreur vient de notre équipe, nous corrigeons et relivrons sans frais supplémentaires.",
   },
   {
     q: "Livrez-vous en dehors de Yaoundé et Douala ?",
-    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous pour connaître les possibilités pour votre ville — nous faisons de notre mieux pour servir tout le Cameroun.",
+    a: "Pour cette phase de test, nous livrons uniquement à Douala et Yaoundé afin de garantir un bon suivi et une livraison rapide.",
+  },
+  {
+    q: "Ma commande est-elle garantie ?",
+    a: "Oui. Si la BD arrive abîmée ou si le prénom est mal imprimé à cause d'une erreur de notre côté, contactez-nous immédiatement. Nous corrigeons la commande.",
   },
 ];
 

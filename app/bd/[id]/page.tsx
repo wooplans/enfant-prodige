@@ -18,13 +18,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     notFound();
   }
 
-  const description = bd.description;
+  const description =
+    bd.id === "academie-genies"
+      ? "Offrez à votre garçon de 7 à 12 ans une BD personnalisée avec son prénom, imprimée en couleur et livrée à Douala ou Yaoundé."
+      : bd.description;
+  const title =
+    bd.id === "academie-genies"
+      ? "BD personnalisée garçon à Douala et Yaoundé"
+      : `${bd.serie} | BD personnalisée enfant`;
 
   return {
-    title: `${bd.serie} | BD personnalisée enfant`,
+    title,
     description,
     openGraph: {
-      title: `${bd.serie} | Enfant Prodige BD`,
+      title,
       description,
       type: "website",
       url: `/bd/${bd.id}`,

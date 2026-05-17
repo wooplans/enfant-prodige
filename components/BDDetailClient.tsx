@@ -23,23 +23,6 @@ type HeroSlide = {
   label: string;
 };
 
-function getNextHourFomoState(now: Date) {
-  const nextHour = new Date(now);
-  nextHour.setMinutes(0, 0, 0);
-  nextHour.setHours(nextHour.getHours() + 1);
-
-  const remainingSeconds = Math.max(0, Math.floor((nextHour.getTime() - now.getTime()) / 1000));
-  const hours = Math.floor(remainingSeconds / 3600);
-  const minutes = Math.floor((remainingSeconds % 3600) / 60);
-  const seconds = remainingSeconds % 60;
-  const pad = (value: number) => String(value).padStart(2, "0");
-
-  return {
-    timer: `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
-    progress: Math.max(8, Math.round((remainingSeconds / 3600) * 100)),
-  };
-}
-
 const defaultSlideLabels = ["Couverture", "Apercu histoire", "Heros", "Details"];
 
 const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
@@ -63,8 +46,8 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const [fomoTimer, setFomoTimer] = useState("00:00:00");
   const lastCheckoutOpenAt = useRef(0);
+  const isAcademieGenies = bd.id === "academie-genies";
   const slides =
     personalizedHeroSlidesBySeries[bd.id] ??
     bd.galerie.slice(0, 4).map((src, index) => ({
@@ -145,45 +128,27 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
     return () => window.clearInterval(intervalId);
   }, [slides.length]);
 
-  useEffect(() => {
-    if (bd.id !== "academie-genies") return;
-
-    const updateTimer = () => {
-      const next = getNextHourFomoState(new Date());
-      setFomoTimer(next.timer);
-    };
-    updateTimer();
-
-    const timerId = window.setInterval(updateTimer, 1000);
-    return () => window.clearInterval(timerId);
-  }, [bd.id]);
-
   const synopsisTexte =
     bd.id === "apprentis-explorateurs"
       ? "Votre enfant est invité à rejoindre l'équipe des Apprentis Explorateurs pour une expédition à travers les plus beaux paysages d'Afrique : la savane du Cameroun, les chutes de la Lobé, le lac Tchad et bien plus encore. Guidé par ses compagnons, il découvre la géographie, les animaux et les cultures de son continent."
-      : bd.id === "academie-genies"
-        ? "Votre garçon est invité à rejoindre l'Académie des Génies pour résoudre une grande énigme scientifique qui menace toute l'Afrique. Son prénom apparaît sur la couverture et dans les dialogues."
+      : isAcademieGenies
+        ? "Votre garçon ne reçoit pas une BD comme les autres : il entre dans l'Académie des Génies, voit son prénom sur la couverture, lit son nom dans les dialogues et devient le héros d'une mission scientifique qui valorise son intelligence."
         : bd.descriptionLongue;
-  const heroTitle = bd.id === "academie-genies" ? "Votre garçon à l'Académie des Génies" : bd.serie;
+  const heroTitle = isAcademieGenies ? "Offrez à votre garçon une BD où il devient le héros" : bd.serie;
   const heroSubtitle =
-    bd.id === "academie-genies"
-      ? "Une bande dessinée 100% personnalisée avec le prénom de votre garçon. Imprimée en couleur, livrée chez vous."
+    isAcademieGenies
+      ? "Son prénom apparaît sur la couverture et dans l'histoire. Une BD personnalisée, imprimée en couleur, livrée à Douala ou Yaoundé."
       : bd.description;
-  const primaryCtaText = bd.id === "academie-genies" ? "Personnaliser pour mon garçon" : "Personnaliser pour mon enfant";
+  const primaryCtaText = isAcademieGenies ? "Créer la BD de mon garçon" : "Personnaliser pour mon enfant";
   const academieGeniesReasons =
-    bd.id === "academie-genies"
+    isAcademieGenies
       ? [
-          "Votre garçon est curieux, aime les sciences et les expériences",
-          "Vous voulez l'encourager à croire en ses capacités",
-          "Vous cherchez un cadeau unique, mémorable et personnalisé",
-          "Vous voulez un livre où votre garçon se voit comme un héros",
+          "Votre garçon a entre 7 et 12 ans et aime les aventures",
+          "Vous voulez l'encourager à lire sans le forcer",
+          "Vous cherchez un cadeau d'anniversaire ou de récompense vraiment mémorable",
+          "Vous voulez qu'il se voie comme un héros intelligent, curieux et capable",
         ]
       : bd.pourQui;
-  const fomoRemaining = bd.id === "academie-genies" ? 13 : null;
-  const fomoSold = bd.id === "academie-genies" ? 483 : null;
-  const fomoTotal = fomoRemaining !== null && fomoSold !== null ? fomoRemaining + fomoSold : null;
-  const fomoRemainingPct =
-    fomoTotal && fomoRemaining !== null ? Math.max(3, Math.round((fomoRemaining / fomoTotal) * 100)) : 0;
   const ratingBreakdown = getRatingBreakdown(bd.note, bd.nombreAvis);
 
   return (
@@ -217,6 +182,28 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                 )}
               </div>
               <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{heroSubtitle}</p>
+              {isAcademieGenies && (
+                <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 p-4 shadow-xl backdrop-blur-sm md:max-w-xl">
+                  <div className="flex flex-wrap items-end gap-x-3 gap-y-1">
+                    <span className="text-sm font-bold text-green-100 line-through">15 000 FCFA</span>
+                    <span className="text-4xl font-extrabold leading-none text-white">9 900 FCFA</span>
+                    <span className="rounded-full bg-yellow-300 px-3 py-1 text-xs font-extrabold uppercase text-green-950">
+                      Offre de lancement
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => openCheckout("hero_offer")}
+                    className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-300 px-5 py-3.5 text-base font-extrabold text-green-950 transition-colors duration-200 hover:bg-yellow-200 sm:w-auto"
+                  >
+                    Créer la BD de mon garçon <span aria-hidden="true">→</span>
+                  </button>
+                  <div className="mt-4 grid gap-2 text-sm font-semibold text-green-50 sm:grid-cols-3">
+                    <span>Paiement Mobile Money</span>
+                    <span>Douala & Yaoundé</span>
+                    <span>Garantie 7 jours</span>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -281,7 +268,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
       {/* CONTENU */}
       <main className="bg-white pb-28">
-        <FullWidthSection title="À propos de cette série" tone="white">
+        <FullWidthSection title={isAcademieGenies ? "Le cadeau qui le met au centre de l'histoire" : "À propos de cette série"} tone="white">
           <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_280px] md:items-start">
             <p className="max-w-3xl text-base leading-8 text-gray-700 md:text-lg md:leading-9">{synopsisTexte}</p>
             <div className="border-t border-green-200 pt-5 text-center md:border-l md:border-t-0 md:pl-7 md:pt-0">
@@ -296,44 +283,124 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                 Personnaliser maintenant <span aria-hidden="true">→</span>
               </button>
               {bd.id === "academie-genies" && (
-                <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">
-                  <div className="flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wide text-gray-600">
-                    <span>Plus que 13 exemplaires</span>
-                    <span>483 vendus</span>
-                  </div>
-                  <div className="mt-3 h-3 overflow-hidden rounded-full border border-amber-200 bg-white">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-amber-300 via-orange-500 to-red-500 transition-all duration-700 animate-pulse"
-                      style={{ width: `${fomoRemainingPct}%` }}
-                    />
-                  </div>
-                  <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
-                    <span>Fin de l&apos;offre promo dans {fomoTimer}</span>
-                    <span>Retour à 15 000 FCFA</span>
-                  </div>
-                </div>
+                <LaunchOfferBox />
               )}
             </div>
           </div>
         </FullWidthSection>
+
+        {isAcademieGenies && (
+          <>
+            <FullWidthSection title="Imaginez sa réaction quand il découvre son prénom" tone="warm" wide>
+              <div className="grid gap-8 md:grid-cols-[1fr_1fr] md:items-center">
+                <div className="space-y-4 text-base leading-8 text-gray-700 md:text-lg">
+                  <p>
+                    Il ouvre le livre, voit son prénom sur la couverture, puis comprend que l&apos;aventure parle de lui.
+                    Ce n&apos;est plus seulement une histoire à lire : c&apos;est son histoire.
+                  </p>
+                  <p>
+                    Pour un garçon de 7 à 12 ans, devenir le héros d&apos;une mission de génie peut transformer un simple cadeau
+                    en souvenir qu&apos;il voudra montrer, relire et garder.
+                  </p>
+                </div>
+                <div className="grid gap-3">
+                  {[
+                    "Il se reconnaît dans le rôle du héros",
+                    "Il lit son prénom dans les dialogues",
+                    "Il reçoit un livre physique à garder",
+                    "Il associe lecture, science et confiance en soi",
+                  ].map((item) => (
+                    <div key={item} className="border-t border-amber-200 pt-4 text-sm font-bold leading-6 text-gray-800">
+                      <span className="mr-2 text-green-700">✓</span>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </FullWidthSection>
+
+            <FullWidthSection title="Son prénom apparaît vraiment dans la BD" tone="white" wide>
+              <div className="grid gap-8 md:grid-cols-[420px_minmax(0,1fr)] md:items-center">
+                <div className="relative aspect-square overflow-hidden rounded-2xl border border-green-100 bg-green-950 shadow-xl">
+                  <Image
+                    src="/covers/hero-personalized/academie-genies-kylian.webp"
+                    alt="Exemple de BD personnalisée Académie des Génies avec prénom"
+                    fill
+                    sizes="(min-width: 768px) 420px, 100vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div>
+                  <p className="text-base leading-8 text-gray-700 md:text-lg">
+                    Après votre paiement, notre équipe vous contacte sur WhatsApp pour confirmer le prénom exact et le lieu
+                    de livraison. Le prénom est ensuite intégré sur la couverture et dans les bulles de dialogue.
+                  </p>
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                    {["Kylian", "William", "Paul"].map((name) => (
+                      <div key={name} className="rounded-xl border border-green-100 bg-green-50 px-4 py-3 text-center">
+                        <div className="text-xs font-bold uppercase text-green-700">Exemple</div>
+                        <div className="mt-1 text-lg font-extrabold text-green-950">{name}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => openCheckout("personalization_section")}
+                    className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-700 px-6 py-3.5 text-base font-extrabold text-white transition-colors duration-200 hover:bg-green-600 sm:w-auto"
+                  >
+                    Personnaliser avec son prénom <span aria-hidden="true">→</span>
+                  </button>
+                </div>
+              </div>
+            </FullWidthSection>
+
+            <FullWidthSection title="Pourquoi les garçons de 7 à 12 ans accrochent vite" tone="green" wide>
+              <div className="grid gap-4 md:grid-cols-4">
+                {[
+                  ["Héros de l'histoire", "Il ne regarde pas seulement un personnage : il devient le personnage principal."],
+                  ["Mission de génie", "L'aventure met en avant l'intelligence, la curiosité et les idées."],
+                  ["Lecture plus facile", "Son prénom crée une attention immédiate, même s'il lit peu d'habitude."],
+                  ["Cadeau souvenir", "La BD imprimée reste à la maison, prête à être relue ou montrée."],
+                ].map(([titre, texte]) => (
+                  <div key={titre} className="border-t border-green-200 pt-5">
+                    <h3 className="text-base font-extrabold leading-snug text-gray-950">{titre}</h3>
+                    <p className="mt-2 text-sm leading-6 text-gray-600">{texte}</p>
+                  </div>
+                ))}
+              </div>
+            </FullWidthSection>
+
+            <FullWidthSection title="Disponible maintenant à Douala et Yaoundé" tone="white">
+              <div className="rounded-2xl border border-green-100 bg-green-50 p-5 md:p-7">
+                <p className="text-base leading-8 text-gray-700 md:text-lg">
+                  Pour cette phase de test, les commandes sont concentrées sur Douala et Yaoundé afin d&apos;assurer une
+                  personnalisation suivie, une confirmation WhatsApp rapide et une livraison maîtrisée.
+                </p>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl bg-white px-4 py-4 font-extrabold text-green-950 shadow-sm">Livraison à Douala</div>
+                  <div className="rounded-xl bg-white px-4 py-4 font-extrabold text-green-950 shadow-sm">Livraison à Yaoundé</div>
+                </div>
+              </div>
+            </FullWidthSection>
+          </>
+        )}
 
         <FullWidthSection title="Sa BD personnalisée en 3 étapes simples" tone="warm" wide>
           <ol className="grid gap-8 md:grid-cols-3 md:gap-6">
             {[
               {
                 step: "1",
-                titre: "Entrez le prénom de l'enfant",
-                texte: "Cliquez sur « Personnaliser pour mon garçon » et renseignez le prénom du garçon. Il apparaîtra sur la couverture.",
+                titre: "Entrez le prénom de votre garçon",
+                texte: "Cliquez sur le bouton de commande et indiquez le prénom qui doit apparaître dans la BD.",
               },
               {
                 step: "2",
                 titre: "Payer en ligne",
-                texte: "Payez 9 900 FCFA par Mobile Money (Orange ou MTN) en ligne.",
+                texte: "Payez 9 900 FCFA par Orange Money ou MTN Mobile Money, puis recevez la confirmation.",
               },
               {
                 step: "3",
                 titre: "Confirmation WhatsApp",
-                texte: "Après le paiement en ligne, notre équipe vous contacte via WhatsApp pour confirmer le prénom et le lieu de livraison.",
+                texte: "Notre équipe confirme le prénom, la ville et le lieu de livraison avant l'impression.",
               },
             ].map(({ step, titre, texte }) => (
               <li key={step} className="relative border-t border-amber-200 pt-5">
@@ -347,12 +414,14 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
           </ol>
         </FullWidthSection>
 
-        <FullWidthSection title="Commandez l'esprit tranquille." tone="white" wide>
+        <FullWidthSection title="Commandez l'esprit tranquille" tone="white" wide>
           <div className="grid gap-4 md:grid-cols-3">
             {[
               {
-                titre: "Livraison 48h",
-                texte: `En payant maintenant, on vous livre ${deliveryDateLabel}.`,
+                titre: isAcademieGenies ? "Livraison Douala & Yaoundé" : "Livraison 48h",
+                texte: isAcademieGenies
+                  ? `En payant maintenant, on vous livre ${deliveryDateLabel} à Douala ou Yaoundé.`
+                  : `En payant maintenant, on vous livre ${deliveryDateLabel}.`,
               },
               {
                 titre: "Garantie de 7 jours",
@@ -376,7 +445,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
         {bd.avis.length > 0 && (
           <div id="avis-parents">
-            <FullWidthSection title={`Avis parents · ${bd.note}/5`} tone="white" wide>
+            <FullWidthSection title={isAcademieGenies ? `Des parents de Douala et Yaoundé l'ont déjà offert · ${bd.note}/5` : `Avis parents · ${bd.note}/5`} tone="white" wide>
               <div className="grid gap-8 md:grid-cols-[220px_minmax(0,1fr)] md:gap-12">
                 <div className="border-b border-green-100 pb-6 md:border-b-0 md:border-r md:pb-0 md:pr-8">
                   <div className="text-6xl font-extrabold leading-none text-green-900">{bd.note}</div>
@@ -426,13 +495,13 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         </FullWidthSection>
 
         <FullWidthSection
-          title={bd.id === "academie-genies" ? "C'est à vous de réveillez l'imagination de votre garçon." : "C'est à vous de réveillez l'imagination de votre enfant."}
+          title={isAcademieGenies ? "Faites-lui découvrir une histoire où il compte vraiment" : "C'est à vous de réveillez l'imagination de votre enfant."}
           tone="dark"
         >
           <div className="mx-auto max-w-2xl text-center">
             <p className="text-base leading-7 text-green-100">
-              {bd.id === "academie-genies"
-                ? "Faites de votre garçon le héros de sa propre histoire !"
+              {isAcademieGenies
+                ? "Offrez-lui une BD personnalisée avec son prénom, imprimée et livrée à Douala ou Yaoundé."
                 : "Faites de votre enfant le héros de sa propre histoire !"}
             </p>
             <button
@@ -482,22 +551,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               9 900 FCFA
             </div>
             {bd.id === "academie-genies" && (
-              <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">
-                <div className="flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wide text-gray-600">
-                  <span>Plus que 13 exemplaires</span>
-                  <span>483 vendus</span>
-                </div>
-                <div className="mt-3 h-3 overflow-hidden rounded-full border border-amber-200 bg-white">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-amber-300 via-orange-500 to-red-500 transition-all duration-700 animate-pulse"
-                    style={{ width: `${fomoRemainingPct}%` }}
-                  />
-                </div>
-                <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
-                  <span>Fin de l&apos;offre promo dans {fomoTimer}</span>
-                  <span>Retour à 15 000 FCFA</span>
-                </div>
-              </div>
+              <LaunchOfferBox dark />
             )}
             <button
               type="button"
@@ -554,6 +608,21 @@ function FullWidthSection({
         {children}
       </div>
     </section>
+  );
+}
+
+function LaunchOfferBox({ dark = false }: { dark?: boolean }) {
+  return (
+    <div
+      className={`mt-4 rounded-2xl border px-4 py-4 text-left shadow-sm ${
+        dark ? "border-yellow-200 bg-yellow-50" : "border-amber-200 bg-amber-50"
+      }`}
+    >
+      <div className="text-xs font-bold uppercase tracking-wide text-green-800">Offre de lancement Douala & Yaoundé</div>
+      <p className="mt-2 text-sm font-semibold leading-6 text-gray-700">
+        Prix test à 9 900 FCFA pendant la phase de lancement. Après validation, le tarif standard repasse à 15 000 FCFA.
+      </p>
+    </div>
   );
 }
 
