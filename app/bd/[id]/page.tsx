@@ -57,16 +57,17 @@ export default async function PageBD({ params }: Props) {
   await getPublicCatalogue();
   const paymentSettings = await getPaymentSettings();
   const deliveryDateLabel = getDeliveryDateLabel(new Date(), 48);
+  const landingPageMode = bd.landingPageMode || bd.id === "academie-genies";
   const page = (
     <BDDetailClient
       bd={bd}
-      landingPageMode={bd.landingPageMode}
+      landingPageMode={landingPageMode}
       paymentSettings={paymentSettings}
       deliveryDateLabel={deliveryDateLabel}
     />
   );
 
-  if (bd.landingPageMode) return page;
+  if (landingPageMode) return page;
 
   return <SiteChrome showFooter={false}>{page}</SiteChrome>;
 }
