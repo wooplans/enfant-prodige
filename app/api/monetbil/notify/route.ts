@@ -73,7 +73,7 @@ export async function POST(request: Request) {
 
   const { data: existing, error: fetchError } = await supabase
     .from("payment_orders")
-    .select("payment_ref, status, monetbil_transaction_ref, series_slug, paid_at")
+    .select("payment_ref, status, monetbil_transaction_ref, series_slug, paid_at, amount")
     .eq("payment_ref", paymentRef)
     .maybeSingle();
 
@@ -142,6 +142,23 @@ export async function POST(request: Request) {
       { ok: false, message: `Mise à jour impossible: ${updateError.message}` },
       { status: 500 }
     );
+  }
+
+  if (status === "paid" && !existing.paid_at) {
+    void supabase.from("analytics_events").insert({
+      session_id: paymentRef,
+      event_type: "purchase",
+      path: existing.series_slug ? `/bd/${existing.series_slug}` : "/paiement/retour",
+      title: null,
+      referrer: null,
+      metadata: {
+        seriesSlug: existing.series_slug ?? null,
+        amount: existing.amount ?? null,
+        currency: "XAF",
+        provider: "monetbil",
+      },
+      occurred_at: now,
+    });
   }
 
   if (existing.series_slug) {

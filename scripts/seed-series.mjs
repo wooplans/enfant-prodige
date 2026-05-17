@@ -44,6 +44,7 @@ const catalogue = [
     nombre_avis: 31,
     nombre_commandes_semaine: 17,
     sort_order: 10,
+    landing_page_mode: true,
     avis: [
       { nom: "Cécile M.", note: 5, commentaire: "Mon fils de 8 ans a crié de joie quand il a vu son prénom sur la couverture ! Il l'a lue 4 fois en une semaine. C'est le meilleur cadeau qu'il ait jamais reçu.", ville: "Yaoundé", date: "il y a 2 jours", avatar: "C" },
       { nom: "Joseph T.", note: 5, commentaire: "Livré à Bonapriso en moins de 48h comme promis. Les illustrations sont magnifiques et mon fils est fier de se voir en héros africain. Le paiement MTN MoMo était simple.", ville: "Douala", date: "il y a 5 jours", avatar: "J" },

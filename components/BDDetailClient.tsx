@@ -57,10 +57,6 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
       label: "Paul",
     },
     {
-      src: "/covers/hero-personalized/academie-genies-christelle.webp",
-      label: "Christelle",
-    },
-    {
       src: "/covers/hero-personalized/academie-genies-studio-produit.webp",
       label: "Aperçu produit",
     },

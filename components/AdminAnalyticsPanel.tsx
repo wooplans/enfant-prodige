@@ -76,6 +76,13 @@ export default function AdminAnalyticsPanel({ summary }: Props) {
             <Metric label="Clics CTA" value={formatNumber(summary.totals.ctaClicks)} />
             <Metric label="Checkout ouverts" value={formatNumber(summary.totals.checkoutOpens)} />
             <Metric label="Formulaires envoyes" value={formatNumber(summary.totals.checkoutSubmits)} />
+            <Metric label="Achats confirmes" value={formatNumber(summary.totals.purchases)} highlight />
+            <Metric
+              label="Revenu total"
+              value={summary.totals.revenue > 0 ? `${summary.totals.revenue.toLocaleString("fr-FR")} FCFA` : "—"}
+              highlight
+            />
+            <Metric label="Taux conversion" value={summary.totals.sessions > 0 ? `${Math.round((summary.totals.purchases / summary.totals.sessions) * 100)}%` : "—"} />
             <Metric label="Scroll moyen" value={`${summary.totals.averageScrollDepth}%`} />
             <Metric label="Temps moyen/page" value={formatSeconds(summary.totals.averageTimeOnPageSeconds)} />
           </div>
@@ -187,11 +194,11 @@ export default function AdminAnalyticsPanel({ summary }: Props) {
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-4">
-      <div className="text-sm font-semibold text-gray-500">{label}</div>
-      <div className="mt-1 text-2xl font-extrabold text-gray-950">{value}</div>
+    <div className={`rounded-2xl border px-4 py-4 ${highlight ? "border-green-200 bg-green-50" : "border-gray-100 bg-gray-50"}`}>
+      <div className={`text-sm font-semibold ${highlight ? "text-green-700" : "text-gray-500"}`}>{label}</div>
+      <div className={`mt-1 text-2xl font-extrabold ${highlight ? "text-green-900" : "text-gray-950"}`}>{value}</div>
     </div>
   );
 }

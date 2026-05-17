@@ -106,13 +106,14 @@ export async function POST(request: Request) {
         provider_order_ref: string | null;
         provider_product_code: string | null;
         paid_at: string | null;
+        amount: number | null;
       }
     | null;
 
   if (paymentRef) {
     const { data, error } = await supabase
       .from("payment_orders")
-      .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at")
+      .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at, amount")
       .eq("payment_ref", paymentRef)
       .maybeSingle();
 
@@ -131,7 +132,7 @@ export async function POST(request: Request) {
   if (!targetOrder) {
     const { data, error } = await supabase
       .from("payment_orders")
-      .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at")
+      .select("payment_ref, series_slug, status, provider_order_ref, provider_product_code, paid_at, amount")
       .eq("provider", "chariow")
       .eq("provider_product_code", productCode)
       .eq("status", "pending")
@@ -193,6 +194,23 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+  }
+
+  if (status === "paid" && !targetOrder.paid_at) {
+    void supabase.from("analytics_events").insert({
+      session_id: targetOrder.payment_ref,
+      event_type: "purchase",
+      path: `/bd/${targetOrder.series_slug}`,
+      title: null,
+      referrer: null,
+      metadata: {
+        seriesSlug: targetOrder.series_slug,
+        amount: targetOrder.amount ?? null,
+        currency: "XAF",
+        provider: "chariow",
+      },
+      occurred_at: now,
+    });
   }
 
   revalidatePath(`/bd/${targetOrder.series_slug}`);

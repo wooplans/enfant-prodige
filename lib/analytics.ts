@@ -12,6 +12,7 @@ export const analyticsEventTypes = [
   "scroll_depth",
   "time_on_page",
   "carousel_interaction",
+  "purchase",
 ] as const;
 
 export type AnalyticsEventType = (typeof analyticsEventTypes)[number];
@@ -52,6 +53,8 @@ export type AnalyticsSummary = {
     ctaClicks: number;
     checkoutOpens: number;
     checkoutSubmits: number;
+    purchases: number;
+    revenue: number;
     averageScrollDepth: number;
     averageTimeOnPageSeconds: number;
   };
@@ -115,6 +118,8 @@ function emptySummary(range: AnalyticsRange, since: string, configured: boolean)
       ctaClicks: 0,
       checkoutOpens: 0,
       checkoutSubmits: 0,
+      purchases: 0,
+      revenue: 0,
       averageScrollDepth: 0,
       averageTimeOnPageSeconds: 0,
     },
@@ -123,6 +128,7 @@ function emptySummary(range: AnalyticsRange, since: string, configured: boolean)
       { label: "Clics CTA", count: 0, rate: 0 },
       { label: "Checkout ouvert", count: 0, rate: 0 },
       { label: "Formulaire envoye", count: 0, rate: 0 },
+      { label: "Achats confirmes", count: 0, rate: 0 },
     ],
     topPages: [],
     sources: [],
@@ -249,6 +255,9 @@ export async function getAnalyticsSummary(range: AnalyticsRange): Promise<Analyt
   const ctaClicks = events.filter((event) => event.event_type === "cta_click").length;
   const checkoutOpens = events.filter((event) => event.event_type === "checkout_open").length;
   const checkoutSubmits = events.filter((event) => event.event_type === "checkout_details_submit").length;
+  const purchaseEvents = events.filter((event) => event.event_type === "purchase");
+  const purchases = purchaseEvents.length;
+  const revenue = purchaseEvents.reduce((total, event) => total + (numericMetadata(event, "amount") ?? 0), 0);
   const scrollDepthEvents = events.filter((event) => event.event_type === "scroll_depth");
   const timeEvents = events.filter((event) => event.event_type === "time_on_page");
   const scrollDepthTotal = scrollDepthEvents.reduce((total, event) => total + (numericMetadata(event, "depth") ?? 0), 0);
@@ -265,6 +274,8 @@ export async function getAnalyticsSummary(range: AnalyticsRange): Promise<Analyt
       ctaClicks,
       checkoutOpens,
       checkoutSubmits,
+      purchases,
+      revenue,
       averageScrollDepth: scrollDepthEvents.length ? Math.round(scrollDepthTotal / scrollDepthEvents.length) : 0,
       averageTimeOnPageSeconds: timeEvents.length ? Math.round(timeTotal / timeEvents.length / 1000) : 0,
     },
@@ -273,6 +284,7 @@ export async function getAnalyticsSummary(range: AnalyticsRange): Promise<Analyt
       { label: "Clics CTA", count: ctaClicks, rate: rate(ctaClicks, pageViews) },
       { label: "Checkout ouvert", count: checkoutOpens, rate: rate(checkoutOpens, pageViews) },
       { label: "Formulaire envoye", count: checkoutSubmits, rate: rate(checkoutSubmits, pageViews) },
+      { label: "Achats confirmes", count: purchases, rate: rate(purchases, pageViews) },
     ],
     topPages: Array.from(pageStats.entries())
       .map(([path, stats]) => ({
