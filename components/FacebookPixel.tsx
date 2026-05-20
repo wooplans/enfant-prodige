@@ -29,6 +29,14 @@ export function fbqTrack(eventName: FacebookEventName, parameters?: Record<strin
   window.fbq("track", eventName, parameters);
 }
 
+export function fbqTrackCustom(eventName: string, parameters?: Record<string, unknown>) {
+  if (typeof window === "undefined" || typeof window.fbq !== "function") {
+    return;
+  }
+
+  window.fbq("trackCustom", eventName, parameters);
+}
+
 export default function FacebookPixel() {
   const pathname = usePathname();
   const searchParams = useSearchParams();

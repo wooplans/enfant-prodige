@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { BD } from "@/lib/catalogue";
-import { fbqTrack } from "@/components/FacebookPixel";
+import { fbqTrack, fbqTrackCustom } from "@/components/FacebookPixel";
 import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 
 interface Props {
@@ -111,14 +111,20 @@ export default function CheckoutModal({ bd, onClose }: Props) {
   };
 
   const sendOrder = async () => {
+    const pixelPayload = {
+      content_name: bd.serie,
+      content_ids: [bd.id],
+      content_type: "product",
+      value: bd.prix,
+      currency: "XAF",
+      canal: isMobile ? "whatsapp_mobile" : "whatsapp_desktop",
+      prenom: prenom.trim(),
+      lieu_livraison: lieuLivraison.trim(),
+    };
+
     if (isMobile) {
-      fbqTrack("Lead", {
-        content_name: bd.serie,
-        content_ids: [bd.id],
-        content_type: "product",
-        value: bd.prix,
-        currency: "XAF",
-      });
+      fbqTrackCustom("CommandeWhatsApp", pixelPayload);
+      fbqTrack("Lead", pixelPayload);
       const url = buildMobileWhatsAppUrl(bd.serie, prenom.trim(), lieuLivraison.trim(), bd.prix, bd.fraisLivraison);
       window.open(url, "_blank");
       return;
@@ -144,13 +150,8 @@ export default function CheckoutModal({ bd, onClose }: Props) {
       if (!res.ok || !json?.ok) {
         throw new Error(json?.message || "Erreur d'envoi.");
       }
-      fbqTrack("Lead", {
-        content_name: bd.serie,
-        content_ids: [bd.id],
-        content_type: "product",
-        value: bd.prix,
-        currency: "XAF",
-      });
+      fbqTrackCustom("CommandeWhatsApp", pixelPayload);
+      fbqTrack("Lead", pixelPayload);
       setSentOk(true);
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : "Erreur réseau. Réessayez.");
