@@ -520,10 +520,12 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                 </h2>
                 <p className="mt-2 text-sm text-gray-500">De vrais parents, de vraies réactions.</p>
               </div>
-              <div className="grid grid-cols-2 gap-3 md:gap-6 max-w-2xl">
+              <div className="grid grid-cols-2 gap-3 md:gap-6">
                 {[
-                  "/videos/academie-genies-reaction-1.mp4",
-                  "/videos/academie-genies-reaction-2.mp4",
+                  "https://wooplans.b-cdn.net/video%20enfant%20jouyeux%20ADG/Child_looking_at_camera_202605201500.mp4",
+                  "https://wooplans.b-cdn.net/video%20enfant%20jouyeux%20ADG/Child_looks_at_camera_202605201503.mp4",
+                  "https://wooplans.b-cdn.net/video%20enfant%20jouyeux%20ADG/Child_raises_hand_in_joy_202605201507.mp4",
+                  "https://wooplans.b-cdn.net/video%20enfant%20jouyeux%20ADG/Child_smiling_at_camera_202605201506.mp4",
                 ].map((src, i) => (
                   <div key={i} className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-gray-200 shadow-md">
                     <video
@@ -533,6 +535,9 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                       loop
                       muted
                       playsInline
+                      disablePictureInPicture
+                      disableRemotePlayback
+                      onContextMenu={(e) => e.preventDefault()}
                     />
                   </div>
                 ))}
