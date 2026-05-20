@@ -1,4 +1,4 @@
-import { getPublicCatalogue, getPublicSeriesBySlug } from "@/lib/series";
+import { getPublicCatalogue, getPublicSeriesBySlug, getSeriesPaidCount } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
 import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
@@ -54,8 +54,11 @@ export default async function PageBD({ params }: Props) {
     notFound();
   }
 
+  const [paymentSettings, soldCount] = await Promise.all([
+    getPaymentSettings(),
+    getSeriesPaidCount(id),
+  ]);
   await getPublicCatalogue();
-  const paymentSettings = await getPaymentSettings();
   const deliveryDateLabel = getDeliveryDateLabel(new Date(), 48);
   const landingPageMode = bd.landingPageMode || bd.id === "academie-genies";
   const page = (
@@ -64,6 +67,7 @@ export default async function PageBD({ params }: Props) {
       landingPageMode={landingPageMode}
       paymentSettings={paymentSettings}
       deliveryDateLabel={deliveryDateLabel}
+      soldCount={soldCount}
     />
   );
 

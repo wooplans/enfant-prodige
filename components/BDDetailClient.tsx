@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { BD } from "@/lib/catalogue";
+import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 import type { PaymentSettings } from "@/lib/payment-settings";
 import StickyCommanderBar from "@/components/StickyCommanderBar";
 import CheckoutModal from "@/components/CheckoutModal";
@@ -16,6 +17,7 @@ interface Props {
   landingPageMode?: boolean;
   paymentSettings: PaymentSettings;
   deliveryDateLabel: string;
+  soldCount?: number;
 }
 
 type HeroSlide = {
@@ -23,21 +25,24 @@ type HeroSlide = {
   label: string;
 };
 
-function getNextHourFomoState(now: Date) {
-  const nextHour = new Date(now);
-  nextHour.setMinutes(0, 0, 0);
-  nextHour.setHours(nextHour.getHours() + 1);
+const FOMO_DURATION_MS = 48 * 60 * 60 * 1000;
 
-  const remainingSeconds = Math.max(0, Math.floor((nextHour.getTime() - now.getTime()) / 1000));
-  const hours = Math.floor(remainingSeconds / 3600);
-  const minutes = Math.floor((remainingSeconds % 3600) / 60);
-  const seconds = remainingSeconds % 60;
-  const pad = (value: number) => String(value).padStart(2, "0");
-
-  return {
-    timer: `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
-    progress: Math.max(8, Math.round((remainingSeconds / 3600) * 100)),
-  };
+function computeFomoTimer(slug: string, now: Date): { timer: string; expired: boolean } {
+  const key = `ep_fomo_first_visit_${slug}`;
+  let stored = window.localStorage.getItem(key);
+  if (!stored) {
+    stored = now.toISOString();
+    window.localStorage.setItem(key, stored);
+  }
+  const deadlineMs = new Date(stored).getTime() + FOMO_DURATION_MS;
+  const remainingMs = Math.max(0, deadlineMs - now.getTime());
+  if (remainingMs === 0) return { timer: "", expired: true };
+  const remainingSeconds = Math.floor(remainingMs / 1000);
+  const h = Math.floor(remainingSeconds / 3600);
+  const m = Math.floor((remainingSeconds % 3600) / 60);
+  const s = remainingSeconds % 60;
+  const pad = (v: number) => String(v).padStart(2, "0");
+  return { timer: `${pad(h)}:${pad(m)}:${pad(s)}`, expired: false };
 }
 
 const defaultSlideLabels = ["Couverture", "Apercu histoire", "Heros", "Details"];
@@ -63,11 +68,11 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
   ],
 };
 
-export default function BDDetailClient({ bd, landingPageMode = false, paymentSettings, deliveryDateLabel }: Props) {
+export default function BDDetailClient({ bd, landingPageMode = false, paymentSettings, deliveryDateLabel, soldCount = 0 }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const [fomoTimer, setFomoTimer] = useState("00:00:00");
+  const [fomoState, setFomoState] = useState({ timer: "00:00:00", expired: false });
   const lastCheckoutOpenAt = useRef(0);
   const slides =
     personalizedHeroSlidesBySeries[bd.id] ??
@@ -151,14 +156,9 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
   useEffect(() => {
     if (bd.id !== "academie-genies") return;
-
-    const updateTimer = () => {
-      const next = getNextHourFomoState(new Date());
-      setFomoTimer(next.timer);
-    };
-    updateTimer();
-
-    const timerId = window.setInterval(updateTimer, 1000);
+    const update = () => setFomoState(computeFomoTimer(bd.id, new Date()));
+    update();
+    const timerId = window.setInterval(update, 1000);
     return () => window.clearInterval(timerId);
   }, [bd.id]);
 
@@ -183,8 +183,8 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
           "Vous voulez un livre où votre garçon se voit comme un héros",
         ]
       : bd.pourQui;
-  const fomoRemaining = bd.id === "academie-genies" ? 13 : null;
-  const fomoSold = bd.id === "academie-genies" ? 483 : null;
+  const fomoSold = bd.id === "academie-genies" ? (soldCount > 0 ? soldCount : 483) : null;
+  const fomoRemaining = fomoSold !== null ? Math.max(0, 500 - fomoSold) : null;
   const fomoTotal = fomoRemaining !== null && fomoSold !== null ? fomoRemaining + fomoSold : null;
   const fomoRemainingPct =
     fomoTotal && fomoRemaining !== null ? Math.max(3, Math.round((fomoRemaining / fomoTotal) * 100)) : 0;
@@ -252,7 +252,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button
                   onClick={() => openCheckout("hero_cta")}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-400 px-6 py-4 text-base font-extrabold text-green-950 transition-colors hover:bg-yellow-300 active:bg-yellow-500 shadow-lg"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-500 px-6 py-4 text-base font-extrabold text-white transition-colors hover:bg-green-400 active:bg-green-600 shadow-lg"
                 >
                   {primaryCtaText} <span aria-hidden="true">→</span>
                 </button>
@@ -261,6 +261,18 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                 <MobileMoneyLogos />
                 <span className="text-xs text-green-200 font-medium">Paiement sécurisé par Mobile Money</span>
               </div>
+              {bd.id === "academie-genies" && (
+                <div className="mt-2">
+                  <a
+                    href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Bonjour, j'ai une question sur la BD Académie des Génies avant de commander.")}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 text-sm text-green-200 hover:text-white hover:underline underline-offset-2"
+                  >
+                    💬 Des questions ? Discuter sur WhatsApp
+                  </a>
+                </div>
+              )}
             </div>
 
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
@@ -342,8 +354,8 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               {bd.id === "academie-genies" && (
                 <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">
                   <div className="flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wide text-gray-600">
-                    <span>Plus que 13 exemplaires</span>
-                    <span>483 vendus</span>
+                    <span>Plus que {fomoRemaining} exemplaires</span>
+                    <span>{fomoSold} vendus</span>
                   </div>
                   <div className="mt-3 h-3 overflow-hidden rounded-full border border-amber-200 bg-white">
                     <div
@@ -352,7 +364,10 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                     />
                   </div>
                   <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
-                    <span>Fin de l&apos;offre promo dans {fomoTimer}</span>
+                    {fomoState.expired
+                      ? <span>Offre disponible jusqu&apos;à épuisement du stock</span>
+                      : <span>Fin de l&apos;offre promo dans {fomoState.timer}</span>
+                    }
                     <span>Retour à 15 000 FCFA</span>
                   </div>
                 </div>
@@ -494,6 +509,38 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
           </div>
         )}
 
+        {/* SECTION VIDÉOS RÉACTIONS */}
+        {bd.id === "academie-genies" && (
+          <section className="bg-amber-50 px-4 py-12 md:py-16">
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-8">
+                <div className="mb-4 h-1 w-14 bg-green-700" />
+                <h2 className="text-2xl font-extrabold leading-tight md:text-3xl text-gray-950">
+                  Leur réaction en voyant la BD
+                </h2>
+                <p className="mt-2 text-sm text-gray-500">De vrais parents, de vraies réactions.</p>
+              </div>
+              <div className="grid grid-cols-2 gap-3 md:gap-6 max-w-2xl">
+                {[
+                  "/videos/academie-genies-reaction-1.mp4",
+                  "/videos/academie-genies-reaction-2.mp4",
+                ].map((src, i) => (
+                  <div key={i} className="relative aspect-[9/16] overflow-hidden rounded-2xl bg-gray-200 shadow-md">
+                    <video
+                      src={src}
+                      className="h-full w-full object-cover"
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* SECTION COMPARAISON */}
         {bd.id === "academie-genies" && (
           <FullWidthSection title="Pourquoi c'est différent d'un cadeau classique" tone="white" wide>
@@ -618,8 +665,8 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
             {bd.id === "academie-genies" && (
               <div className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-4 text-left shadow-sm">
                 <div className="flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-wide text-gray-600">
-                  <span>Plus que 13 exemplaires</span>
-                  <span>483 vendus</span>
+                  <span>Plus que {fomoRemaining} exemplaires</span>
+                  <span>{fomoSold} vendus</span>
                 </div>
                 <div className="mt-3 h-3 overflow-hidden rounded-full border border-amber-200 bg-white">
                   <div
@@ -628,7 +675,10 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                   />
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-3 text-xs font-semibold text-gray-600">
-                  <span>Fin de l&apos;offre promo dans {fomoTimer}</span>
+                  {fomoState.expired
+                    ? <span>Offre disponible jusqu&apos;à épuisement du stock</span>
+                    : <span>Fin de l&apos;offre promo dans {fomoState.timer}</span>
+                  }
                   <span>Retour à 15 000 FCFA</span>
                 </div>
               </div>

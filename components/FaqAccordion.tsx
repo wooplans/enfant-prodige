@@ -31,6 +31,22 @@ const faqs = [
     q: "Livrez-vous en dehors de Yaoundé et Douala ?",
     a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous pour connaître les possibilités pour votre ville.",
   },
+  {
+    q: "Mon fils sait-il déjà lire ? Est-ce pour quel âge ?",
+    a: "La BD est conçue pour les garçons de 6 à 10 ans. Les textes sont courts, les dialogues vivants et les illustrations très expressives. Un enfant qui commence à lire peut la parcourir seul ou avec vous — c'est souvent l'occasion d'un moment de lecture partagée inoubliable.",
+  },
+  {
+    q: "Je ne suis pas sûre que mon fils aimera les BD. Et si ça ne l'intéresse pas ?",
+    a: "C'est rare — et pour cause : voir son propre prénom dans un livre change tout. Les parents qui hésitaient nous rapportent presque toujours que leur fils a été bluffé et l'a relu plusieurs fois. Et si vraiment il n'accroche pas, notre garantie satisfait ou remboursé de 7 jours s'applique sans question.",
+  },
+  {
+    q: "Est-ce que la qualité d'impression est vraiment bonne ?",
+    a: "Oui. Nous imprimons sur papier couché 150 g/m², format A4, avec des illustrations pleine couleur. C'est une BD solide, avec un rendu professionnel — pas un simple document imprimé à la maison. Plusieurs parents nous ont dit que la qualité les avait surpris positivement.",
+  },
+  {
+    q: "Puis-je commander la BD comme cadeau d'anniversaire de dernière minute ?",
+    a: "Oui, tant que vous commandez au moins 48h à l'avance. Dès que votre paiement est confirmé, notre équipe vous contacte sur WhatsApp dans les 30 minutes. Nous personnalisons la BD et la livrons sous 48h à Yaoundé et Douala — juste à temps pour l'anniversaire.",
+  },
 ];
 
 interface Props {

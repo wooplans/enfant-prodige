@@ -54,14 +54,23 @@ function getVisitorId() {
   return visitorId;
 }
 
+const fbclidKey = "ep_fbclid";
+
+function captureFbclid() {
+  const fbclid = new URLSearchParams(window.location.search).get("fbclid");
+  if (fbclid) window.sessionStorage.setItem(fbclidKey, fbclid);
+}
+
 function getUtm() {
   const params = new URLSearchParams(window.location.search);
+  const fbclid = params.get("fbclid") || window.sessionStorage.getItem(fbclidKey) || undefined;
   return {
     source: params.get("utm_source") || undefined,
     medium: params.get("utm_medium") || undefined,
     campaign: params.get("utm_campaign") || undefined,
     term: params.get("utm_term") || undefined,
     content: params.get("utm_content") || undefined,
+    fbclid,
   };
 }
 
@@ -127,6 +136,7 @@ export default function AnalyticsTracker() {
 
     pageStartedAt.current = Date.now();
     lastPath.current = fullPath;
+    captureFbclid();
 
     if (window.sessionStorage.getItem(sessionStartedKey) !== "1") {
       window.sessionStorage.setItem(sessionStartedKey, "1");

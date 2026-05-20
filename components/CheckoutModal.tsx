@@ -190,35 +190,46 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeCheckout} />
 
       <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white shadow-2xl md:rounded-3xl">
-        <div className="sticky top-0 z-10 flex items-center justify-between rounded-t-3xl border-b border-gray-100 bg-white px-5 py-4">
-          <div className="flex items-center gap-3">
-            {step === "payment" && !isSubmitting ? (
-              <button
-                onClick={() => setStep("details")}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200"
-                aria-label="Retour"
-              >
-                ←
-              </button>
-            ) : (
-              <div className="h-8 w-8" />
-            )}
-            <div>
-              <div className="text-sm font-bold text-gray-900">
-                {step === "details" ? "Votre commande" : "Paiement par Mobile Money"}
-              </div>
-              <div className="text-sm text-gray-600">
-                {step === "details" ? "Prénom et lieu de livraison" : "Paiement sécurisé"}
+        <div className="sticky top-0 z-10 rounded-t-3xl border-b border-gray-100 bg-white px-5 pt-4 pb-0">
+          <div className="flex items-center justify-between pb-3">
+            <div className="flex items-center gap-3">
+              {step === "payment" && !isSubmitting ? (
+                <button
+                  onClick={() => setStep("details")}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200"
+                  aria-label="Retour"
+                >
+                  ←
+                </button>
+              ) : (
+                <div className="h-8 w-8" />
+              )}
+              <div>
+                <div className="flex items-center gap-2">
+                  <div className="text-sm font-bold text-gray-900">
+                    {step === "details" ? "Votre commande" : "Paiement par Mobile Money"}
+                  </div>
+                  <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-400">
+                    {step === "details" ? "1 / 2" : "2 / 2"}
+                  </span>
+                </div>
+                <div className="text-xs text-gray-500">
+                  {step === "details" ? "Prénom et lieu de livraison" : "Paiement sécurisé"}
+                </div>
               </div>
             </div>
+            <button
+              onClick={closeCheckout}
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-lg leading-none text-gray-500 transition-colors hover:bg-gray-200"
+              aria-label="Fermer"
+            >
+              ×
+            </button>
           </div>
-          <button
-            onClick={closeCheckout}
-            className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-lg leading-none text-gray-500 transition-colors hover:bg-gray-200"
-            aria-label="Fermer"
-          >
-            ×
-          </button>
+          <div className="flex gap-1.5 pb-3">
+            <div className="h-1 flex-1 rounded-full bg-green-600" />
+            <div className={`h-1 flex-1 rounded-full transition-colors duration-300 ${step === "payment" ? "bg-green-600" : "bg-gray-200"}`} />
+          </div>
         </div>
 
         <div className="px-5 pb-6 pt-4">

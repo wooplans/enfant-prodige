@@ -2,7 +2,7 @@
 
 import type { AdminSeries, Avis, BD } from "@/lib/catalogue";
 import { localCatalogue } from "@/lib/local-catalogue";
-import { getSupabaseAdmin, getSupabasePublic } from "@/lib/supabase/server";
+import { getSupabaseAdmin, getSupabasePublic, hasSupabaseAdminConfig } from "@/lib/supabase/server";
 
 type SeriesRow = {
   id: string;
@@ -198,6 +198,21 @@ export async function getAdminSeries(): Promise<AdminSeries[]> {
   }
 
   return ((data ?? []) as unknown as SeriesRow[]).map(toAdminSeries);
+}
+
+export async function getSeriesPaidCount(slug: string): Promise<number> {
+  if (!hasSupabaseAdminConfig()) return 0;
+  try {
+    const supabase = getSupabaseAdmin();
+    const { count } = await supabase
+      .from("payment_orders")
+      .select("id", { count: "exact", head: true })
+      .eq("series_slug", slug)
+      .eq("status", "paid");
+    return count ?? 0;
+  } catch {
+    return 0;
+  }
 }
 
 export async function getAdminSeriesById(id: string): Promise<AdminSeries | null> {
