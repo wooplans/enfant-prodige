@@ -49,7 +49,7 @@ export interface CommandeData {
   rue: string;
 }
 
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "237680589708";
+export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "237691001580";
 
 export function buildWhatsAppMessage(bd: BD, commande: CommandeData): string {
   const adresse = commande.rue

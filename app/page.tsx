@@ -20,7 +20,7 @@ export default async function Home() {
           </h1>
           <p className="text-lg text-green-100 mb-8 max-w-2xl mx-auto">
             Votre enfant devient le héros de sa propre bande dessinée africaine. 32 pages
-            illustrées, livrées en 24h à Yaoundé et Douala.
+            illustrées, livrées en 48h à Yaoundé et Douala.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
@@ -135,8 +135,8 @@ export default async function Home() {
               },
               {
                 icon: "🚀",
-                titre: "Livraison en 24h",
-                texte: "Après confirmation, votre BD personnalisée est imprimée et livrée sous 24h à Yaoundé et Douala.",
+                titre: "Livraison en 48h",
+                texte: "Après confirmation, votre BD personnalisée est imprimée et livrée sous 48h à Yaoundé et Douala.",
               },
               {
                 icon: "💬",

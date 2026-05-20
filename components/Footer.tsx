@@ -10,7 +10,7 @@ export default function Footer() {
           </h3>
           <p className="text-green-100 text-sm leading-relaxed">
             Des livres illustrés personnalisés pour les enfants africains de 6 à 10 ans. Le prénom
-            de votre enfant sur la couverture et dans les dialogues. Livraison sous 24h à Yaoundé
+            de votre enfant sur la couverture et dans les dialogues. Livraison sous 48h à Yaoundé
             et Douala.
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function Footer() {
         <div>
           <h3 className="font-bold mb-3">Commander</h3>
           <p className="text-green-100 text-sm mb-3">
-            Paiement direct via Monetbil. Assistance WhatsApp disponible si besoin. Livraison en 24h.
+            Commande par WhatsApp, paiement à la réception. Livraison en 48h.
           </p>
           <Link
             href="/contact"

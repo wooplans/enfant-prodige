@@ -390,7 +390,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                       <div>
                         <div className="text-xs font-medium uppercase tracking-wide text-gray-500">Livraison</div>
                         <div className="text-sm font-semibold text-gray-900">{lieuLivraison.trim()}</div>
-                        <div className="text-sm text-gray-600">Sous 24h après confirmation</div>
+                        <div className="text-sm text-gray-600">Sous 48h après confirmation</div>
                       </div>
                     </div>
                     {!isMobile && whatsappClient && (
@@ -402,27 +402,30 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                         </div>
                       </div>
                     )}
-                    <div className="px-4 py-3.5">
-                      <div className="mb-1.5 flex items-center justify-between">
-                        <span className="text-sm text-gray-600">BD personnalisée</span>
-                        <span className="font-bold text-gray-900">{bd.prix.toLocaleString("fr-FR")} FCFA</span>
+                    <div className="px-4 py-4 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900">BD personnalisée</div>
+                          <div className="text-xs text-gray-500 mt-0.5">Payé par Mobile Money pour confirmer la commande</div>
+                        </div>
+                        <span className="font-extrabold text-gray-900 text-base shrink-0">{bd.prix.toLocaleString("fr-FR")} FCFA</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Livraison</span>
-                        <span className="text-sm text-gray-700">
-                          + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA{" "}
-                          <span className="text-xs">(à la réception)</span>
-                        </span>
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <div className="text-sm text-gray-700">Frais de livraison</div>
+                          <div className="text-xs text-gray-500 mt-0.5">Payé en cash au livreur à la réception</div>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-700 shrink-0">+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA</span>
                       </div>
                     </div>
-                    <div className="rounded-b-2xl bg-green-50 px-4 py-3.5">
+                    <div className="rounded-b-2xl bg-green-50 px-4 py-3.5 space-y-1">
                       <div className="flex items-center justify-between">
-                        <div className="text-sm font-semibold text-green-800">
-                          {isMobile ? "Paiement à la livraison" : "Paiement offline après confirmation"}
-                        </div>
-                        <div className="text-lg font-extrabold text-green-800">
-                          {bd.prix.toLocaleString("fr-FR")} FCFA
-                        </div>
+                        <div className="text-sm font-bold text-green-900">Maintenant par Mobile Money</div>
+                        <div className="text-lg font-extrabold text-green-900">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs text-green-700">À la livraison en cash</div>
+                        <div className="text-xs font-semibold text-green-700">{bd.fraisLivraison.toLocaleString("fr-FR")} FCFA</div>
                       </div>
                     </div>
                   </div>

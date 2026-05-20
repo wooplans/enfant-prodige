@@ -35,7 +35,7 @@ export default function CommanderForm({ prix, fraisLivraison, onCommander }: Pro
         Commander sur WhatsApp
       </button>
       <p className="text-sm text-gray-600 text-center mt-2">
-        Personnalisation avec le prénom · Livraison 24h · Paiement à la réception
+        Personnalisation avec le prénom · Livraison 48h · Paiement à la réception
       </p>
     </div>
   );

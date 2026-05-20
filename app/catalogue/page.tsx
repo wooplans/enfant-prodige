@@ -49,8 +49,8 @@ export default async function CataloguePage() {
       {/* Infos livraison */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
-          { icon: "💳", titre: "Paiement Mobile Money", texte: "MTN MoMo ou Orange Money, avant la personnalisation." },
-          { icon: "🚀", titre: "Livraison en 24h", texte: "Après paiement, votre BD personnalisée est livrée à votre porte." },
+          { icon: "📱", titre: "Commande sur WhatsApp", texte: "Envoyez votre commande en 2 clics, nous confirmons par WhatsApp." },
+          { icon: "🚀", titre: "Livraison en 48h", texte: "Après confirmation, votre BD personnalisée est livrée à votre porte." },
           { icon: "📦", titre: "1 000 FCFA à la réception", texte: "Frais de livraison réglés au livreur, aucun paiement caché." },
         ].map(({ icon, titre, texte }) => (
           <div key={titre} className="bg-white rounded-xl border border-gray-100 p-4 flex items-start gap-3">

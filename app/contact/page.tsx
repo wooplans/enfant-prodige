@@ -60,7 +60,7 @@ export default function ContactPage() {
           },
           {
             q: "Quel est le délai de livraison ?",
-            a: "Une fois votre paiement Mobile Money confirmé, nous personnalisons votre BD et la livrons sous 24h à Yaoundé et Douala.",
+            a: "Une fois votre commande confirmée par WhatsApp, nous personnalisons votre BD et la livrons sous 48h à Yaoundé et Douala.",
           },
           {
             q: "Livrez-vous en dehors de Yaoundé et Douala ?",
