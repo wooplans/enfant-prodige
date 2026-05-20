@@ -42,6 +42,18 @@ export async function POST(request: Request) {
   const settings = await getPaymentSettings();
   const provider = resolveActivePaymentProvider(settings);
 
+  const effectiveEmail = (() => {
+    const supplied = parsed.data.email.trim().toLowerCase();
+    if (supplied) return supplied;
+    const base = parsed.data.prenom
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]/g, "");
+    return `${base || "client"}@commande.ep.cm`;
+  })();
+
   const paymentRef = buildMonetbilPaymentRef(series.slug);
   const requestUrl = request.url;
   const canPersist = hasSupabaseAdminConfig();
@@ -144,7 +156,7 @@ export async function POST(request: Request) {
         snapSnippet: Boolean(settings.chariowSnapSnippet),
         productCode: settings.chariowProductCode,
         productUrl: settings.chariowProductUrl,
-        email: parsed.data.email.trim().toLowerCase(),
+        email: effectiveEmail,
         telephone: parsed.data.telephone.trim(),
         promoCode: parsed.data.promoCode.trim(),
       },
@@ -174,7 +186,7 @@ export async function POST(request: Request) {
         paymentRef,
         slug: series.slug,
         prenom: parsed.data.prenom,
-        email: parsed.data.email,
+        email: effectiveEmail,
         telephone: parsed.data.telephone,
         quartier: parsed.data.quartier,
         rue: parsed.data.rue,
@@ -190,7 +202,7 @@ export async function POST(request: Request) {
             return_url: checkout.redirectUrl,
             provider_payload: {
               ...checkout.requestPayload,
-              email: parsed.data.email.trim().toLowerCase(),
+              email: effectiveEmail,
               telephone: parsed.data.telephone.trim(),
               promoCode: parsed.data.promoCode.trim(),
             },
