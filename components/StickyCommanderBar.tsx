@@ -8,7 +8,7 @@ interface Props {
   label?: string;
 }
 
-export default function StickyCommanderBar({ onCommander, shakeStartId, label = "Personnaliser pour mon enfant" }: Props) {
+export default function StickyCommanderBar({ onCommander, shakeStartId, label = "Commander sur WhatsApp" }: Props) {
   const [visible, setVisible] = useState(false);
   const [shakeEnabled, setShakeEnabled] = useState(false);
 
@@ -54,7 +54,7 @@ export default function StickyCommanderBar({ onCommander, shakeStartId, label = 
         type="button"
         onPointerDown={onCommander}
         onClick={onCommander}
-        className="relative flex w-full max-w-2xl items-center justify-center gap-2 overflow-hidden rounded-xl bg-green-600 px-3 py-3 text-base font-bold text-white transition-colors hover:bg-green-500 active:bg-green-700"
+        className="relative flex w-full max-w-2xl items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#25D366] px-3 py-3 text-base font-bold text-white transition-colors hover:bg-[#1ebe5d] active:bg-[#19a853]"
         style={shakeEnabled ? { animation: "sticky-shake 3s ease-in-out infinite" } : undefined}
       >
         <span className="cta-flash-light" aria-hidden="true" />

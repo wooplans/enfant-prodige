@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { BD } from "@/lib/catalogue";
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
-import type { PaymentSettings } from "@/lib/payment-settings";
 import StickyCommanderBar from "@/components/StickyCommanderBar";
 import CheckoutModal from "@/components/CheckoutModal";
 import FaqAccordion from "@/components/FaqAccordion";
@@ -15,7 +14,6 @@ import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 interface Props {
   bd: BD;
   landingPageMode?: boolean;
-  paymentSettings: PaymentSettings;
   deliveryDateLabel: string;
   soldCount?: number;
 }
@@ -68,7 +66,7 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
   ],
 };
 
-export default function BDDetailClient({ bd, landingPageMode = false, paymentSettings, deliveryDateLabel, soldCount = 0 }: Props) {
+export default function BDDetailClient({ bd, landingPageMode = false, deliveryDateLabel, soldCount = 0 }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -173,7 +171,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
     bd.id === "academie-genies"
       ? "Une bande dessinée 100% personnalisée avec le prénom de votre garçon. Imprimée en couleur, livrée chez vous."
       : bd.description;
-  const primaryCtaText = bd.id === "academie-genies" ? "Personnaliser pour mon garçon" : "Personnaliser pour mon enfant";
+  const primaryCtaText = bd.id === "academie-genies" ? "Commander sur WhatsApp" : "Commander sur WhatsApp";
   const academieGeniesReasons =
     bd.id === "academie-genies"
       ? [
@@ -258,8 +256,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
                 </button>
               </div>
               <div className="mt-3 flex items-center gap-3">
-                <MobileMoneyLogos />
-                <span className="text-xs text-green-200 font-medium">Paiement sécurisé par Mobile Money</span>
+                <span className="text-xs text-green-200 font-medium">📱 Paiement offline · Livraison 24h</span>
               </div>
               {bd.id === "academie-genies" && (
                 <div className="mt-2">
@@ -430,8 +427,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
             ))}
           </ol>
           <div className="mt-8 flex flex-col items-center gap-2">
-            <MobileMoneyLogos />
-            <p className="text-xs text-gray-500 font-medium">Orange Money · MTN Mobile Money · Paiement sécurisé</p>
+            <p className="text-xs text-gray-500 font-medium">📱 Commande WhatsApp · Paiement à la réception · Livraison 24h</p>
           </div>
         </FullWidthSection>
 
@@ -696,8 +692,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
               {primaryCtaText} <span aria-hidden="true">→</span>
             </button>
             <div className="mt-4 flex flex-col items-center gap-2">
-              <MobileMoneyLogos light />
-              <p className="text-xs text-green-300">Orange Money · MTN Mobile Money · Paiement sécurisé</p>
+              <p className="text-xs text-green-300">📱 Commande WhatsApp · Paiement à la réception</p>
             </div>
             <p className="mt-3 text-xs text-green-400">📍 Livraison Yaoundé &amp; Douala · {deliveryDateLabel}</p>
           </div>
@@ -709,7 +704,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         shakeStartId="avis-parents"
         label={primaryCtaText}
       />
-      {modalOuvert && <CheckoutModal bd={bd} paymentSettings={paymentSettings} onClose={() => setModalOuvert(false)} />}
+      {modalOuvert && <CheckoutModal bd={bd} onClose={() => setModalOuvert(false)} />}
     </>
   );
 }
@@ -785,28 +780,6 @@ function getRatingBreakdown(note: number, total: number) {
   });
 }
 
-function MobileMoneyLogos({ light = false }: { light?: boolean }) {
-  return (
-    <div className="flex items-center gap-3">
-      {/* Orange Money */}
-      <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${light ? "bg-white/15 text-white" : "bg-orange-50 text-orange-700 border border-orange-200"}`}>
-        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
-          <circle cx="12" cy="12" r="12" className={light ? "fill-orange-400" : "fill-orange-500"} />
-          <text x="12" y="16" textAnchor="middle" fontSize="10" fontWeight="bold" fill="white">O</text>
-        </svg>
-        Orange Money
-      </div>
-      {/* MTN MoMo */}
-      <div className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold ${light ? "bg-white/15 text-white" : "bg-yellow-50 text-yellow-800 border border-yellow-200"}`}>
-        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
-          <circle cx="12" cy="12" r="12" className="fill-yellow-400" />
-          <text x="12" y="16" textAnchor="middle" fontSize="8" fontWeight="bold" fill="#1a1a1a">MTN</text>
-        </svg>
-        MTN MoMo
-      </div>
-    </div>
-  );
-}
 
 function Stars({ note, small }: { note: number; small?: boolean }) {
   const full = Math.floor(note);

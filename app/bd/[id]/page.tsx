@@ -3,7 +3,6 @@ import BDDetailClient from "@/components/BDDetailClient";
 import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getPaymentSettings } from "@/lib/payment-settings";
 import { getDeliveryDateLabel } from "@/lib/delivery";
 
 interface Props {
@@ -54,10 +53,7 @@ export default async function PageBD({ params }: Props) {
     notFound();
   }
 
-  const [paymentSettings, soldCount] = await Promise.all([
-    getPaymentSettings(),
-    getSeriesPaidCount(id),
-  ]);
+  const soldCount = await getSeriesPaidCount(id);
   await getPublicCatalogue();
   const deliveryDateLabel = getDeliveryDateLabel(new Date(), 48);
   const landingPageMode = bd.landingPageMode || bd.id === "academie-genies";
@@ -65,7 +61,6 @@ export default async function PageBD({ params }: Props) {
     <BDDetailClient
       bd={bd}
       landingPageMode={landingPageMode}
-      paymentSettings={paymentSettings}
       deliveryDateLabel={deliveryDateLabel}
       soldCount={soldCount}
     />

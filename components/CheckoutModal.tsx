@@ -1,64 +1,54 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { BD, CommandeData } from "@/lib/catalogue";
-import type { PaymentProvider, PaymentSettings } from "@/lib/payment-settings";
-import ChariowWidgetEmbed from "@/components/ChariowWidgetEmbed";
+import { useCallback, useEffect, useState } from "react";
+import type { BD } from "@/lib/catalogue";
 import { fbqTrack } from "@/components/FacebookPixel";
 import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 
 interface Props {
   bd: BD;
-  paymentSettings: PaymentSettings;
   onClose: () => void;
 }
 
-type Step = "details" | "payment";
+type Step = "details" | "summary";
 
-const INITIAL_DATA: CommandeData = {
-  prenom: "",
-  sexe: null,
-  email: "",
-  telephone: "",
-  quartier: "",
-  rue: "",
-};
+const MOBILE_WHATSAPP = "237691001580";
 
-type CheckoutStartResponse =
-  | {
-      ok: true;
-      provider: "chariow";
-      payment_ref: string;
-      checkout_url: string;
-      product_code: string;
-      snap_snippet: string;
-      redirect_mode?: "hosted" | "widget";
-    }
-  | {
-      ok: true;
-      provider: "monetbil";
-      payment_ref: string;
-      payment_url: string;
-      return_url: string;
-      notify_url: string;
-    }
-  | {
-      ok: false;
-      message: string;
-    };
+function isMobileDevice(): boolean {
+  if (typeof window === "undefined") return true;
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+}
 
-export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
+function buildMobileWhatsAppUrl(serie: string, prenom: string, lieuLivraison: string, prix: number, fraisLivraison: number): string {
+  const message = [
+    "Bonjour ! Je souhaite commander :",
+    "",
+    `📚 Série : ${serie}`,
+    `👶 Prénom de l'enfant : ${prenom}`,
+    `📍 Lieu de livraison : ${lieuLivraison}`,
+    `💰 Montant : ${prix.toLocaleString("fr-FR")} FCFA + ${fraisLivraison.toLocaleString("fr-FR")} FCFA livraison (à la réception)`,
+    "",
+    "Merci !",
+  ].join("\n");
+  return `https://wa.me/${MOBILE_WHATSAPP}?text=${encodeURIComponent(message)}`;
+}
+
+export default function CheckoutModal({ bd, onClose }: Props) {
   const [step, setStep] = useState<Step>("details");
-  const [data, setData] = useState<CommandeData>(INITIAL_DATA);
+  const [prenom, setPrenom] = useState("");
+  const [lieuLivraison, setLieuLivraison] = useState("");
+  const [whatsappClient, setWhatsappClient] = useState("");
   const [prenomTouched, setPrenomTouched] = useState(false);
-  const [emailTouched, setEmailTouched] = useState(false);
-  const [telephoneTouched, setTelephoneTouched] = useState(false);
-  const [quartierTouched, setQuartierTouched] = useState(false);
-  const [promoOpen, setPromoOpen] = useState(false);
-  const [promoCode, setPromoCode] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [lieuTouched, setLieuTouched] = useState(false);
+  const [whatsappTouched, setWhatsappTouched] = useState(false);
+  const [isMobile, setIsMobile] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+  const [sentOk, setSentOk] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [checkoutInfo, setCheckoutInfo] = useState<CheckoutStartResponse | null>(null);
+
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+  }, []);
 
   useEffect(() => {
     fbqTrack("InitiateCheckout", {
@@ -70,21 +60,11 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
     });
   }, [bd.id, bd.prix, bd.serie]);
 
-  const activeProvider: PaymentProvider =
-    paymentSettings.defaultProvider === "monetbil" && paymentSettings.monetbilEnabled ? "monetbil" : "chariow";
-
-  const prenomValide = data.prenom.trim().length >= 2;
-  const emailValide = data.email.trim().length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
-  const telephoneDigits = data.telephone.replace(/\D+/g, "");
-  const telephoneValide = telephoneDigits.length === 9;
-  const lieuLivraisonValide = data.quartier.trim().length >= 2;
-  const detailsValides =
-    prenomValide &&
-    lieuLivraisonValide &&
-    (activeProvider !== "chariow" || telephoneValide);
-  const adresseComplete = useMemo(() => {
-    return data.rue.trim().length > 0 ? `${data.quartier}, ${data.rue}` : data.quartier;
-  }, [data.quartier, data.rue]);
+  const prenomValide = prenom.trim().length >= 2;
+  const lieuValide = lieuLivraison.trim().length >= 2;
+  const whatsappDigits = whatsappClient.replace(/\D/g, "");
+  const whatsappValide = whatsappDigits.length >= 9;
+  const detailsValides = prenomValide && lieuValide && (isMobile || whatsappValide);
 
   const closeCheckout = useCallback(() => {
     trackAnalyticsEvent({
@@ -100,100 +80,98 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
   }, [bd.id, bd.serie, bd.slug, onClose]);
 
   useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeCheckout();
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeCheckout();
     };
-
     document.addEventListener("keydown", handler);
     document.body.style.overflow = "hidden";
-
     return () => {
       document.removeEventListener("keydown", handler);
       document.body.style.overflow = "";
     };
   }, [closeCheckout]);
 
-  const startCheckout = async () => {
+  const goToSummary = () => {
     setPrenomTouched(true);
-    setEmailTouched(true);
-    setTelephoneTouched(true);
-    setQuartierTouched(true);
+    setLieuTouched(true);
+    if (!isMobile) setWhatsappTouched(true);
+    if (!detailsValides) return;
 
-    if (!detailsValides || isSubmitting) return;
-
-    setErrorMessage(null);
-    setCheckoutInfo(null);
-    setIsSubmitting(true);
-    setStep("payment");
-
-    fbqTrack("Lead", {
-      content_name: bd.serie,
-      content_ids: [bd.id],
-      content_type: "product",
-      value: bd.prix,
-      currency: "XAF",
-    });
     trackAnalyticsEvent({
       eventType: "checkout_details_submit",
       metadata: {
         source: "checkout_modal",
-        provider: activeProvider,
+        provider: "whatsapp",
         seriesId: bd.id,
         seriesSlug: bd.slug || bd.id,
         seriesTitle: bd.serie,
       },
     });
+    setStep("summary");
+  };
 
+  const sendOrder = async () => {
+    if (isMobile) {
+      fbqTrack("Lead", {
+        content_name: bd.serie,
+        content_ids: [bd.id],
+        content_type: "product",
+        value: bd.prix,
+        currency: "XAF",
+      });
+      const url = buildMobileWhatsAppUrl(bd.serie, prenom.trim(), lieuLivraison.trim(), bd.prix, bd.fraisLivraison);
+      window.open(url, "_blank");
+      return;
+    }
+
+    // Desktop: send via Green API
+    setIsSending(true);
+    setErrorMessage(null);
     try {
-      const response = await fetch("/api/payments/start", {
+      const res = await fetch("/api/whatsapp/send", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          bdSlug: bd.slug || bd.id,
-          prenom: data.prenom.trim(),
-          email: data.email.trim(),
-          telephone: data.telephone.trim(),
-          quartier: data.quartier.trim(),
-          rue: data.rue.trim(),
-          promoCode: promoCode.trim(),
+          serie: bd.serie,
+          prenom: prenom.trim(),
+          lieuLivraison: lieuLivraison.trim(),
+          prix: bd.prix,
+          fraisLivraison: bd.fraisLivraison,
+          whatsappClient: whatsappClient.trim(),
         }),
       });
-
-      const payload = (await response.json().catch(() => null)) as CheckoutStartResponse | null;
-      if (!response.ok || !payload || !payload.ok) {
-        throw new Error(payload && "message" in payload ? payload.message : "Impossible de préparer le paiement.");
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json?.ok) {
+        throw new Error(json?.message || "Erreur d'envoi.");
       }
-
-      setCheckoutInfo(payload);
-
-      if (payload.provider === "monetbil") {
-        window.location.assign(payload.payment_url);
-      } else if (payload.redirect_mode === "hosted") {
-        window.location.assign(payload.checkout_url);
-      } else {
-        setIsSubmitting(false);
-      }
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Paiement indisponible.");
-      setIsSubmitting(false);
-      setStep("details");
+      fbqTrack("Lead", {
+        content_name: bd.serie,
+        content_ids: [bd.id],
+        content_type: "product",
+        value: bd.prix,
+        currency: "XAF",
+      });
+      setSentOk(true);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Erreur réseau. Réessayez.");
+    } finally {
+      setIsSending(false);
     }
   };
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center md:items-center"
-      onClick={(event) => event.target === event.currentTarget && closeCheckout()}
+      onClick={(e) => e.target === e.currentTarget && closeCheckout()}
     >
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeCheckout} />
 
       <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-3xl bg-white shadow-2xl md:rounded-3xl">
+        {/* Header */}
         <div className="sticky top-0 z-10 rounded-t-3xl border-b border-gray-100 bg-white px-5 pt-4 pb-0">
           <div className="flex items-center justify-between pb-3">
             <div className="flex items-center gap-3">
-              {step === "payment" && !isSubmitting ? (
+              {step === "summary" ? (
                 <button
                   onClick={() => setStep("details")}
                   className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200"
@@ -207,14 +185,18 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
               <div>
                 <div className="flex items-center gap-2">
                   <div className="text-sm font-bold text-gray-900">
-                    {step === "details" ? "Votre commande" : "Paiement par Mobile Money"}
+                    {step === "details" ? "Votre commande" : "Récapitulatif"}
                   </div>
                   <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-400">
                     {step === "details" ? "1 / 2" : "2 / 2"}
                   </span>
                 </div>
                 <div className="text-xs text-gray-500">
-                  {step === "details" ? "Prénom et lieu de livraison" : "Paiement sécurisé"}
+                  {step === "details"
+                    ? isMobile
+                      ? "Prénom et lieu de livraison"
+                      : "Prénom, livraison et contact"
+                    : "Vérifiez avant d'envoyer"}
                 </div>
               </div>
             </div>
@@ -228,109 +210,102 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
           </div>
           <div className="flex gap-1.5 pb-3">
             <div className="h-1 flex-1 rounded-full bg-green-600" />
-            <div className={`h-1 flex-1 rounded-full transition-colors duration-300 ${step === "payment" ? "bg-green-600" : "bg-gray-200"}`} />
+            <div
+              className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
+                step === "summary" ? "bg-green-600" : "bg-gray-200"
+              }`}
+            />
           </div>
         </div>
 
         <div className="px-5 pb-6 pt-4">
+          {/* ─── STEP 1: DETAILS ─── */}
           {step === "details" && (
             <div className="space-y-5">
+              {/* Prénom */}
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                  Prénom de l’enfant <span className="text-red-500">*</span>
+                  Prénom de l&apos;enfant <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  value={data.prenom}
-                  onChange={(event) => setData({ ...data, prenom: event.target.value })}
+                  value={prenom}
+                  onChange={(e) => setPrenom(e.target.value)}
                   onBlur={() => setPrenomTouched(true)}
                   placeholder="Ex : Kylian, Léa, Kofi..."
                   maxLength={30}
                   autoCapitalize="words"
                   autoFocus
                   className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                    prenomTouched && !prenomValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
+                    prenomTouched && !prenomValide
+                      ? "border-red-400 bg-red-50"
+                      : "border-gray-200 bg-white"
                   }`}
                 />
                 {prenomTouched && !prenomValide && (
                   <p className="mt-1 text-sm text-red-600">Veuillez entrer au moins 2 caractères.</p>
                 )}
-                <p className="mt-1 text-sm font-medium text-green-700">Le prénom sera intégré dans la bande dessinée.</p>
+                <p className="mt-1 text-sm font-medium text-green-700">
+                  Le prénom sera intégré dans la bande dessinée.
+                </p>
               </div>
 
-              {activeProvider === "chariow" ? (
-                <>
-                  <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                      Email <span className="text-xs font-normal text-gray-400">(optionnel)</span>
-                    </label>
-                    <input
-                      type="email"
-                      value={data.email}
-                      onChange={(event) => setData({ ...data, email: event.target.value })}
-                      onBlur={() => setEmailTouched(true)}
-                      placeholder="Ex : parent@email.com"
-                      autoCapitalize="off"
-                      className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        emailTouched && !emailValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
-                      }`}
-                    />
-                    {emailTouched && !emailValide && (
-                      <p className="mt-1 text-sm text-red-600">Veuillez entrer un email valide.</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                      Numéro <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      value={data.telephone}
-                      onChange={(event) => {
-                        const telephone = event.target.value.replace(/\D+/g, "");
-                        setData({ ...data, telephone });
-                        if (!telephoneTouched && telephone.length > 0) {
-                          setTelephoneTouched(true);
-                        }
-                      }}
-                      onBlur={() => setTelephoneTouched(true)}
-                      placeholder="Ex : 6 99 00 11 22"
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      maxLength={9}
-                      autoComplete="tel"
-                      autoCapitalize="off"
-                      className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        telephoneTouched && !telephoneValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
-                      }`}
-                    />
-                    {telephoneTouched && !telephoneValide && (
-                      <p className="mt-1 text-sm text-red-600">Veuillez entrer un numero de 9 chiffres.</p>
-                    )}
-                  </div>
-                </>
-              ) : null}
-
+              {/* Lieu de livraison */}
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-gray-700">
                   Quartier / lieu de livraison <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
-                  value={data.quartier}
-                  onChange={(event) => setData({ ...data, quartier: event.target.value })}
-                  onBlur={() => setQuartierTouched(true)}
+                  value={lieuLivraison}
+                  onChange={(e) => setLieuLivraison(e.target.value)}
+                  onBlur={() => setLieuTouched(true)}
                   placeholder="Ex : Bastos, Omnisport, Akwa..."
                   className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                    quartierTouched && !lieuLivraisonValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
+                    lieuTouched && !lieuValide
+                      ? "border-red-400 bg-red-50"
+                      : "border-gray-200 bg-white"
                   }`}
                 />
-                {quartierTouched && !lieuLivraisonValide && (
+                {lieuTouched && !lieuValide && (
                   <p className="mt-1 text-sm text-red-600">Veuillez entrer le lieu de livraison.</p>
                 )}
               </div>
 
+              {/* WhatsApp client (desktop seulement) */}
+              {!isMobile && (
+                <div>
+                  <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+                    Votre numéro WhatsApp <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={whatsappClient}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/[^\d\s+]/g, "");
+                      setWhatsappClient(v);
+                      if (!whatsappTouched && v.length > 0) setWhatsappTouched(true);
+                    }}
+                    onBlur={() => setWhatsappTouched(true)}
+                    placeholder="Ex : 6 99 00 11 22"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      whatsappTouched && !whatsappValide
+                        ? "border-red-400 bg-red-50"
+                        : "border-gray-200 bg-white"
+                    }`}
+                  />
+                  {whatsappTouched && !whatsappValide && (
+                    <p className="mt-1 text-sm text-red-600">Veuillez entrer un numéro valide.</p>
+                  )}
+                  <p className="mt-1 text-sm text-gray-500">
+                    Nous vous contacterons sur ce numéro pour confirmer votre commande.
+                  </p>
+                </div>
+              )}
+
+              {/* Résumé prix */}
               <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm">
                 <div className="flex items-center justify-between font-semibold text-gray-800">
                   <span>BD personnalisée</span>
@@ -338,150 +313,155 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                 </div>
                 <div className="mt-1 flex items-center justify-between text-gray-500">
                   <span>Livraison</span>
-                  <span>+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA <span className="text-xs">(à la réception)</span></span>
+                  <span>
+                    + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA{" "}
+                    <span className="text-xs">(à la réception)</span>
+                  </span>
                 </div>
-              </div>
-
-              {errorMessage && (
-                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{errorMessage}</div>
-              )}
-
-              <div className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-4 py-3">
-                <button
-                  type="button"
-                  onClick={() => setPromoOpen((value) => !value)}
-                  className="flex w-full items-center justify-between text-left"
-                >
-                  <span className="text-sm font-semibold text-gray-800">Code promo</span>
-                  <span className="text-sm font-semibold text-green-700">{promoOpen ? "Masquer" : "Ajouter"}</span>
-                </button>
-                {promoOpen && (
-                  <div className="mt-3">
-                    <input
-                      type="text"
-                      value={promoCode}
-                      onChange={(event) => setPromoCode(event.target.value)}
-                      placeholder="Entrez votre code promo"
-                      autoCapitalize="characters"
-                      className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500"
-                    />
-                  </div>
-                )}
               </div>
 
               <button
                 type="button"
-                onClick={startCheckout}
-                disabled={!detailsValides || isSubmitting}
+                onClick={goToSummary}
                 className={`w-full rounded-2xl py-4 text-base font-bold transition-colors ${
-                  detailsValides && !isSubmitting
+                  detailsValides
                     ? "bg-green-600 text-white shadow-lg hover:bg-green-500"
                     : "cursor-not-allowed bg-gray-200 text-gray-400"
                 }`}
               >
-                {isSubmitting ? "Préparation du paiement..." : "Payer par Mobile Money"}
+                Voir le récapitulatif →
               </button>
-              <p className="text-center text-xs leading-5 text-gray-500">
-                Vous allez utiliser votre numéro Mobile Money dans la suite.
-              </p>
             </div>
           )}
 
-          {step === "payment" && (
+          {/* ─── STEP 2: SUMMARY ─── */}
+          {step === "summary" && (
             <div className="space-y-5">
-              <div>
-                <div className="mb-1 text-2xl">💳</div>
-                <h2 className="text-lg font-extrabold text-gray-900">Paiement par Mobile Money</h2>
-                <p className="mt-0.5 text-sm text-gray-600">
-                  Après le paiement, notre équipe prépare votre BD personnalisée et confirme la livraison sur WhatsApp.
-                </p>
-              </div>
-
-              <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-gray-50">
-                <div className="flex items-start gap-3 px-4 py-3.5">
-                  <span className="mt-0.5 text-lg">📚</span>
-                  <div>
-                    <div className="text-sm font-medium uppercase tracking-wide text-gray-700">Série</div>
-                    <div className="text-sm font-semibold text-gray-900">{bd.serie}</div>
-                    <div className="text-sm text-gray-700">{bd.nombrePages} pages illustrées · Personnalisée</div>
+              {sentOk ? (
+                /* Confirmation desktop */
+                <div className="flex flex-col items-center gap-4 py-6 text-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-4xl">
+                    ✅
                   </div>
-                </div>
-                <div className="flex items-start gap-3 px-4 py-3.5">
-                  <span className="mt-0.5 text-lg">👶</span>
-                  <div>
-                    <div className="text-sm font-medium uppercase tracking-wide text-gray-700">Enfant</div>
-                    <div className="text-sm font-semibold text-gray-900">{data.prenom}</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 px-4 py-3.5">
-                  <span className="mt-0.5 text-lg">📍</span>
-                  <div>
-                    <div className="text-sm font-medium uppercase tracking-wide text-gray-700">Livraison</div>
-                    <div className="text-sm font-semibold text-gray-900">{adresseComplete}</div>
-                    <div className="text-sm text-gray-700">Sous 48h après confirmation</div>
-                  </div>
-                </div>
-                <div className="px-4 py-3.5">
-                  <div className="mb-2 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <span>💰</span> BD personnalisée
-                    </div>
-                    <div className="font-bold text-gray-900">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
-                  </div>
-                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span>📦</span> Frais de livraison
-                    </div>
-                    <div className="text-sm text-gray-700">
-                      + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA <span>(à la réception)</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="rounded-b-2xl bg-green-50 px-4 py-3.5">
-                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="text-sm font-semibold text-green-800">Paiement par Mobile Money</div>
-                    <div className="text-lg font-extrabold text-green-800">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
-                  </div>
-                </div>
-              </div>
-
-              {errorMessage && (
-                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{errorMessage}</div>
-              )}
-
-              {activeProvider === "chariow" ? (
-                <div className="space-y-4">
-                  {isSubmitting && !checkoutInfo ? (
-                    <div className="flex flex-col items-center gap-3 py-10">
-                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-green-600 border-t-transparent" />
-                      <p className="text-sm text-gray-500">Préparation de votre paiement…</p>
-                    </div>
-                  ) : (
-                    <ChariowWidgetEmbed
-                      html={
-                        checkoutInfo && checkoutInfo.ok && checkoutInfo.provider === "chariow"
-                          ? checkoutInfo.snap_snippet
-                          : paymentSettings.chariowSnapSnippet
-                      }
-                      productUrl={paymentSettings.chariowProductUrl}
-                      productCode={paymentSettings.chariowProductCode}
-                      childName={data.prenom.trim()}
-                    />
-                  )}
+                  <h2 className="text-xl font-extrabold text-gray-900">Commande envoyée !</h2>
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    Votre commande a bien été reçue. Nous vous contacterons sur WhatsApp au{" "}
+                    <span className="font-semibold text-green-700">{whatsappClient}</span> pour confirmer
+                    la livraison et le paiement.
+                  </p>
+                  <button
+                    onClick={closeCheckout}
+                    className="mt-2 rounded-2xl bg-green-600 px-8 py-3 font-bold text-white hover:bg-green-500"
+                  >
+                    Fermer
+                  </button>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (checkoutInfo && checkoutInfo.ok && checkoutInfo.provider === "monetbil") {
-                      window.location.assign(checkoutInfo.payment_url);
-                    }
-                  }}
-                  disabled={isSubmitting}
-                  className="flex w-full items-center justify-center gap-3 rounded-2xl bg-green-600 py-4 text-base font-bold text-white shadow-lg transition-colors hover:bg-green-500 active:bg-green-700 disabled:cursor-not-allowed disabled:bg-green-400"
-                >
-                  {isSubmitting ? "Préparation du paiement..." : "Payer par Mobile Money"}
-                </button>
+                <>
+                  <div>
+                    <div className="mb-1 text-2xl">📱</div>
+                    <h2 className="text-lg font-extrabold text-gray-900">Votre commande</h2>
+                    <p className="mt-0.5 text-sm text-gray-600">
+                      {isMobile
+                        ? "Vérifiez le récapitulatif puis envoyez directement sur WhatsApp."
+                        : "Vérifiez le récapitulatif — nous vous contacterons par WhatsApp pour confirmer."}
+                    </p>
+                  </div>
+
+                  {/* Récapitulatif */}
+                  <div className="divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-gray-50">
+                    <div className="flex items-start gap-3 px-4 py-3.5">
+                      <span className="mt-0.5 text-lg">📚</span>
+                      <div>
+                        <div className="text-xs font-medium uppercase tracking-wide text-gray-500">Série</div>
+                        <div className="text-sm font-semibold text-gray-900">{bd.serie}</div>
+                        <div className="text-sm text-gray-600">{bd.nombrePages} pages · BD personnalisée</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 px-4 py-3.5">
+                      <span className="mt-0.5 text-lg">👶</span>
+                      <div>
+                        <div className="text-xs font-medium uppercase tracking-wide text-gray-500">Prénom de l&apos;enfant</div>
+                        <div className="text-sm font-semibold text-gray-900">{prenom.trim()}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 px-4 py-3.5">
+                      <span className="mt-0.5 text-lg">📍</span>
+                      <div>
+                        <div className="text-xs font-medium uppercase tracking-wide text-gray-500">Livraison</div>
+                        <div className="text-sm font-semibold text-gray-900">{lieuLivraison.trim()}</div>
+                        <div className="text-sm text-gray-600">Sous 24h après confirmation</div>
+                      </div>
+                    </div>
+                    {!isMobile && whatsappClient && (
+                      <div className="flex items-start gap-3 px-4 py-3.5">
+                        <span className="mt-0.5 text-lg">💬</span>
+                        <div>
+                          <div className="text-xs font-medium uppercase tracking-wide text-gray-500">WhatsApp</div>
+                          <div className="text-sm font-semibold text-gray-900">{whatsappClient}</div>
+                        </div>
+                      </div>
+                    )}
+                    <div className="px-4 py-3.5">
+                      <div className="mb-1.5 flex items-center justify-between">
+                        <span className="text-sm text-gray-600">BD personnalisée</span>
+                        <span className="font-bold text-gray-900">{bd.prix.toLocaleString("fr-FR")} FCFA</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Livraison</span>
+                        <span className="text-sm text-gray-700">
+                          + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA{" "}
+                          <span className="text-xs">(à la réception)</span>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="rounded-b-2xl bg-green-50 px-4 py-3.5">
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm font-semibold text-green-800">
+                          {isMobile ? "Paiement à la livraison" : "Paiement offline après confirmation"}
+                        </div>
+                        <div className="text-lg font-extrabold text-green-800">
+                          {bd.prix.toLocaleString("fr-FR")} FCFA
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {errorMessage && (
+                    <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {errorMessage}
+                    </div>
+                  )}
+
+                  {/* CTA */}
+                  <button
+                    type="button"
+                    onClick={sendOrder}
+                    disabled={isSending}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] py-4 text-base font-bold text-white shadow-lg transition-colors hover:bg-[#1ebe5d] active:bg-[#19a853] disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {isSending ? (
+                      <>
+                        <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                        Envoi en cours…
+                      </>
+                    ) : (
+                      <>
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                          <path d="M12 0C5.374 0 0 5.373 0 12c0 2.117.549 4.107 1.51 5.845L.057 23.885a.5.5 0 0 0 .609.63l6.208-1.624A11.95 11.95 0 0 0 12 24c6.626 0 12-5.373 12-12S18.626 0 12 0zm0 21.818a9.818 9.818 0 0 1-5.001-1.368l-.356-.213-3.705.969.993-3.617-.235-.374A9.818 9.818 0 0 1 2.182 12C2.182 6.58 6.58 2.182 12 2.182S21.818 6.58 21.818 12 17.42 21.818 12 21.818z" />
+                        </svg>
+                        {isMobile ? "Envoyer ma commande sur WhatsApp" : "Envoyer ma commande"}
+                      </>
+                    )}
+                  </button>
+
+                  <p className="text-center text-xs leading-5 text-gray-500">
+                    {isMobile
+                      ? "WhatsApp s'ouvrira avec votre commande pré-remplie."
+                      : "Nous vous répondrons sous peu pour confirmer la livraison."}
+                  </p>
+                </>
               )}
             </div>
           )}
