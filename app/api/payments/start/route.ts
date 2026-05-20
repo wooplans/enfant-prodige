@@ -41,17 +41,6 @@ export async function POST(request: Request) {
 
   const settings = await getPaymentSettings();
   const provider = resolveActivePaymentProvider(settings);
-  if (provider === "chariow") {
-    const email = parsed.data.email.trim();
-    const phoneDigits = parsed.data.telephone.replace(/\D+/g, "");
-
-    if (!email || phoneDigits.length < 8) {
-      return NextResponse.json(
-        { ok: false, message: "Email et numero Mobile Money requis pour le paiement Chariow." },
-        { status: 400 }
-      );
-    }
-  }
 
   const paymentRef = buildMonetbilPaymentRef(series.slug);
   const requestUrl = request.url;

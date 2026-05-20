@@ -19,7 +19,7 @@ export async function createChariowCheckout(options: {
   paymentRef: string;
   slug: string;
   prenom: string;
-  email: string;
+  email?: string;
   telephone: string;
   quartier: string;
   rue?: string;
@@ -35,10 +35,11 @@ export async function createChariowCheckout(options: {
   const address = options.rue?.trim()
     ? `${options.quartier.trim()}, ${options.rue.trim()}`
     : options.quartier.trim();
+  const email = options.email?.trim().toLowerCase();
 
   const payload = {
     product_id: options.productId,
-    email: options.email.trim().toLowerCase(),
+    ...(email ? { email } : {}),
     first_name: options.prenom.trim(),
     last_name: "Client",
     phone: {

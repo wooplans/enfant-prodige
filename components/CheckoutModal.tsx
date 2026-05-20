@@ -74,14 +74,14 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
     paymentSettings.defaultProvider === "monetbil" && paymentSettings.monetbilEnabled ? "monetbil" : "chariow";
 
   const prenomValide = data.prenom.trim().length >= 2;
-  const emailValide = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
+  const emailValide = data.email.trim().length === 0 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
   const telephoneDigits = data.telephone.replace(/\D+/g, "");
   const telephoneValide = telephoneDigits.length === 9;
   const lieuLivraisonValide = data.quartier.trim().length >= 2;
   const detailsValides =
     prenomValide &&
     lieuLivraisonValide &&
-    (activeProvider !== "chariow" || (emailValide && telephoneValide));
+    (activeProvider !== "chariow" || telephoneValide);
   const adresseComplete = useMemo(() => {
     return data.rue.trim().length > 0 ? `${data.quartier}, ${data.rue}` : data.quartier;
   }, [data.quartier, data.rue]);
@@ -236,6 +236,7 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                   placeholder="Ex : Kylian, Léa, Kofi..."
                   maxLength={30}
                   autoCapitalize="words"
+                  autoFocus
                   className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
                     prenomTouched && !prenomValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
                   }`}
@@ -250,7 +251,7 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                 <>
                   <div>
                     <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                      Email <span className="text-red-500">*</span>
+                      Email <span className="text-xs font-normal text-gray-400">(optionnel)</span>
                     </label>
                     <input
                       type="email"
@@ -317,6 +318,17 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                 {quartierTouched && !lieuLivraisonValide && (
                   <p className="mt-1 text-sm text-red-600">Veuillez entrer le lieu de livraison.</p>
                 )}
+              </div>
+
+              <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm">
+                <div className="flex items-center justify-between font-semibold text-gray-800">
+                  <span>BD personnalisée</span>
+                  <span>{bd.prix.toLocaleString("fr-FR")} FCFA</span>
+                </div>
+                <div className="mt-1 flex items-center justify-between text-gray-500">
+                  <span>Livraison</span>
+                  <span>+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA <span className="text-xs">(à la réception)</span></span>
+                </div>
               </div>
 
               {errorMessage && (
@@ -395,7 +407,7 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                   <div>
                     <div className="text-sm font-medium uppercase tracking-wide text-gray-700">Livraison</div>
                     <div className="text-sm font-semibold text-gray-900">{adresseComplete}</div>
-                    <div className="text-sm text-gray-700">Sous 24h après paiement</div>
+                    <div className="text-sm text-gray-700">Sous 48h après confirmation</div>
                   </div>
                 </div>
                 <div className="px-4 py-3.5">
@@ -428,16 +440,23 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
 
               {activeProvider === "chariow" ? (
                 <div className="space-y-4">
-                  <ChariowWidgetEmbed
-                    html={
-                      checkoutInfo && checkoutInfo.ok && checkoutInfo.provider === "chariow"
-                        ? checkoutInfo.snap_snippet
-                        : paymentSettings.chariowSnapSnippet
-                    }
-                    productUrl={paymentSettings.chariowProductUrl}
-                    productCode={paymentSettings.chariowProductCode}
-                    childName={data.prenom.trim()}
-                  />
+                  {isSubmitting && !checkoutInfo ? (
+                    <div className="flex flex-col items-center gap-3 py-10">
+                      <div className="h-8 w-8 animate-spin rounded-full border-2 border-green-600 border-t-transparent" />
+                      <p className="text-sm text-gray-500">Préparation de votre paiement…</p>
+                    </div>
+                  ) : (
+                    <ChariowWidgetEmbed
+                      html={
+                        checkoutInfo && checkoutInfo.ok && checkoutInfo.provider === "chariow"
+                          ? checkoutInfo.snap_snippet
+                          : paymentSettings.chariowSnapSnippet
+                      }
+                      productUrl={paymentSettings.chariowProductUrl}
+                      productCode={paymentSettings.chariowProductCode}
+                      childName={data.prenom.trim()}
+                    />
+                  )}
                 </div>
               ) : (
                 <button
