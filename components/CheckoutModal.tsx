@@ -19,18 +19,27 @@ function isMobileDevice(): boolean {
   return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
 }
 
-function buildMobileWhatsAppUrl(serie: string, prenom: string, lieuLivraison: string, prix: number, fraisLivraison: number): string {
-  const message = [
+function buildWhatsAppUrl(
+  serie: string,
+  prenom: string,
+  lieuLivraison: string,
+  prix: number,
+  fraisLivraison: number,
+  whatsappClient?: string,
+): string {
+  const lines = [
     "Bonjour ! Je souhaite commander :",
     "",
     `📚 Série : ${serie}`,
     `👶 Prénom de l'enfant : ${prenom}`,
     `📍 Lieu de livraison : ${lieuLivraison}`,
     `💰 Montant : ${prix.toLocaleString("fr-FR")} FCFA + ${fraisLivraison.toLocaleString("fr-FR")} FCFA livraison (à la réception)`,
-    "",
-    "Merci !",
-  ].join("\n");
-  return `https://wa.me/${MOBILE_WHATSAPP}?text=${encodeURIComponent(message)}`;
+  ];
+  if (whatsappClient) {
+    lines.push("", `📱 Mon WhatsApp : ${whatsappClient}`);
+  }
+  lines.push("", "Merci !");
+  return `https://wa.me/${MOBILE_WHATSAPP}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
 export default function CheckoutModal({ bd, onClose }: Props) {
@@ -44,6 +53,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
   const [isMobile, setIsMobile] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [sentOk, setSentOk] = useState(false);
+  const [usedFallback, setUsedFallback] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -122,10 +132,9 @@ export default function CheckoutModal({ bd, onClose }: Props) {
       lieu_livraison: lieuLivraison.trim(),
     };
 
-    if (isMobile) {
-      fbqTrackCustom("CommandeWhatsApp", pixelPayload);
-      fbqTrack("Lead", pixelPayload);
-      // Enregistrement serveur de l'événement (fire-and-forget, n'attend pas la réponse)
+    const firePixel = (canal: string) => {
+      fbqTrackCustom("CommandeWhatsApp", { ...pixelPayload, canal });
+      fbqTrack("Lead", { ...pixelPayload, canal });
       fetch("/api/whatsapp/track", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -138,12 +147,18 @@ export default function CheckoutModal({ bd, onClose }: Props) {
         }),
         keepalive: true,
       }).catch(() => undefined);
-      const url = buildMobileWhatsAppUrl(bd.serie, prenom.trim(), lieuLivraison.trim(), bd.prix, bd.fraisLivraison);
-      window.open(url, "_blank");
+    };
+
+    if (isMobile) {
+      firePixel("whatsapp_mobile");
+      window.open(
+        buildWhatsAppUrl(bd.serie, prenom.trim(), lieuLivraison.trim(), bd.prix, bd.fraisLivraison),
+        "_blank",
+      );
       return;
     }
 
-    // Desktop: send via Green API
+    // Desktop: essaie Green API, fallback automatique vers WhatsApp Web
     setIsSending(true);
     setErrorMessage(null);
     try {
@@ -161,13 +176,26 @@ export default function CheckoutModal({ bd, onClose }: Props) {
       });
       const json = await res.json().catch(() => null);
       if (!res.ok || !json?.ok) {
-        throw new Error(json?.message || "Erreur d'envoi.");
+        throw new Error(json?.message || "api_error");
       }
-      fbqTrackCustom("CommandeWhatsApp", pixelPayload);
-      fbqTrack("Lead", pixelPayload);
+      firePixel("whatsapp_desktop_api");
       setSentOk(true);
-    } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "Erreur réseau. Réessayez.");
+    } catch {
+      // Fallback : ouvre WhatsApp Web avec numéro client inclus dans le message
+      firePixel("whatsapp_desktop_fallback");
+      window.open(
+        buildWhatsAppUrl(
+          bd.serie,
+          prenom.trim(),
+          lieuLivraison.trim(),
+          bd.prix,
+          bd.fraisLivraison,
+          whatsappClient.trim(),
+        ),
+        "_blank",
+      );
+      setUsedFallback(true);
+      setSentOk(true);
     } finally {
       setIsSending(false);
     }
@@ -352,16 +380,27 @@ export default function CheckoutModal({ bd, onClose }: Props) {
           {step === "summary" && (
             <div className="space-y-5">
               {sentOk ? (
-                /* Confirmation desktop */
                 <div className="flex flex-col items-center gap-4 py-6 text-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-4xl">
-                    ✅
+                    {usedFallback ? "📱" : "✅"}
                   </div>
-                  <h2 className="text-xl font-extrabold text-gray-900">Commande envoyée !</h2>
+                  <h2 className="text-xl font-extrabold text-gray-900">
+                    {usedFallback ? "WhatsApp ouvert !" : "Commande envoyée !"}
+                  </h2>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    Votre commande a bien été reçue. Nous vous contacterons sur WhatsApp au{" "}
-                    <span className="font-semibold text-green-700">{whatsappClient}</span> pour confirmer
-                    la livraison et le paiement.
+                    {usedFallback ? (
+                      <>
+                        WhatsApp s&apos;est ouvert dans un nouvel onglet avec votre commande pré-remplie.{" "}
+                        <span className="font-semibold text-green-700">Appuyez sur Envoyer</span> pour
+                        confirmer votre commande.
+                      </>
+                    ) : (
+                      <>
+                        Votre commande a bien été reçue. Nous vous contacterons sur WhatsApp au{" "}
+                        <span className="font-semibold text-green-700">{whatsappClient}</span> pour
+                        confirmer la livraison et le paiement.
+                      </>
+                    )}
                   </p>
                   <button
                     onClick={closeCheckout}

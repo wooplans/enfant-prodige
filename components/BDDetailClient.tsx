@@ -285,7 +285,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                     src={slide.src}
                     alt={`${slide.label} de ${bd.serie}`}
                     fill
-                    preload={index === 0}
+                    priority={index === 0}
                     sizes="(min-width: 1024px) 480px, 100vw"
                     className={`object-cover transition-opacity duration-500 ${slideActif === index ? "opacity-100" : "opacity-0"}`}
                   />
