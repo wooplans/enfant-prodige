@@ -33,7 +33,8 @@ function buildWhatsAppUrl(
     `📚 Série : ${serie}`,
     `👶 Prénom de l'enfant : ${prenom}`,
     `📍 Lieu de livraison : ${lieuLivraison}`,
-    `💰 Montant : ${prix.toLocaleString("fr-FR")} FCFA + ${fraisLivraison.toLocaleString("fr-FR")} FCFA livraison (à la réception)`,
+    `💰 Montant : ${prix.toLocaleString("fr-FR")} FCFA par Mobile Money`,
+    `         ${fraisLivraison.toLocaleString("fr-FR")} FCFA en cash à la livraison`,
   ];
   if (whatsappClient) {
     lines.push("", `📱 Mon WhatsApp : ${whatsappClient}`);
