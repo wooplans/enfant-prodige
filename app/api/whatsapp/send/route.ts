@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { hasFacebookConversionsToken, sendFacebookWhatsAppOrderEvent } from "@/lib/facebook-conversions";
 
 const GREEN_API_URL = "https://7107.api.greenapi.com";
 const GREEN_API_INSTANCE = "7107359294";
@@ -58,6 +59,22 @@ export async function POST(request: Request) {
         { ok: false, message: "Impossible d'envoyer la commande. Réessayez." },
         { status: 502 }
       );
+    }
+
+    // Envoyer l'événement CommandeWhatsApp via Conversions API (non bloquant)
+    if (hasFacebookConversionsToken()) {
+      const origin = new URL(request.url).origin;
+      const ip = request.headers.get("cf-connecting-ip") ?? request.headers.get("x-forwarded-for") ?? null;
+      const ua = request.headers.get("user-agent") ?? null;
+      sendFacebookWhatsAppOrderEvent({
+        eventSourceUrl: `${origin}/bd`,
+        serie,
+        prenom,
+        lieuLivraison,
+        prix,
+        clientIpAddress: ip,
+        clientUserAgent: ua,
+      }).catch((err) => console.error("Facebook Conversions API error:", err));
     }
 
     return NextResponse.json({ ok: true });

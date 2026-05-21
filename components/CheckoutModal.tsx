@@ -125,6 +125,19 @@ export default function CheckoutModal({ bd, onClose }: Props) {
     if (isMobile) {
       fbqTrackCustom("CommandeWhatsApp", pixelPayload);
       fbqTrack("Lead", pixelPayload);
+      // Enregistrement serveur de l'événement (fire-and-forget, n'attend pas la réponse)
+      fetch("/api/whatsapp/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          serie: bd.serie,
+          prenom: prenom.trim(),
+          lieuLivraison: lieuLivraison.trim(),
+          prix: bd.prix,
+          eventSourceUrl: window.location.href,
+        }),
+        keepalive: true,
+      }).catch(() => undefined);
       const url = buildMobileWhatsAppUrl(bd.serie, prenom.trim(), lieuLivraison.trim(), bd.prix, bd.fraisLivraison);
       window.open(url, "_blank");
       return;
