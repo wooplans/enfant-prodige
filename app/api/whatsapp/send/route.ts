@@ -55,8 +55,15 @@ export async function POST(request: Request) {
     if (!response.ok) {
       const text = await response.text().catch(() => "");
       console.error("Green API error:", response.status, text);
+      let detail = "";
+      try {
+        const parsed = JSON.parse(text) as { message?: string; error?: string };
+        detail = parsed.message || parsed.error || text;
+      } catch {
+        detail = text.slice(0, 200);
+      }
       return NextResponse.json(
-        { ok: false, message: "Impossible d'envoyer la commande. Réessayez." },
+        { ok: false, message: `Erreur Green API (${response.status})${detail ? ` : ${detail}` : ""}` },
         { status: 502 }
       );
     }
