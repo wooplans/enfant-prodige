@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     q: "Comment je paye ?",
-    a: "Vous payez 9 900 FCFA directement depuis votre téléphone par Orange Money ou MTN Mobile Money — sans avoir besoin d'aller à une agence. Les 1 000 FCFA de frais d'expédition sont payés à la réception du colis.",
+    a: "Vous payez 10 900 FCFA directement depuis votre téléphone par Orange Money ou MTN Mobile Money (9 900 FCFA pour la BD + 1 000 FCFA de frais d'expédition) — sans avoir besoin d'aller à une agence.",
   },
   {
     q: "Que se passe-t-il après le paiement ?",
@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: "Livrez-vous dans toutes les villes du Cameroun ?",
-    a: "Oui ! Nous expédions dans toutes les villes du Cameroun. Frais d'expédition : 1 000 FCFA, payés à la réception du colis.",
+    a: "Oui ! Nous expédions dans toutes les villes du Cameroun. Frais d'expédition : 1 000 FCFA, inclus dans le paiement Mobile Money avant expédition.",
   },
   {
     q: "Mon fils sait-il déjà lire ? Est-ce pour quel âge ?",
@@ -42,10 +42,6 @@ const faqs = [
   {
     q: "Est-ce que la qualité d'impression est vraiment bonne ?",
     a: "Oui. Nous imprimons sur papier couché 150 g/m², format A4, avec des illustrations pleine couleur. C'est une BD solide, avec un rendu professionnel — pas un simple document imprimé à la maison. Plusieurs parents nous ont dit que la qualité les avait surpris positivement.",
-  },
-  {
-    q: "Puis-je commander la BD comme cadeau d'anniversaire de dernière minute ?",
-    a: "Oui, tant que vous commandez au moins 48h à l'avance. Dès que votre paiement est confirmé, notre équipe vous contacte sur WhatsApp dans les 30 minutes. Nous personnalisons la BD et la livrons sous 48h à Yaoundé et Douala — juste à temps pour l'anniversaire.",
   },
 ];
 

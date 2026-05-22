@@ -19,7 +19,6 @@ export default function CommanderForm({ prix, fraisLivraison, onCommander }: Pro
       </div>
       <p className="text-sm text-gray-600 mb-5">
         + {fraisLivraison.toLocaleString("fr-FR")} FCFA frais d&apos;expédition
-        <span className="text-green-600 font-medium"> · payés à la réception</span>
       </p>
 
       <button
@@ -35,7 +34,7 @@ export default function CommanderForm({ prix, fraisLivraison, onCommander }: Pro
         Commander sur WhatsApp
       </button>
       <p className="text-sm text-gray-600 text-center mt-2">
-        Personnalisation avec le prénom · Livraison 48h · Paiement à la réception
+        Personnalisation avec le prénom · Expédition 48h
       </p>
     </div>
   );

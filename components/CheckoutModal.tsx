@@ -33,8 +33,8 @@ function buildWhatsAppUrl(
     `📚 Série : ${serie}`,
     `👶 Prénom de l'enfant : ${prenom}`,
     `📍 Lieu de livraison : ${lieuLivraison}`,
-    `💰 Montant : ${prix.toLocaleString("fr-FR")} FCFA par Mobile Money`,
-    `         ${fraisLivraison.toLocaleString("fr-FR")} FCFA en cash à la livraison`,
+    `💰 Total : ${(prix + fraisLivraison).toLocaleString("fr-FR")} FCFA par Mobile Money`,
+    `   (BD ${prix.toLocaleString("fr-FR")} + expédition ${fraisLivraison.toLocaleString("fr-FR")})`,
   ];
   if (whatsappClient) {
     lines.push("", `📱 Mon WhatsApp : ${whatsappClient}`);
@@ -460,26 +460,22 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="text-sm font-semibold text-gray-900">BD personnalisée</div>
-                          <div className="text-xs text-gray-500 mt-0.5">Payé par Mobile Money pour confirmer la commande</div>
+                          <div className="text-xs text-gray-500 mt-0.5">BD personnalisée avec le prénom</div>
                         </div>
                         <span className="font-extrabold text-gray-900 text-base shrink-0">{bd.prix.toLocaleString("fr-FR")} FCFA</span>
                       </div>
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="text-sm text-gray-700">Frais d&apos;expédition</div>
-                          <div className="text-xs text-gray-500 mt-0.5">Payé en cash à la réception du colis</div>
+                          <div className="text-xs text-gray-500 mt-0.5">Payé par Mobile Money avant expédition</div>
                         </div>
                         <span className="text-sm font-semibold text-gray-700 shrink-0">+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA</span>
                       </div>
                     </div>
-                    <div className="rounded-b-2xl bg-green-50 px-4 py-3.5 space-y-1">
+                    <div className="rounded-b-2xl bg-green-50 px-4 py-3.5">
                       <div className="flex items-center justify-between">
-                        <div className="text-sm font-bold text-green-900">Maintenant par Mobile Money</div>
-                        <div className="text-lg font-extrabold text-green-900">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="text-xs text-green-700">À la livraison en cash</div>
-                        <div className="text-xs font-semibold text-green-700">{bd.fraisLivraison.toLocaleString("fr-FR")} FCFA</div>
+                        <div className="text-sm font-bold text-green-900">Total par Mobile Money</div>
+                        <div className="text-lg font-extrabold text-green-900">{(bd.prix + bd.fraisLivraison).toLocaleString("fr-FR")} FCFA</div>
                       </div>
                     </div>
                   </div>

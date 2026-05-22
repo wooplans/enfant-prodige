@@ -56,7 +56,7 @@ export default function ContactPage() {
           },
           {
             q: "Quand est-ce que je paye ?",
-            a: "Vous payez 9 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) après confirmation sur WhatsApp, avant la personnalisation. Les 1 000 FCFA de frais de livraison sont payés au livreur à la réception.",
+            a: "Vous payez 10 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) — 9 900 FCFA pour la BD + 1 000 FCFA de frais d'expédition — avant que le colis soit expédié.",
           },
           {
             q: "Quel est le délai de livraison ?",

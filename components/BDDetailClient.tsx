@@ -514,7 +514,6 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                 <h2 className="text-2xl font-extrabold leading-tight md:text-3xl text-gray-950">
                   Leur réaction en voyant la BD
                 </h2>
-                <p className="mt-2 text-sm text-gray-500">De vrais parents, de vraies réactions.</p>
               </div>
               <div className="grid grid-cols-2 gap-3 md:gap-6">
                 {[

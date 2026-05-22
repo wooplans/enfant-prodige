@@ -36,9 +36,9 @@ export async function POST(request: Request) {
     "",
     `📚 Série : ${serie}`,
     `👶 Prénom : ${prenom}`,
-    `📍 Livraison : ${lieuLivraison}`,
-    `💰 Montant : ${prix.toLocaleString("fr-FR")} FCFA par Mobile Money`,
-    `         ${fraisLivraison.toLocaleString("fr-FR")} FCFA en cash à la livraison`,
+    `📍 Expédition : ${lieuLivraison}`,
+    `💰 Total : ${(prix + fraisLivraison).toLocaleString("fr-FR")} FCFA par Mobile Money`,
+    `   (BD ${prix.toLocaleString("fr-FR")} + expédition ${fraisLivraison.toLocaleString("fr-FR")})`,
     "",
     `📱 WhatsApp client : ${formattedClient}`,
   ].join("\n");

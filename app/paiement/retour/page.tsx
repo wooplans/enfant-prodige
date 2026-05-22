@@ -230,7 +230,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Frais d'expédition</span>
-              <span className="text-gray-500">1 000 FCFA <span className="text-xs">(payés à la réception du colis)</span></span>
+              <span className="text-gray-500">1 000 FCFA <span className="text-xs">(payés par Mobile Money avant expédition)</span></span>
             </div>
           </div>
         </div>
