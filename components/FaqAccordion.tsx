@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     q: "Comment je paye ?",
-    a: "Vous payez 9 900 FCFA directement depuis votre téléphone par Orange Money ou MTN Mobile Money — sans avoir besoin d'aller à une agence. Les 1 000 FCFA de frais de livraison sont réglés au livreur à la réception.",
+    a: "Vous payez 9 900 FCFA directement depuis votre téléphone par Orange Money ou MTN Mobile Money — sans avoir besoin d'aller à une agence. Les 1 000 FCFA de frais d'expédition sont payés à la réception du colis.",
   },
   {
     q: "Que se passe-t-il après le paiement ?",
@@ -17,7 +17,7 @@ const faqs = [
   },
   {
     q: "Quel est le délai de livraison ?",
-    a: "Une fois votre paiement confirmé, nous livrons sous 48h à Yaoundé et Douala. Nous couvrons tous les quartiers des deux villes.",
+    a: "Une fois votre paiement confirmé, nous expédions sous 48h partout au Cameroun.",
   },
   {
     q: "Et si mon fils n'aime pas ?",
@@ -28,12 +28,12 @@ const faqs = [
     a: "Après le paiement, vous nous confirmez le prénom sur WhatsApp. Nos illustrateurs intègrent ce prénom sur la couverture et dans les dialogues. La BD est ensuite imprimée en couleur sur papier de qualité et livrée chez vous.",
   },
   {
-    q: "Livrez-vous en dehors de Yaoundé et Douala ?",
-    a: "Pour l'instant, nous livrons principalement à Yaoundé et Douala. Contactez-nous pour connaître les possibilités pour votre ville.",
+    q: "Livrez-vous dans toutes les villes du Cameroun ?",
+    a: "Oui ! Nous expédions dans toutes les villes du Cameroun. Frais d'expédition : 1 000 FCFA, payés à la réception du colis.",
   },
   {
     q: "Mon fils sait-il déjà lire ? Est-ce pour quel âge ?",
-    a: "La BD est conçue pour les garçons de 6 à 10 ans. Les textes sont courts, les dialogues vivants et les illustrations très expressives. Un enfant qui commence à lire peut la parcourir seul ou avec vous — c'est souvent l'occasion d'un moment de lecture partagée inoubliable.",
+    a: "La BD est conçue pour les garçons de 7 ans et plus. Les textes sont courts, les dialogues vivants et les illustrations très expressives. Un enfant qui commence à lire peut la parcourir seul ou avec vous — c'est souvent l'occasion d'un moment de lecture partagée inoubliable.",
   },
   {
     q: "Je ne suis pas sûre que mon fils aimera les BD. Et si ça ne l'intéresse pas ?",
@@ -56,8 +56,8 @@ interface Props {
 export default function FaqAccordion({ deliveryDateLabel }: Props) {
   const [ouvert, setOuvert] = useState<number | null>(null);
   const deliveryAnswer = deliveryDateLabel
-    ? `En payant maintenant, on vous livre ${deliveryDateLabel}. Vous recevez ensuite votre BD personnalisée sous 48h à Yaoundé et Douala.`
-    : "Une fois votre paiement Mobile Money confirmé, nous personnalisons et imprimons votre BD, puis la livrons sous 48h à Yaoundé et Douala.";
+    ? `En payant maintenant, votre colis est expédié ${deliveryDateLabel}. Vous recevez votre BD personnalisée sous 48h partout au Cameroun.`
+    : "Une fois votre paiement Mobile Money confirmé, nous personnalisons et imprimons votre BD, puis l'expédions sous 48h partout au Cameroun.";
 
   return (
     <div className="divide-y divide-amber-200 border-y border-amber-200">

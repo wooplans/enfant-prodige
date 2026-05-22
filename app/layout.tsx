@@ -7,13 +7,13 @@ import FacebookPixel from "@/components/FacebookPixel";
 export const metadata: Metadata = {
   title: "Enfant Prodige BD | Livres Personnalisés pour Enfants au Cameroun",
   description:
-    "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, livrées en 48h à Yaoundé et Douala. Commandez sur WhatsApp.",
-  keywords: "livre personnalisé enfant, BD personnalisée, Cameroun, Yaoundé, Douala, cadeau enfant africain",
+    "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, expédiées en 48h partout au Cameroun. Commandez sur WhatsApp.",
+  keywords: "livre personnalisé enfant, BD personnalisée, Cameroun, cadeau enfant africain",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   openGraph: {
     title: "Enfant Prodige BD | Livres Personnalisés pour Enfants au Cameroun",
     description:
-      "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, livrées en 48h à Yaoundé et Douala. Commandez sur WhatsApp.",
+      "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, expédiées en 48h partout au Cameroun. Commandez sur WhatsApp.",
     type: "website",
     locale: "fr_CM",
     siteName: "Enfant Prodige BD",

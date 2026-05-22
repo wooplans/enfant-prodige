@@ -169,7 +169,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
   const heroTitle = bd.id === "academie-genies" ? "Votre garçon à l'Académie des Génies" : bd.serie;
   const heroSubtitle =
     bd.id === "academie-genies"
-      ? "Une bande dessinée 100% personnalisée avec le prénom de votre garçon. Imprimée en couleur, livrée chez vous."
+      ? "Une bande dessinée 100% personnalisée avec le prénom de votre garçon. Imprimée en couleur, expédiée partout au Cameroun."
       : bd.description;
   const primaryCtaText = bd.id === "academie-genies" ? "Commander sur WhatsApp" : "Commander sur WhatsApp";
   const academieGeniesReasons =
@@ -198,7 +198,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
             <span className="hidden sm:inline text-green-600">·</span>
             <span>👪 {fomoSold} parents ont déjà commandé</span>
             <span className="hidden sm:inline text-green-600">·</span>
-            <span>🚚 Livraison Yaoundé &amp; Douala</span>
+            <span>🚚 Expédition partout au Cameroun</span>
             <span className="hidden sm:inline text-green-600">·</span>
             <span>✅ Garantie 7 jours satisfait ou remboursé</span>
             <span className="sm:hidden">⭐ {bd.note}/5 · {bd.nombreAvis} avis parents</span>
@@ -240,7 +240,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                     👪 {fomoSold} parents satisfaits
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
-                    📍 Yaoundé &amp; Douala
+                    📍 Tout le Cameroun
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
                     🚀 Livraison {deliveryDateLabel}
@@ -414,7 +414,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
               {
                 step: "3",
                 titre: "Reçu chez vous sous 48h",
-                texte: "Notre équipe vous contacte sur WhatsApp sous 30 min pour confirmer, puis vous livre à Yaoundé ou Douala.",
+                texte: "Notre équipe vous contacte sur WhatsApp sous 30 min pour confirmer, puis expédie votre colis partout au Cameroun.",
               },
             ].map(({ step, titre, texte }) => (
               <li key={step} className="relative border-t border-amber-200 pt-5">
@@ -558,7 +558,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                     ["L'enfant l'oublie en quelques jours", "Il la relit encore et encore — c'est SA BD"],
                     ["Rien de personnel, rien d'unique", "Son prénom sur la couverture et dans les dialogues"],
                     ["Aucun message éducatif", "Il apprend que l'intelligence et l'ambition, ça paye"],
-                    ["Difficile à trouver au Cameroun", "Commandé en ligne, livré chez vous à Yaoundé ou Douala"],
+                    ["Difficile à trouver au Cameroun", "Commandé en ligne, expédié partout au Cameroun"],
                   ].map(([bad, good]) => (
                     <tr key={bad}>
                       <td className="py-3 pr-6 text-gray-500">✗ {bad}</td>
@@ -571,33 +571,24 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
           </FullWidthSection>
         )}
 
-        {/* SECTION ZONE DE LIVRAISON */}
+        {/* SECTION ZONE D'EXPÉDITION */}
         {bd.id === "academie-genies" && (
           <section className="bg-green-50 px-4 py-12 md:py-16">
             <div className="mx-auto max-w-4xl">
               <div className="mb-8">
                 <div className="mb-4 h-1 w-14 bg-green-700" />
                 <h2 className="text-2xl font-extrabold leading-tight md:text-3xl text-gray-950">
-                  📍 Nous livrons à Yaoundé et Douala
+                  📦 Expédition partout au Cameroun
                 </h2>
               </div>
-              <div className="grid gap-6 md:grid-cols-2">
-                <div className="rounded-2xl border border-green-200 bg-white p-5">
-                  <h3 className="text-base font-extrabold text-green-900 mb-3">Yaoundé</h3>
-                  <p className="text-sm leading-7 text-gray-600">
-                    Bastos · Omnisport · Nlongkak · Biyem-Assi · Cité Verte · Mvan · Melen · Mvog-Mbi · Mokolo · Mendong · Ngoa-Ekelle · et tous les autres quartiers
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-green-200 bg-white p-5">
-                  <h3 className="text-base font-extrabold text-green-900 mb-3">Douala</h3>
-                  <p className="text-sm leading-7 text-gray-600">
-                    Akwa · Bonapriso · Bonanjo · Makepe · Ndokotti · Logbessou · Kotto · Deido · Bali · New-Bell · Bepanda · et tous les autres quartiers
-                  </p>
-                </div>
+              <div className="rounded-2xl border border-green-200 bg-white p-6">
+                <p className="text-base leading-7 text-gray-700">
+                  Votre colis est préparé et expédié sous <strong>48h</strong> dans toutes les villes du Cameroun.
+                </p>
+                <p className="mt-3 text-sm font-semibold text-gray-700">
+                  Frais d&apos;expédition : <strong>1 000 FCFA</strong> — payés à la réception du colis.
+                </p>
               </div>
-              <p className="mt-5 text-sm font-semibold text-gray-700 text-center">
-                Frais de livraison : <strong>1 000 FCFA</strong> — réglés directement au livreur à la réception · Délai : <strong>48h</strong> après confirmation du paiement
-              </p>
             </div>
           </section>
         )}
@@ -654,7 +645,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
         <FullWidthSection title="Offrez-lui une aventure à son prénom" tone="dark">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-base leading-8 text-green-100 md:text-lg">
-              Sa BD personnalisée, imprimée en couleur, livrée chez vous à Yaoundé ou Douala en 48h. Un cadeau qu&apos;il gardera toute sa vie.
+              Sa BD personnalisée, imprimée en couleur, expédiée partout au Cameroun en 48h. Un cadeau qu&apos;il gardera toute sa vie.
             </p>
             <div className="mt-6 text-sm font-semibold uppercase tracking-[0.18em] text-yellow-300">
               Offre de lancement
@@ -694,7 +685,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
             <div className="mt-4 flex flex-col items-center gap-2">
               <p className="text-xs text-green-300">📱 Commande WhatsApp · Paiement à la réception</p>
             </div>
-            <p className="mt-3 text-xs text-green-400">📍 Livraison Yaoundé &amp; Douala · {deliveryDateLabel}</p>
+            <p className="mt-3 text-xs text-green-400">📦 Expédition partout au Cameroun · {deliveryDateLabel}</p>
           </div>
         </FullWidthSection>
       </main>

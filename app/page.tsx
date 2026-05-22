@@ -20,7 +20,7 @@ export default async function Home() {
           </h1>
           <p className="text-lg text-green-100 mb-8 max-w-2xl mx-auto">
             Votre enfant devient le héros de sa propre bande dessinée africaine. 32 pages
-            illustrées, livrées en 48h à Yaoundé et Douala.
+            illustrées, expédiées en 48h partout au Cameroun.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <Link
@@ -53,7 +53,7 @@ export default async function Home() {
               {
                 icon: "✨",
                 titre: "Choisissez une série",
-                texte: "Parcourez nos séries et trouvez celle qui convient à votre enfant (6–10 ans).",
+                texte: "Parcourez nos séries et trouvez celle qui convient à votre enfant (7 ans et plus).",
               },
               {
                 icon: "📝",
@@ -135,8 +135,8 @@ export default async function Home() {
               },
               {
                 icon: "🚀",
-                titre: "Livraison en 48h",
-                texte: "Après confirmation, votre BD personnalisée est imprimée et livrée sous 48h à Yaoundé et Douala.",
+                titre: "Expédition en 48h",
+                texte: "Après confirmation, votre BD personnalisée est imprimée et expédiée sous 48h partout au Cameroun.",
               },
               {
                 icon: "💬",

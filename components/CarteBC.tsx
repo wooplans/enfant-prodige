@@ -41,7 +41,7 @@ export default function CarteBD({ bd }: CarteBDProps) {
         />
         {/* Badge âge */}
         <span className="absolute top-2 left-2 bg-white/90 text-gray-700 text-sm font-bold px-2 py-0.5 rounded-full shadow">
-          {bd.ageMin}–{bd.ageMax} ans
+          {bd.ageMax >= 99 ? `${bd.ageMin} ans et plus` : `${bd.ageMin}–${bd.ageMax} ans`}
         </span>
       </Link>
 

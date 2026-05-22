@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Nos séries | Enfant Prodige BD",
-  description: "Découvrez nos 3 séries de BD personnalisées pour enfants africains de 6 à 10 ans. Pré-commande ouverte.",
+  description: "Découvrez nos 3 séries de BD personnalisées pour enfants africains de 7 ans et plus. Pré-commande ouverte.",
 };
 
 export const dynamic = "force-dynamic";
@@ -19,7 +19,7 @@ export default async function CataloguePage() {
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2">✨ Nos séries personnalisées</h1>
         <p className="text-gray-600">
-          {catalogue.length} séries disponibles · Pré-commande ouverte · Yaoundé &amp; Douala
+          {catalogue.length} séries disponibles · Pré-commande ouverte · tout le Cameroun
         </p>
       </div>
 
@@ -50,8 +50,8 @@ export default async function CataloguePage() {
       <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
         {[
           { icon: "📱", titre: "Commande sur WhatsApp", texte: "Envoyez votre commande en 2 clics, nous confirmons par WhatsApp." },
-          { icon: "🚀", titre: "Livraison en 48h", texte: "Après confirmation, votre BD personnalisée est livrée à votre porte." },
-          { icon: "📦", titre: "1 000 FCFA à la réception", texte: "Frais de livraison réglés au livreur, aucun paiement caché." },
+          { icon: "🚀", titre: "Expédition en 48h", texte: "Après confirmation, votre BD personnalisée est expédiée partout au Cameroun." },
+          { icon: "📦", titre: "1 000 FCFA frais d'expédition", texte: "Frais d'expédition payés à la réception du colis, aucun paiement caché." },
         ].map(({ icon, titre, texte }) => (
           <div key={titre} className="bg-white rounded-xl border border-gray-100 p-4 flex items-start gap-3">
             <span className="text-2xl shrink-0">{icon}</span>

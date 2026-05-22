@@ -229,8 +229,8 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
               <span className="font-bold text-gray-900">{amountLabel}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-gray-500">Frais de livraison</span>
-              <span className="text-gray-500">1 000 FCFA <span className="text-xs">(payés au livreur à la réception)</span></span>
+              <span className="text-gray-500">Frais d'expédition</span>
+              <span className="text-gray-500">1 000 FCFA <span className="text-xs">(payés à la réception du colis)</span></span>
             </div>
           </div>
         </div>
@@ -253,8 +253,8 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
                 },
                 {
                   num: "3",
-                  title: "Livraison en 48h",
-                  desc: "Un livreur vous apporte la BD à votre adresse à Yaoundé ou Douala.",
+                  title: "Expédition en 48h",
+                  desc: "Votre colis est expédié à votre adresse partout au Cameroun.",
                 },
               ].map(({ num, title, desc }) => (
                 <li key={num} className="flex items-start gap-3">

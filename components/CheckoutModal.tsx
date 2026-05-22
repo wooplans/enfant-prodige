@@ -296,14 +296,14 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               {/* Lieu de livraison */}
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                  Quartier / lieu de livraison <span className="text-red-500">*</span>
+                  Ville / adresse de livraison <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={lieuLivraison}
                   onChange={(e) => setLieuLivraison(e.target.value)}
                   onBlur={() => setLieuTouched(true)}
-                  placeholder="Ex : Bastos, Omnisport, Akwa..."
+                  placeholder="Ex : Douala Akwa, Bafoussam, Kribi..."
                   className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 ${
                     lieuTouched && !lieuValide
                       ? "border-red-400 bg-red-50"
@@ -466,8 +466,8 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                       </div>
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <div className="text-sm text-gray-700">Frais de livraison</div>
-                          <div className="text-xs text-gray-500 mt-0.5">Payé en cash au livreur à la réception</div>
+                          <div className="text-sm text-gray-700">Frais d&apos;expédition</div>
+                          <div className="text-xs text-gray-500 mt-0.5">Payé en cash à la réception du colis</div>
                         </div>
                         <span className="text-sm font-semibold text-gray-700 shrink-0">+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA</span>
                       </div>

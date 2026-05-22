@@ -18,7 +18,7 @@ export default function CommanderForm({ prix, fraisLivraison, onCommander }: Pro
         </span>
       </div>
       <p className="text-sm text-gray-600 mb-5">
-        + {fraisLivraison.toLocaleString("fr-FR")} FCFA frais de livraison
+        + {fraisLivraison.toLocaleString("fr-FR")} FCFA frais d&apos;expédition
         <span className="text-green-600 font-medium"> · payés à la réception</span>
       </p>
 

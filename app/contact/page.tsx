@@ -60,11 +60,11 @@ export default function ContactPage() {
           },
           {
             q: "Quel est le délai de livraison ?",
-            a: "Une fois votre commande confirmée par WhatsApp, nous personnalisons votre BD et la livrons sous 48h à Yaoundé et Douala.",
+            a: "Une fois votre commande confirmée par WhatsApp, nous personnalisons votre BD et l'expédions sous 48h partout au Cameroun.",
           },
           {
-            q: "Livrez-vous en dehors de Yaoundé et Douala ?",
-            a: "Pour l'instant nous couvrons principalement Yaoundé et Douala. Contactez-nous sur WhatsApp pour connaître les options pour votre ville.",
+            q: "Livrez-vous dans toutes les villes du Cameroun ?",
+            a: "Oui ! Nous expédions dans toutes les villes du Cameroun. Frais d'expédition : 1 000 FCFA, payés à la réception du colis.",
           },
         ].map(({ q, a }) => (
           <details

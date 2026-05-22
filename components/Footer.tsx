@@ -9,9 +9,9 @@ export default function Footer() {
             <span>📚</span> Enfant Prodige BD
           </h3>
           <p className="text-green-100 text-sm leading-relaxed">
-            Des livres illustrés personnalisés pour les enfants africains de 6 à 10 ans. Le prénom
-            de votre enfant sur la couverture et dans les dialogues. Livraison sous 48h à Yaoundé
-            et Douala.
+            Des livres illustrés personnalisés pour les enfants africains de 7 ans et plus. Le prénom
+            de votre enfant sur la couverture et dans les dialogues. Expédition sous 48h partout au
+            Cameroun.
           </p>
         </div>
 
