@@ -13,5 +13,5 @@ export function getDeliveryDateLabel(baseDate = new Date(), leadHours = 48) {
 }
 
 export function buildDeliverySentence(baseDate = new Date(), leadHours = 48) {
-  return `En payant maintenant, on vous livre ${getDeliveryDateLabel(baseDate, leadHours)}.`;
+  return `Votre colis est expédié le ${getDeliveryDateLabel(baseDate, leadHours)}.`;
 }

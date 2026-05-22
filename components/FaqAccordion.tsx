@@ -13,10 +13,10 @@ const faqs = [
   },
   {
     q: "Que se passe-t-il après le paiement ?",
-    a: "Notre équipe vous contacte sur WhatsApp dans les 30 minutes pour confirmer le prénom exact de votre garçon et valider le lieu de livraison. On imprime ensuite la BD et on vous livre sous 48h.",
+    a: "Notre équipe vous contacte sur WhatsApp dans les 30 minutes pour confirmer le prénom exact de votre garçon et valider l'adresse d'expédition. On imprime ensuite la BD et on l'expédie sous 48h.",
   },
   {
-    q: "Quel est le délai de livraison ?",
+    q: "Quel est le délai d'expédition ?",
     a: "Une fois votre paiement confirmé, nous expédions sous 48h partout au Cameroun.",
   },
   {
@@ -25,10 +25,10 @@ const faqs = [
   },
   {
     q: "Comment fonctionne la personnalisation en détail ?",
-    a: "Après le paiement, vous nous confirmez le prénom sur WhatsApp. Nos illustrateurs intègrent ce prénom sur la couverture et dans les dialogues. La BD est ensuite imprimée en couleur sur papier de qualité et livrée chez vous.",
+    a: "Après le paiement, vous nous confirmez le prénom sur WhatsApp. Nos illustrateurs intègrent ce prénom sur la couverture et dans les dialogues. La BD est ensuite imprimée en couleur sur papier de qualité et expédiée chez vous.",
   },
   {
-    q: "Livrez-vous dans toutes les villes du Cameroun ?",
+    q: "Expédiez-vous dans toutes les villes du Cameroun ?",
     a: "Oui ! Nous expédions dans toutes les villes du Cameroun. Frais d'expédition : 1 000 FCFA, inclus dans le paiement Mobile Money avant expédition.",
   },
   {
@@ -75,7 +75,7 @@ export default function FaqAccordion({ deliveryDateLabel }: Props) {
           {ouvert === i && (
             <div className="pb-5">
               <p className="max-w-3xl text-sm leading-7 text-gray-700">
-                {faq.q === "Quel est le délai de livraison ?" && deliveryDateLabel ? deliveryAnswer : faq.a}
+                {faq.q === "Quel est le délai d'expédition ?" && deliveryDateLabel ? deliveryAnswer : faq.a}
               </p>
             </div>
           )}

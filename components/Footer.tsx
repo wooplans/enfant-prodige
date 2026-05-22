@@ -44,7 +44,7 @@ export default function Footer() {
         <div>
           <h3 className="font-bold mb-3">Commander</h3>
           <p className="text-green-100 text-sm mb-3">
-            Commande par WhatsApp, paiement à la réception. Livraison en 48h.
+            Commande par WhatsApp, paiement Mobile Money. Expédition en 48h.
           </p>
           <Link
             href="/contact"

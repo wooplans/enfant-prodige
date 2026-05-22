@@ -237,8 +237,8 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                 <div className="text-xs text-gray-500">
                   {step === "details"
                     ? isMobile
-                      ? "Prénom et lieu de livraison"
-                      : "Prénom, livraison et contact"
+                      ? "Prénom et adresse d'expédition"
+                      : "Prénom, expédition et contact"
                     : "Vérifiez avant d'envoyer"}
                 </div>
               </div>
@@ -296,7 +296,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               {/* Lieu de livraison */}
               <div>
                 <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-                  Ville / adresse de livraison <span className="text-red-500">*</span>
+                  Ville / adresse d&apos;expédition <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -311,7 +311,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                   }`}
                 />
                 {lieuTouched && !lieuValide && (
-                  <p className="mt-1 text-sm text-red-600">Veuillez entrer le lieu de livraison.</p>
+                  <p className="mt-1 text-sm text-red-600">Veuillez entrer l&apos;adresse d&apos;expédition.</p>
                 )}
               </div>
 
@@ -355,11 +355,8 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                   <span>{bd.prix.toLocaleString("fr-FR")} FCFA</span>
                 </div>
                 <div className="mt-1 flex items-center justify-between text-gray-500">
-                  <span>Livraison</span>
-                  <span>
-                    + {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA{" "}
-                    <span className="text-xs">(à la réception)</span>
-                  </span>
+                  <span>Expédition</span>
+                  <span>+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA</span>
                 </div>
               </div>
 
@@ -399,7 +396,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                       <>
                         Votre commande a bien été reçue. Nous vous contacterons sur WhatsApp au{" "}
                         <span className="font-semibold text-green-700">{whatsappClient}</span> pour
-                        confirmer la livraison et le paiement.
+                        confirmer l&apos;expédition et le paiement.
                       </>
                     )}
                   </p>
@@ -442,7 +439,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                     <div className="flex items-start gap-3 px-4 py-3.5">
                       <span className="mt-0.5 text-lg">📍</span>
                       <div>
-                        <div className="text-xs font-medium uppercase tracking-wide text-gray-500">Livraison</div>
+                        <div className="text-xs font-medium uppercase tracking-wide text-gray-500">Expédition</div>
                         <div className="text-sm font-semibold text-gray-900">{lieuLivraison.trim()}</div>
                         <div className="text-sm text-gray-600">Sous 48h après confirmation</div>
                       </div>
@@ -512,7 +509,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                   <p className="text-center text-xs leading-5 text-gray-500">
                     {isMobile
                       ? "WhatsApp s'ouvrira avec votre commande pré-remplie."
-                      : "Nous vous répondrons sous peu pour confirmer la livraison."}
+                      : "Nous vous répondrons sous peu pour confirmer l'expédition."}
                   </p>
                 </>
               )}

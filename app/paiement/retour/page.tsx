@@ -89,7 +89,7 @@ function formatWhatsAppMessage(order: PaymentOrder, bdSlug: string) {
     `Série : ${order.series_title || "—"}`,
     `Référence : ${order.payment_ref}`,
     `Prénom de l'enfant : ${order.child_name || "—"}`,
-    `Lieu de livraison : ${address || "—"}`,
+    `Lieu d'expédition : ${address || "—"}`,
     `Montant payé : ${amount}`,
     bdSlug ? `Lien BD : /bd/${bdSlug}` : null,
     "",
@@ -217,7 +217,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
               <div className="mt-0.5 font-bold text-gray-900">{displayOrder.child_name || "—"}</div>
             </div>
             <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">Lieu de livraison</div>
+              <div className="text-xs font-semibold uppercase tracking-wide text-gray-400">Lieu d'expédition</div>
               <div className="mt-0.5 font-bold text-gray-900">{address}</div>
             </div>
           </div>
@@ -249,7 +249,7 @@ export default async function PaymentReturnPage({ searchParams }: PaymentReturnP
                 {
                   num: "2",
                   title: "Contact WhatsApp sous 30 min",
-                  desc: "Vous recevez un message de confirmation avec les détails de livraison.",
+                  desc: "Vous recevez un message de confirmation avec les détails d'expédition.",
                 },
                 {
                   num: "3",

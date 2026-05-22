@@ -57,13 +57,13 @@ export default async function Home() {
               },
               {
                 icon: "📝",
-                titre: "Entrez le prénom et la livraison",
-                texte: "Tapez le prénom de l'enfant et votre quartier. Un résumé de commande s'affiche avant envoi.",
+                titre: "Entrez le prénom et l'adresse",
+                texte: "Tapez le prénom de l'enfant et votre ville. Un résumé de commande s'affiche avant envoi.",
               },
               {
                 icon: "📱",
                 titre: "Envoyez sur WhatsApp",
-                texte: "Cliquez sur « Envoyer ma commande ». Nous vous confirmons la livraison et le paiement par WhatsApp sous peu.",
+                texte: "Cliquez sur « Envoyer ma commande ». Nous vous confirmons l'expédition par WhatsApp sous peu.",
               },
             ].map(({ icon, titre, texte }) => (
               <div key={titre} className="text-center px-4">
@@ -131,7 +131,7 @@ export default async function Home() {
               {
                 icon: "📱",
                 titre: "Commande par WhatsApp",
-                texte: "Pas de paiement en ligne compliqué. Envoyez votre commande sur WhatsApp et payez à la livraison.",
+                texte: "Pas de paiement en ligne compliqué. Envoyez votre commande sur WhatsApp et payez par Mobile Money.",
               },
               {
                 icon: "🚀",
@@ -141,7 +141,7 @@ export default async function Home() {
               {
                 icon: "💬",
                 titre: "Suivi personnalisé",
-                texte: "Notre équipe vous accompagne par WhatsApp de la commande jusqu'à la livraison.",
+                texte: "Notre équipe vous accompagne par WhatsApp de la commande jusqu'à l'expédition.",
               },
             ].map(({ icon, titre, texte }) => (
               <div key={titre} className="flex gap-4 items-start">

@@ -20,7 +20,7 @@ export default function ContactPage() {
         <div className="text-5xl mb-4">📬</div>
         <h1 className="text-3xl font-extrabold text-gray-900 mb-3">Contactez-nous</h1>
         <p className="text-gray-600">
-          Une question sur la personnalisation, le paiement ou la livraison ? Notre équipe est
+          Une question sur la personnalisation, le paiement ou l'expédition ? Notre équipe est
           disponible sur WhatsApp.
         </p>
       </div>
@@ -59,12 +59,12 @@ export default function ContactPage() {
             a: "Vous payez 10 900 FCFA par Mobile Money (MTN MoMo ou Orange Money) — 9 900 FCFA pour la BD + 1 000 FCFA de frais d'expédition — avant que le colis soit expédié.",
           },
           {
-            q: "Quel est le délai de livraison ?",
+            q: "Quel est le délai d'expédition ?",
             a: "Une fois votre commande confirmée par WhatsApp, nous personnalisons votre BD et l'expédions sous 48h partout au Cameroun.",
           },
           {
-            q: "Livrez-vous dans toutes les villes du Cameroun ?",
-            a: "Oui ! Nous expédions dans toutes les villes du Cameroun. Frais d'expédition : 1 000 FCFA, payés à la réception du colis.",
+            q: "Expédiez-vous dans toutes les villes du Cameroun ?",
+            a: "Oui ! Nous expédions dans toutes les villes du Cameroun. Frais d'expédition : 1 000 FCFA, inclus dans le paiement Mobile Money avant expédition.",
           },
         ].map(({ q, a }) => (
           <details

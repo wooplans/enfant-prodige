@@ -243,7 +243,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                     📍 Tout le Cameroun
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
-                    🚀 Livraison {deliveryDateLabel}
+                    🚀 Expédition {deliveryDateLabel}
                   </span>
                 </div>
               )}
@@ -256,7 +256,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                 </button>
               </div>
               <div className="mt-3 flex items-center gap-3">
-                <span className="text-xs text-green-200 font-medium">📱 Paiement offline · Livraison 48h</span>
+                <span className="text-xs text-green-200 font-medium">📱 Paiement Mobile Money · Expédition 48h</span>
               </div>
               {bd.id === "academie-genies" && (
                 <div className="mt-2">
@@ -427,7 +427,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
             ))}
           </ol>
           <div className="mt-8 flex flex-col items-center gap-2">
-            <p className="text-xs text-gray-500 font-medium">📱 Commande WhatsApp · Paiement à la réception · Livraison 48h</p>
+            <p className="text-xs text-gray-500 font-medium">📱 Commande WhatsApp · Paiement Mobile Money · Expédition 48h</p>
           </div>
         </FullWidthSection>
 
@@ -435,8 +435,8 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
           <div className="grid gap-4 md:grid-cols-3">
             {[
               {
-                titre: "Livraison 48h",
-                texte: `En payant maintenant, on vous livre ${deliveryDateLabel}.`,
+                titre: "Expédition 48h",
+                texte: `Votre colis est expédié le ${deliveryDateLabel}.`,
               },
               {
                 titre: "Garantie de 7 jours",
@@ -585,7 +585,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                   Votre colis est préparé et expédié sous <strong>48h</strong> dans toutes les villes du Cameroun.
                 </p>
                 <p className="mt-3 text-sm font-semibold text-gray-700">
-                  Frais d&apos;expédition : <strong>1 000 FCFA</strong> — payés à la réception du colis.
+                  Frais d&apos;expédition : <strong>1 000 FCFA</strong> — payés par Mobile Money avant expédition.
                 </p>
               </div>
             </div>
@@ -631,7 +631,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
             {[
               { icon: "📱", label: "Commande rapide" },
               { icon: "💳", label: "Paiement par mobile money" },
-              { icon: "🚀", label: "Livraison en 48h" },
+              { icon: "🚀", label: "Expédition en 48h" },
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center justify-center gap-2 text-sm font-bold text-gray-700">
                 <span className="text-xl">{icon}</span>
@@ -682,7 +682,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
               {primaryCtaText} <span aria-hidden="true">→</span>
             </button>
             <div className="mt-4 flex flex-col items-center gap-2">
-              <p className="text-xs text-green-300">📱 Commande WhatsApp · Paiement à la réception</p>
+              <p className="text-xs text-green-300">📱 Commande WhatsApp · Paiement Mobile Money</p>
             </div>
             <p className="mt-3 text-xs text-green-400">📦 Expédition partout au Cameroun · {deliveryDateLabel}</p>
           </div>

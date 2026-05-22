@@ -51,7 +51,7 @@ export default async function CataloguePage() {
         {[
           { icon: "📱", titre: "Commande sur WhatsApp", texte: "Envoyez votre commande en 2 clics, nous confirmons par WhatsApp." },
           { icon: "🚀", titre: "Expédition en 48h", texte: "Après confirmation, votre BD personnalisée est expédiée partout au Cameroun." },
-          { icon: "📦", titre: "1 000 FCFA frais d'expédition", texte: "Frais d'expédition payés à la réception du colis, aucun paiement caché." },
+          { icon: "📦", titre: "1 000 FCFA frais d'expédition", texte: "Frais d'expédition payés par Mobile Money avant expédition, aucun paiement caché." },
         ].map(({ icon, titre, texte }) => (
           <div key={titre} className="bg-white rounded-xl border border-gray-100 p-4 flex items-start gap-3">
             <span className="text-2xl shrink-0">{icon}</span>
