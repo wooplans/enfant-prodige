@@ -200,9 +200,12 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
             <span className="hidden sm:inline text-green-600">·</span>
             <span>🚚 Expédition partout au Cameroun</span>
             <span className="hidden sm:inline text-green-600">·</span>
+            <span>🔥 {bd.nombreCommandesSemaine} commandes cette semaine</span>
+            <span className="hidden sm:inline text-green-600">·</span>
             <span>✅ Garantie 7 jours satisfait ou remboursé</span>
             <span className="sm:hidden">⭐ {bd.note}/5 · {bd.nombreAvis} avis parents</span>
             <span className="sm:hidden">👪 {fomoSold} parents ont déjà commandé</span>
+            <span className="sm:hidden">🔥 {bd.nombreCommandesSemaine} commandes cette semaine</span>
           </div>
         </div>
       )}
@@ -247,7 +250,14 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                   </span>
                 </div>
               )}
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+              {bd.id === "academie-genies" && (
+                <div className="mt-5 flex items-baseline gap-3 flex-wrap">
+                  <span className="text-3xl font-extrabold text-white">{bd.prix.toLocaleString("fr-FR")} FCFA</span>
+                  <span className="text-base font-semibold text-green-300 line-through">15 000 FCFA</span>
+                  <span className="rounded-full bg-yellow-400 px-2.5 py-0.5 text-xs font-extrabold text-green-900">−34%</span>
+                </div>
+              )}
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button
                   onClick={() => openCheckout("hero_cta")}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-green-500 px-6 py-4 text-base font-extrabold text-white transition-colors hover:bg-green-400 active:bg-green-600 shadow-lg"
@@ -255,8 +265,13 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                   {primaryCtaText} <span aria-hidden="true">→</span>
                 </button>
               </div>
-              <div className="mt-3 flex items-center gap-3">
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
                 <span className="text-xs text-green-200 font-medium">📱 Paiement Mobile Money · Expédition 48h</span>
+                {bd.id === "academie-genies" && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-green-800/70 border border-green-600/40 px-2.5 py-1 text-xs font-semibold text-green-100">
+                    ✅ Garantie 7 jours satisfait ou remboursé
+                  </span>
+                )}
               </div>
               {bd.id === "academie-genies" && (
                 <div className="mt-2">
@@ -331,6 +346,30 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
           </div>
         </div>
       </section>
+
+      {/* MINI TÉMOIGNAGES */}
+      {bd.id === "academie-genies" && bd.avis.length >= 2 && (
+        <div className="bg-white border-b border-amber-100 px-4 py-5">
+          <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {bd.avis.slice(0, 2).map((avis) => (
+              <div key={avis.nom} className="flex items-start gap-3">
+                <div className="h-9 w-9 shrink-0 rounded-full bg-green-700 text-white text-sm font-bold flex items-center justify-center">
+                  {avis.avatar}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-bold text-gray-900">{avis.nom}</span>
+                    <Stars note={avis.note} small />
+                  </div>
+                  <p className="mt-0.5 text-sm text-gray-600 leading-5 italic">
+                    &laquo;&nbsp;{avis.commentaire.length > 100 ? avis.commentaire.slice(0, 100) + "…" : avis.commentaire}&nbsp;&raquo;
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* CONTENU */}
       <main className="bg-white pb-28">
