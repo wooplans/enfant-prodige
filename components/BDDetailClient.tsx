@@ -238,7 +238,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
               <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">{heroTitle}</h1>
               <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{heroSubtitle}</p>
               {bd.id === "academie-genies" && (
-                <div className="mt-5 flex flex-wrap gap-2">
+                <div className="mt-5 hidden sm:flex flex-wrap gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
                     👪 {fomoSold} parents satisfaits
                   </span>
@@ -266,15 +266,15 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                 </button>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-                <span className="text-xs text-green-200 font-medium">📱 Paiement Mobile Money · Expédition 48h</span>
                 {bd.id === "academie-genies" && (
                   <span className="inline-flex items-center gap-1 rounded-full bg-green-800/70 border border-green-600/40 px-2.5 py-1 text-xs font-semibold text-green-100">
                     ✅ Garantie 7 jours satisfait ou remboursé
                   </span>
                 )}
+                <span className="hidden sm:inline text-xs text-green-200 font-medium">📱 Paiement Mobile Money · Expédition 48h</span>
               </div>
               {bd.id === "academie-genies" && (
-                <div className="mt-2">
+                <div className="mt-2 hidden sm:block">
                   <a
                     href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Bonjour, j'ai une question sur la BD Académie des Génies avant de commander.")}`}
                     target="_blank"
