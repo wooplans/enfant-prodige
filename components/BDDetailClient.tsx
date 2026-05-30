@@ -184,7 +184,11 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         ]
       : bd.pourQui;
   const fomoRemaining = bd.id === "academie-genies" ? 13 : null;
-  const fomoSold = bd.id === "academie-genies" ? 483 : null;
+  const FAMILLES_BASE = 347;
+  const FAMILLES_BASE_MS = new Date("2026-05-30T00:00:00Z").getTime();
+  const fomoSold = bd.id === "academie-genies"
+    ? FAMILLES_BASE + Math.floor((Date.now() - FAMILLES_BASE_MS) / 86400000) * 10
+    : null;
   const fomoTotal = fomoRemaining !== null && fomoSold !== null ? fomoRemaining + fomoSold : null;
   const fomoRemainingPct =
     fomoTotal && fomoRemaining !== null ? Math.max(3, Math.round((fomoRemaining / fomoTotal) * 100)) : 0;
@@ -265,8 +269,8 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
             <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
               <div
-                className="relative aspect-square w-full overflow-hidden bg-green-950 shadow-2xl border-y border-white/15 lg:rounded-2xl lg:border"
-                style={{ minHeight: "18rem" }}
+                className="relative w-full overflow-hidden bg-green-950 shadow-2xl border-y border-white/15 lg:rounded-2xl lg:border"
+                style={{ aspectRatio: "16/9" }}
                 onTouchStart={(event) => setTouchStartX(event.changedTouches[0].clientX)}
                 onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
               >
