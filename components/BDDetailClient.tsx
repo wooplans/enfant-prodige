@@ -592,21 +592,6 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
           </ul>
         </FullWidthSection>
 
-        <div className="bg-white px-4 py-8">
-          <div className="mx-auto grid max-w-4xl gap-4 border-y border-amber-200 py-5 text-center sm:grid-cols-3">
-            {[
-              { icon: "📱", label: "Commande rapide" },
-              { icon: "💳", label: "Paiement par mobile money" },
-              { icon: "🚀", label: "Livraison en 48h" },
-            ].map(({ icon, label }) => (
-              <div key={label} className="flex items-center justify-center gap-2 text-sm font-bold text-gray-700">
-                <span className="text-xl">{icon}</span>
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <FullWidthSection title="Offrez-lui une aventure à son prénom" tone="dark">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-base leading-8 text-green-100 md:text-lg">
