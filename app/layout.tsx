@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
-import Header from "@/components/Header";
+import ConditionalHeader from "@/components/ConditionalHeader";
 import Footer from "@/components/Footer";
 import FacebookPixel from "@/components/FacebookPixel";
 
@@ -53,7 +53,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <FacebookPixel />
         </Suspense>
-        <Header />
+        <ConditionalHeader />
         <main className="flex-1">{children}</main>
         <Footer />
       </body>

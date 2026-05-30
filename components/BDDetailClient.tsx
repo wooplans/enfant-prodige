@@ -18,7 +18,10 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
-  const slides = bd.galerie.slice(0, 4);
+  const slides = (bd.galerie.length > 0 ? bd.galerie.slice(0, 4) : [bd.couverture]).filter(Boolean);
+  const FAMILLES_BASE = 347;
+  const FAMILLES_BASE_DATE = new Date("2026-05-30T00:00:00Z").getTime();
+  const famillesCount = FAMILLES_BASE + Math.floor((Date.now() - FAMILLES_BASE_DATE) / 86400000) * 10;
   const slideLabels = ["Couverture", "Aperçu histoire", "Héros", "Détails"];
 
   const slideSuivant = () => setSlideActif((current) => (current + 1) % slides.length);
@@ -60,16 +63,6 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
       <section className="relative overflow-hidden bg-green-900 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.2),transparent_28%),linear-gradient(135deg,rgba(22,101,52,0.95),rgba(6,78,59,0.98))]" />
         <div className="relative max-w-lg mx-auto px-4 pt-4 pb-8">
-          <Link
-            href="/catalogue"
-            className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium mb-5"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Nos séries
-          </Link>
-
           <div className="flex flex-col items-center text-center gap-4">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 border border-yellow-400/60 rounded-full px-4 py-1.5 text-xs font-bold text-yellow-300 tracking-widest uppercase">
@@ -94,7 +87,7 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
             {/* Slides */}
             <div
               className="w-full rounded-2xl overflow-hidden relative bg-green-950 shadow-2xl"
-              style={{ minHeight: "18rem", aspectRatio: "4/5" }}
+              style={{ aspectRatio: "16/9" }}
               onTouchStart={(event) => setTouchStartX(event.changedTouches[0].clientX)}
               onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
             >
@@ -166,8 +159,8 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
             <p className="text-xs text-green-400">Paiement Mobile Money · Livraison en 24h</p>
 
             {/* Preuve sociale */}
-            {bd.nombreAvis > 0 && (
-              <div className="inline-flex items-center gap-2.5 bg-white/10 rounded-full px-4 py-2">
+            <div className="inline-flex items-center gap-2.5 bg-white/10 rounded-full px-4 py-2">
+              {bd.avis.length > 0 && (
                 <div className="flex -space-x-2">
                   {bd.avis.slice(0, 4).map((avis, i) => (
                     <div
@@ -182,9 +175,9 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
                     </div>
                   ))}
                 </div>
-                <span className="text-sm font-bold text-white">Déjà +{bd.nombreAvis} familles satisfaites</span>
-              </div>
-            )}
+              )}
+              <span className="text-sm font-bold text-white">Déjà +{famillesCount} familles satisfaites</span>
+            </div>
           </div>
         </div>
       </section>
