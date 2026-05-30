@@ -59,10 +59,10 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
       {/* HERO */}
       <section className="relative overflow-hidden bg-green-900 text-white">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.2),transparent_28%),linear-gradient(135deg,rgba(22,101,52,0.95),rgba(6,78,59,0.98))]" />
-        <div className="relative max-w-6xl mx-auto px-4 py-6 md:py-12">
+        <div className="relative max-w-lg mx-auto px-4 pt-4 pb-8">
           <Link
             href="/catalogue"
-            className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium mb-6"
+            className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium mb-5"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -70,71 +70,121 @@ export default function BDDetailClient({ bd, autresSeries }: Props) {
             Nos séries
           </Link>
 
-          <div className="grid lg:grid-cols-[1fr_480px] gap-6 lg:gap-12 items-center">
-            <div className="max-w-2xl lg:col-start-1 lg:row-start-1">
-              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">{bd.serie}</h1>
-              <div className="mt-4">
-                {bd.nombreAvis > 0 && (
-                  <div className="inline-flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-4 py-2 shadow-lg border border-yellow-200">
-                    <Stars note={bd.note} />
-                    <span className="text-sm font-extrabold text-green-900">{bd.note}/5</span>
-                    <span className="text-sm font-semibold text-green-700">({bd.nombreAvis} avis)</span>
-                  </div>
-                )}
-              </div>
-              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{bd.description}</p>
+          <div className="flex flex-col items-center text-center gap-4">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 border border-yellow-400/60 rounded-full px-4 py-1.5 text-xs font-bold text-yellow-300 tracking-widest uppercase">
+              📚 BD PERSONNALISÉE · {bd.ageMin}–{bd.ageMax} ANS
             </div>
 
-            <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
-              <div
-                className="relative w-full h-72 sm:h-[420px] lg:h-auto lg:aspect-[4/5] overflow-hidden bg-green-950 shadow-2xl border-y border-white/15 lg:rounded-2xl lg:border"
-                style={{ minHeight: "18rem" }}
-                onTouchStart={(event) => setTouchStartX(event.changedTouches[0].clientX)}
-                onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
-              >
-                {slides.map((src, index) => (
-                  <Image
-                    key={src}
-                    src={src}
-                    alt={`${slideLabels[index]} de ${bd.serie}`}
-                    fill
-                    priority={index === 0}
-                    sizes="(min-width: 1024px) 480px, 100vw"
-                    className={`object-cover transition-opacity duration-500 ${slideActif === index ? "opacity-100" : "opacity-0"}`}
-                  />
-                ))}
-                <button
-                  onClick={slidePrecedent}
-                  aria-label="Image précédente"
-                  className="absolute left-3 top-1/2 z-10 w-11 h-11 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 border border-white/30 text-white flex items-center justify-center shadow-lg backdrop-blur-sm"
-                >
-                  ←
-                </button>
-                <button
-                  onClick={slideSuivant}
-                  aria-label="Image suivante"
-                  className="absolute right-3 top-1/2 z-10 w-11 h-11 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 border border-white/30 text-white flex items-center justify-center shadow-lg backdrop-blur-sm"
-                >
-                  →
-                </button>
+            {/* Titre */}
+            <h1 className="text-3xl md:text-4xl font-extrabold leading-tight">{bd.serie}</h1>
 
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                  <div className="text-sm font-bold">{slideLabels[slideActif]}</div>
-                  <div className="mt-3 flex items-center justify-between gap-3">
-                    <div className="flex gap-1.5">
-                      {slides.map((src, index) => (
-                        <button
-                          key={src}
-                          onClick={() => setSlideActif(index)}
-                          aria-label={`Voir l'image ${index + 1}`}
-                          className={`h-2 rounded-full transition-all ${slideActif === index ? "w-8 bg-yellow-300" : "w-2 bg-white/50 hover:bg-white"}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
+            {/* Étoiles */}
+            {bd.nombreAvis > 0 && (
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Stars note={bd.note} />
+                <span className="font-extrabold text-white">{bd.note}</span>
+                <span className="text-green-300">· +{bd.nombreAvis} avis</span>
+              </div>
+            )}
+
+            {/* Description */}
+            <p className="text-base text-green-100 leading-relaxed">{bd.description}</p>
+
+            {/* Slides */}
+            <div
+              className="w-full rounded-2xl overflow-hidden relative bg-green-950 shadow-2xl"
+              style={{ minHeight: "18rem", aspectRatio: "4/5" }}
+              onTouchStart={(event) => setTouchStartX(event.changedTouches[0].clientX)}
+              onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
+            >
+              {slides.map((src, index) => (
+                <Image
+                  key={src}
+                  src={src}
+                  alt={`${slideLabels[index]} de ${bd.serie}`}
+                  fill
+                  priority={index === 0}
+                  sizes="(min-width: 640px) 512px, 100vw"
+                  className={`object-cover transition-opacity duration-500 ${slideActif === index ? "opacity-100" : "opacity-0"}`}
+                />
+              ))}
+              <button
+                onClick={slidePrecedent}
+                aria-label="Image précédente"
+                className="absolute left-3 top-1/2 z-10 w-11 h-11 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 border border-white/30 text-white flex items-center justify-center shadow-lg backdrop-blur-sm"
+              >
+                ←
+              </button>
+              <button
+                onClick={slideSuivant}
+                aria-label="Image suivante"
+                className="absolute right-3 top-1/2 z-10 w-11 h-11 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 border border-white/30 text-white flex items-center justify-center shadow-lg backdrop-blur-sm"
+              >
+                →
+              </button>
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div className="text-sm font-bold">{slideLabels[slideActif]}</div>
+                <div className="mt-3 flex items-center gap-1.5">
+                  {slides.map((src, index) => (
+                    <button
+                      key={src}
+                      onClick={() => setSlideActif(index)}
+                      aria-label={`Voir l'image ${index + 1}`}
+                      className={`h-2 rounded-full transition-all ${slideActif === index ? "w-8 bg-yellow-300" : "w-2 bg-white/50 hover:bg-white"}`}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
+
+            {/* Prix */}
+            <div className="flex items-center gap-3 mt-1">
+              <span className="text-sm text-green-300 line-through">15 000 FCFA</span>
+              <span className="bg-red-500 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full">
+                -{Math.round((1 - bd.prix / 15000) * 100)}%
+              </span>
+            </div>
+            <div className="text-4xl font-extrabold leading-none -mt-1">
+              {bd.prix.toLocaleString("fr-FR")}{" "}
+              <span className="text-xl font-bold text-green-300">FCFA</span>
+            </div>
+
+            {/* CTA */}
+            <button
+              onClick={() => setModalOuvert(true)}
+              className="w-full bg-yellow-400 hover:bg-yellow-300 text-green-900 font-extrabold py-4 rounded-xl flex items-center justify-center gap-2 text-base transition-colors"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 shrink-0">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.125.556 4.118 1.528 5.847L.057 23.886l6.188-1.458A11.947 11.947 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.801 9.801 0 01-5.002-1.37l-.358-.214-3.723.877.892-3.627-.234-.373A9.819 9.819 0 012.18 12C2.18 6.566 6.566 2.18 12 2.18c5.434 0 9.82 4.386 9.82 9.82 0 5.434-4.386 9.818-9.821 9.818z" />
+              </svg>
+              Personnaliser maintenant
+            </button>
+
+            {/* Confiance */}
+            <p className="text-xs text-green-400">Paiement Mobile Money · Livraison en 24h</p>
+
+            {/* Preuve sociale */}
+            {bd.nombreAvis > 0 && (
+              <div className="inline-flex items-center gap-2.5 bg-white/10 rounded-full px-4 py-2">
+                <div className="flex -space-x-2">
+                  {bd.avis.slice(0, 4).map((avis, i) => (
+                    <div
+                      key={i}
+                      className="w-7 h-7 rounded-full bg-green-600 border-2 border-green-900 flex items-center justify-center text-xs font-bold overflow-hidden"
+                    >
+                      {avis.avatar && avis.avatar.startsWith("http") ? (
+                        <Image src={avis.avatar} width={28} height={28} alt={avis.nom} className="object-cover" />
+                      ) : (
+                        <span>{avis.nom.charAt(0)}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <span className="text-sm font-bold text-white">Déjà +{bd.nombreAvis} familles satisfaites</span>
+              </div>
+            )}
           </div>
         </div>
       </section>
