@@ -62,6 +62,51 @@ export const localCatalogue: BD[] = [
         date: "il y a 2 semaines",
         avatar: "A",
       },
+      {
+        nom: "Pascal N.",
+        note: 5,
+        commentaire:
+          "Commandé depuis Paris pour mon neveu au Cameroun. Livré en 24h à Douala. La qualité des illustrations est professionnelle. Mon neveu l'a montré à toute sa classe !",
+        ville: "Paris (Diaspora)",
+        date: "il y a 3 semaines",
+        avatar: "P",
+      },
+      {
+        nom: "Fatou B.",
+        note: 5,
+        commentaire:
+          "La personnalisation est bluffante. On voit le prénom de mon fils intégré naturellement dans chaque dialogue. Il ne s'en sépare plus depuis trois semaines.",
+        ville: "Douala",
+        date: "il y a 1 mois",
+        avatar: "F",
+      },
+      {
+        nom: "Hervé M.",
+        note: 5,
+        commentaire:
+          "Le service client est très réactif. J'ai posé une question sur WhatsApp à 21h et on m'a répondu en 10 minutes. Colis parfaitement emballé, cadeau réussi.",
+        ville: "Bafoussam",
+        date: "il y a 1 mois",
+        avatar: "H",
+      },
+      {
+        nom: "Nathalie O.",
+        note: 4,
+        commentaire:
+          "Mon fils de 10 ans pensait que les BD c'était pour les petits. Depuis qu'il se voit en héros africain dans cette histoire, il me demande quand il aura le tome 2 !",
+        ville: "Yaoundé",
+        date: "il y a 5 semaines",
+        avatar: "N",
+      },
+      {
+        nom: "Didier K.",
+        note: 5,
+        commentaire:
+          "Expédié jusqu'à Garoua sans problème ! La BD est arrivée parfaitement emballée sous 48h. Le paiement Orange Money était simple et rapide. Je referai appel à eux.",
+        ville: "Garoua",
+        date: "il y a 6 semaines",
+        avatar: "D",
+      },
     ],
   },
   {

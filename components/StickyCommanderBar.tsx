@@ -6,9 +6,10 @@ interface Props {
   onCommander: () => void;
   shakeStartId?: string;
   label?: string;
+  weeklyOrders?: number;
 }
 
-export default function StickyCommanderBar({ onCommander, shakeStartId, label = "Commander sur WhatsApp" }: Props) {
+export default function StickyCommanderBar({ onCommander, shakeStartId, label = "Commander sur WhatsApp", weeklyOrders }: Props) {
   const [visible, setVisible] = useState(false);
   const [shakeEnabled, setShakeEnabled] = useState(false);
 
@@ -61,7 +62,9 @@ export default function StickyCommanderBar({ onCommander, shakeStartId, label = 
         <span className="relative z-10">{label}</span>
         <span className="relative z-10" aria-hidden="true">→</span>
       </button>
-      <p className="text-xs font-semibold text-gray-500">📦 Expédition partout au Cameroun · 9 900 FCFA</p>
+      <p className="text-xs font-semibold text-gray-500">
+        {weeklyOrders ? `🔥 ${weeklyOrders} familles ont commandé cette semaine · 9 900 FCFA` : "📦 Expédition partout au Cameroun · 9 900 FCFA"}
+      </p>
     </div>
   );
 }

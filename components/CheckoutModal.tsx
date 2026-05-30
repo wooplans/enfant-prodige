@@ -8,6 +8,7 @@ import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 interface Props {
   bd: BD;
   onClose: () => void;
+  deliveryDateLabel?: string;
 }
 
 type Step = "details" | "summary";
@@ -43,7 +44,7 @@ function buildWhatsAppUrl(
   return `https://wa.me/${MOBILE_WHATSAPP}?text=${encodeURIComponent(lines.join("\n"))}`;
 }
 
-export default function CheckoutModal({ bd, onClose }: Props) {
+export default function CheckoutModal({ bd, onClose, deliveryDateLabel }: Props) {
   const [step, setStep] = useState<Step>("details");
   const [prenom, setPrenom] = useState("");
   const [lieuLivraison, setLieuLivraison] = useState("");
@@ -261,6 +262,13 @@ export default function CheckoutModal({ bd, onClose }: Props) {
           </div>
         </div>
 
+        {/* Bandeau social proof */}
+        {bd.nombreCommandesSemaine > 0 && (
+          <div className="bg-green-50 border-b border-green-100 px-5 py-2 text-xs font-semibold text-green-800 flex items-center gap-2">
+            🔥 {bd.nombreCommandesSemaine} familles ont commandé cette semaine · ⭐ {bd.note}/5
+          </div>
+        )}
+
         <div className="px-5 pb-6 pt-4">
           {/* ─── STEP 1: DETAILS ─── */}
           {step === "details" && (
@@ -363,11 +371,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               <button
                 type="button"
                 onClick={goToSummary}
-                className={`w-full rounded-2xl py-4 text-base font-bold transition-colors ${
-                  detailsValides
-                    ? "bg-green-600 text-white shadow-lg hover:bg-green-500"
-                    : "cursor-not-allowed bg-gray-200 text-gray-400"
-                }`}
+                className="w-full rounded-2xl py-4 text-base font-bold transition-colors bg-green-600 text-white shadow-lg hover:bg-green-500"
               >
                 Voir le récapitulatif →
               </button>
@@ -441,7 +445,9 @@ export default function CheckoutModal({ bd, onClose }: Props) {
                       <div>
                         <div className="text-xs font-medium uppercase tracking-wide text-gray-500">Expédition</div>
                         <div className="text-sm font-semibold text-gray-900">{lieuLivraison.trim()}</div>
-                        <div className="text-sm text-gray-600">Sous 48h après confirmation</div>
+                        <div className="text-sm text-gray-600">
+                          {deliveryDateLabel ? `Expédié le ${deliveryDateLabel}` : "Sous 48h après confirmation"}
+                        </div>
                       </div>
                     </div>
                     {!isMobile && whatsappClient && (
@@ -508,7 +514,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
 
                   <p className="text-center text-xs leading-5 text-gray-500">
                     {isMobile
-                      ? "WhatsApp s'ouvrira avec votre commande pré-remplie."
+                      ? <span>WhatsApp va s&apos;ouvrir — <strong>appuyez sur Envoyer</strong> pour confirmer votre commande.</span>
                       : "Nous vous répondrons sous peu pour confirmer l'expédition."}
                   </p>
                 </>

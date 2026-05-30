@@ -271,8 +271,14 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
                     ✅ Garantie 7 jours satisfait ou remboursé
                   </span>
                 )}
-                <span className="hidden sm:inline text-xs text-green-200 font-medium">📱 Paiement Mobile Money · Expédition 48h</span>
+                <span className="text-xs text-green-200 font-medium">💳 Paiement Mobile Money après confirmation · 48h</span>
               </div>
+              {bd.id === "academie-genies" && !fomoState.expired && (
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs font-semibold text-amber-300">
+                  <span>⏰ Offre expire dans {fomoState.timer}</span>
+                  {fomoRemaining !== null && fomoRemaining > 0 && <span>· Plus que {fomoRemaining} exemplaires</span>}
+                </div>
+              )}
               {bd.id === "academie-genies" && (
                 <div className="mt-2 hidden sm:block">
                   <a
@@ -732,8 +738,15 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
         onCommander={() => openCheckout("sticky_bar")}
         shakeStartId="avis-parents"
         label={primaryCtaText}
+        weeklyOrders={bd.nombreCommandesSemaine}
       />
-      {modalOuvert && <CheckoutModal bd={bd} onClose={() => setModalOuvert(false)} />}
+      {modalOuvert && (
+        <CheckoutModal
+          bd={bd}
+          onClose={() => setModalOuvert(false)}
+          deliveryDateLabel={deliveryDateLabel}
+        />
+      )}
     </>
   );
 }
