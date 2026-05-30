@@ -11,6 +11,9 @@ import FaqAccordion from "@/components/FaqAccordion";
 import { fbqTrack } from "@/components/FacebookPixel";
 import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 
+// Bascule saisonnière "grandes vacances". Mettre à false hors saison.
+const VACANCES_MODE = true;
+
 interface Props {
   bd: BD;
   landingPageMode?: boolean;
@@ -174,6 +177,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
       ? "Une bande dessinée 100% personnalisée avec le prénom de votre garçon. Imprimée en couleur, livrée chez vous."
       : bd.description;
   const primaryCtaText = bd.id === "academie-genies" ? "Personnaliser pour mon garçon" : "Personnaliser pour mon enfant";
+  const childNoun = bd.id === "academie-genies" ? "votre garçon" : "votre enfant";
   const academieGeniesReasons =
     bd.id === "academie-genies"
       ? [
@@ -329,6 +333,54 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
       {/* CONTENU */}
       <main className="bg-white pb-28">
+        {/* SECTION VACANCES (saisonnière) */}
+        {VACANCES_MODE && (
+          <section className="bg-amber-50 px-4 py-12 md:py-16">
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-8">
+                <div className="mb-4 h-1 w-14 bg-green-700" />
+                <h2 className="text-2xl font-extrabold leading-tight md:text-3xl text-gray-950">
+                  🌴 Ces vacances, offrez-lui mieux que des écrans
+                </h2>
+                <p className="mt-4 max-w-3xl text-base leading-8 text-gray-700 md:text-lg">
+                  Les grandes vacances arrivent : deux longs mois à remplir. Entre la télé en boucle et les
+                  « je m&apos;ennuie… », difficile d&apos;occuper {childNoun} sans bataille. Et si ces vacances lui
+                  laissaient un vrai souvenir ?
+                </p>
+              </div>
+              <div className="grid gap-5 md:grid-cols-2">
+                <div className="rounded-2xl border border-amber-200 bg-white p-6">
+                  <h3 className="text-base font-extrabold text-gray-950">Sans rien de spécial :</h3>
+                  <ul className="mt-4 space-y-3 text-sm leading-7 text-gray-700">
+                    <li className="flex gap-3"><span aria-hidden="true">📺</span><span>Des heures d&apos;écrans, et l&apos;impression que rien ne reste.</span></li>
+                    <li className="flex gap-3"><span aria-hidden="true">😮‍💨</span><span>« Je m&apos;ennuie… » répété dix fois par jour.</span></li>
+                    <li className="flex gap-3"><span aria-hidden="true">📚</span><span>Des livres ouverts deux minutes, puis abandonnés.</span></li>
+                  </ul>
+                </div>
+                <div className="rounded-2xl border border-green-200 bg-green-50 p-6">
+                  <h3 className="text-base font-extrabold text-green-900">Avec sa BD personnalisée :</h3>
+                  <ul className="mt-4 space-y-3 text-sm leading-7 text-gray-700">
+                    <li className="flex gap-3"><span aria-hidden="true">🦸🏾</span><span>Il <strong className="font-bold text-green-900">devient le héros</strong> — son prénom sur la couverture et dans les dialogues.</span></li>
+                    <li className="flex gap-3"><span aria-hidden="true">📖</span><span>Il lit, il relit, il raconte. Sans qu&apos;on le lui demande.</span></li>
+                    <li className="flex gap-3"><span aria-hidden="true">✨</span><span>Il se sent capable, intelligent, fier. Et il y croit.</span></li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-8 flex flex-col items-start gap-3">
+                <button
+                  onClick={() => openCheckout("vacances_section")}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-700 px-7 py-4 text-base font-extrabold text-white transition-colors hover:bg-green-600 shadow-md sm:w-auto"
+                >
+                  Occuper {childNoun} intelligemment <span aria-hidden="true">→</span>
+                </button>
+                <p className="text-sm leading-6 text-gray-600">
+                  Les commandes augmentent à l&apos;approche des vacances — réservez la sienne maintenant pour être livré à temps.
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
         <FullWidthSection title="À propos de cette série" tone="white">
           <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_280px] md:items-start">
             <p className="max-w-3xl text-base leading-8 text-gray-700 md:text-lg md:leading-9">{synopsisTexte}</p>
@@ -563,7 +615,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         </FullWidthSection>
 
         <FullWidthSection
-          title={bd.id === "academie-genies" ? "C'est à vous de réveillez l'imagination de votre garçon." : "C'est à vous de réveillez l'imagination de votre enfant."}
+          title={bd.id === "academie-genies" ? "C'est à vous de réveiller l'imagination de votre garçon." : "C'est à vous de réveiller l'imagination de votre enfant."}
           tone="dark"
         >
           <div className="mx-auto max-w-2xl text-center">
