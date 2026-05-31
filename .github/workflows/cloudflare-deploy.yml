@@ -3,6 +3,7 @@ name: Deploy to Cloudflare
 on:
   push:
     branches:
+      - main
       - codex/deploiement-mobile
   workflow_dispatch:
 
@@ -10,7 +11,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: cloudflare-deploy-codex-deploiement-mobile
+  group: cloudflare-deploy-main
   cancel-in-progress: true
 
 jobs:
