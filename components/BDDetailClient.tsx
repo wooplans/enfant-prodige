@@ -219,114 +219,152 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
       {/* HERO */}
       <section className="relative overflow-hidden bg-green-900 text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.2),transparent_28%),linear-gradient(135deg,rgba(22,101,52,0.95),rgba(6,78,59,0.98))]" />
-        <div className="relative max-w-6xl mx-auto px-4 py-6 md:py-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(250,204,21,0.15),transparent_30%),linear-gradient(135deg,rgba(22,101,52,0.95),rgba(6,78,59,0.98))]" />
+        <div className="relative max-w-lg mx-auto px-4 pt-5 pb-10">
           {!landingPageMode && (
-            <Link
-              href="/catalogue"
-              className="inline-flex items-center gap-1.5 text-white/80 hover:text-white text-sm font-medium mb-6"
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-              Nos séries
+            <Link href="/catalogue" className="inline-flex items-center gap-1 text-green-400 hover:text-green-200 text-sm mb-5">
+              ← Nos autres BD
             </Link>
           )}
 
-          <div className="grid lg:grid-cols-[1fr_480px] gap-6 lg:gap-12 items-center">
-            <div className="max-w-2xl lg:col-start-1 lg:row-start-1">
-              {bd.nombreAvis > 0 && (
-                <div className="inline-flex items-center gap-2 bg-yellow-50 text-green-950 rounded-full px-3 py-1.5 shadow-lg border border-yellow-200 mb-4">
-                  <Stars note={bd.note} />
-                  <span className="text-sm font-extrabold text-green-900">{bd.note}/5</span>
-                  <span className="text-sm font-semibold text-green-700">({bd.nombreAvis} avis parents)</span>
-                </div>
-              )}
-              <h1 className="text-3xl md:text-6xl font-extrabold leading-tight tracking-normal">{heroTitle}</h1>
-              <p className="mt-4 text-base md:text-lg text-green-50 leading-relaxed">{heroSubtitle}</p>
-              {bd.id === "academie-genies" && (
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
-                    👪 {fomoSold} parents satisfaits
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
-                    📍 Yaoundé &amp; Douala
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1.5 text-xs font-semibold text-white">
-                    🚀 Livraison {deliveryDateLabel}
-                  </span>
-                </div>
-              )}
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <button
-                  onClick={() => openCheckout("hero_cta")}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-400 px-6 py-4 text-base font-extrabold text-green-950 transition-colors hover:bg-yellow-300 active:bg-yellow-500 shadow-lg"
-                >
-                  {primaryCtaText} <span aria-hidden="true">→</span>
-                </button>
-              </div>
-              <div className="mt-3 flex items-center gap-3">
-                <MobileMoneyLogos />
-                <span className="text-xs text-green-200 font-medium">Paiement sécurisé par Mobile Money</span>
-              </div>
-            </div>
+          {/* Badge */}
+          <div className="text-center mb-5">
+            <span className="inline-block border border-amber-400/40 text-amber-300 bg-amber-400/10 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider">
+              📚 BD Personnalisée · Vacances 2026
+            </span>
+          </div>
 
-            <div className="w-auto -mx-4 lg:mx-0 lg:w-full lg:col-start-2 lg:row-start-1 lg:row-span-2">
-              <div
-                className="relative w-full overflow-hidden bg-green-950 shadow-2xl border-y border-white/15 lg:rounded-2xl lg:border"
-                style={{ aspectRatio: "16/9" }}
-                onTouchStart={(event) => setTouchStartX(event.changedTouches[0].clientX)}
-                onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
-              >
+          {/* Titre */}
+          <h1 className="text-center text-4xl sm:text-5xl font-extrabold leading-tight mb-4">
+            {bd.id === "academie-genies" ? (
+              <>Votre garçon, héros de <span className="text-amber-400">{bd.serie}</span></>
+            ) : (
+              <>Votre enfant, héros de <span className="text-amber-400">{bd.serie}</span></>
+            )}
+          </h1>
+
+          {/* Note */}
+          {bd.nombreAvis > 0 && (
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Stars note={bd.note} />
+              <span className="font-bold text-sm">{bd.note}/5</span>
+              <span className="text-green-300 text-sm">· +{bd.nombreAvis} avis</span>
+            </div>
+          )}
+
+          {/* Sous-titre */}
+          <p className="text-center text-green-100 text-base leading-relaxed mb-6 max-w-sm mx-auto">
+            {heroSubtitle}
+          </p>
+
+          {/* Carousel */}
+          <div
+            className="relative w-full rounded-2xl overflow-hidden bg-green-950 shadow-xl mb-6"
+            style={{ aspectRatio: "16/9" }}
+            onTouchStart={(event) => setTouchStartX(event.changedTouches[0].clientX)}
+            onTouchEnd={(event) => handleSwipeEnd(event.changedTouches[0].clientX)}
+          >
+            {slides.map((slide, index) => (
+              <Image
+                key={slide.src}
+                src={slide.src}
+                alt={`${slide.label} de ${bd.serie}`}
+                fill
+                preload={index === 0}
+                sizes="(min-width: 512px) 480px, 100vw"
+                className={`object-cover transition-opacity duration-500 ${slideActif === index ? "opacity-100" : "opacity-0"}`}
+              />
+            ))}
+            <button
+              onClick={slidePrecedent}
+              aria-label="Image précédente"
+              className="absolute left-3 top-1/2 z-10 w-9 h-9 -translate-y-1/2 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white flex items-center justify-center text-sm backdrop-blur-sm"
+            >
+              ←
+            </button>
+            <button
+              onClick={slideSuivant}
+              aria-label="Image suivante"
+              className="absolute right-3 top-1/2 z-10 w-9 h-9 -translate-y-1/2 rounded-full bg-black/40 hover:bg-black/60 border border-white/20 text-white flex items-center justify-center text-sm backdrop-blur-sm"
+            >
+              →
+            </button>
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+              <div className="text-xs font-bold text-white mb-2">{slides[slideActif]?.label}</div>
+              <div className="flex gap-1.5">
                 {slides.map((slide, index) => (
-                  <Image
+                  <button
                     key={slide.src}
-                    src={slide.src}
-                    alt={`${slide.label} de ${bd.serie}`}
-                    fill
-                    preload={index === 0}
-                    sizes="(min-width: 1024px) 480px, 100vw"
-                    className={`object-cover transition-opacity duration-500 ${slideActif === index ? "opacity-100" : "opacity-0"}`}
+                    onClick={() => {
+                      trackProductEvent("carousel_interaction", "hero_dot", { slideIndex: index, slideLabel: slide.label });
+                      setSlideActif(index);
+                    }}
+                    aria-label={`Image ${index + 1}`}
+                    className={`h-1.5 rounded-full transition-all ${slideActif === index ? "w-6 bg-amber-400" : "w-1.5 bg-white/50 hover:bg-white"}`}
                   />
                 ))}
-                <button
-                  onClick={slidePrecedent}
-                  aria-label="Image précédente"
-                  className="absolute left-3 top-1/2 z-10 w-11 h-11 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 border border-white/30 text-white flex items-center justify-center shadow-lg backdrop-blur-sm"
-                >
-                  ←
-                </button>
-                <button
-                  onClick={slideSuivant}
-                  aria-label="Image suivante"
-                  className="absolute right-3 top-1/2 z-10 w-11 h-11 -translate-y-1/2 rounded-full bg-black/35 hover:bg-black/50 border border-white/30 text-white flex items-center justify-center shadow-lg backdrop-blur-sm"
-                >
-                  →
-                </button>
-
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                  <div className="text-sm font-bold">{slides[slideActif]?.label}</div>
-                  <div className="mt-3 flex items-center justify-between gap-3">
-                    <div className="flex gap-1.5">
-                      {slides.map((slide, index) => (
-                        <button
-                          key={slide.src}
-                          onClick={() => {
-                            trackProductEvent("carousel_interaction", "hero_dot", {
-                              slideIndex: index,
-                              slideLabel: slide.label,
-                            });
-                            setSlideActif(index);
-                          }}
-                          aria-label={`Voir l'image ${index + 1}`}
-                          className={`h-2 rounded-full transition-all ${slideActif === index ? "w-8 bg-yellow-300" : "w-2 bg-white/50 hover:bg-white"}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
+          </div>
+
+          {/* Prix */}
+          <div className="text-center mb-5">
+            <div className="flex items-center justify-center gap-3 mb-2">
+              <span className="text-green-400/70 line-through text-base">15 000 FCFA</span>
+              <span className="bg-amber-500 text-white text-xs font-extrabold px-2.5 py-0.5 rounded-full">-34%</span>
+            </div>
+            <div className="text-5xl font-extrabold text-white leading-none">
+              {bd.prix.toLocaleString("fr-FR")} <span className="text-2xl font-bold text-green-300">FCFA</span>
+            </div>
+          </div>
+
+          {/* FOMO bar */}
+          {bd.id === "academie-genies" && (
+            <div className="mb-5 rounded-2xl border border-amber-200/30 bg-amber-400/10 px-4 py-3">
+              <div className="flex items-center justify-between gap-3 text-xs font-bold text-amber-200 mb-2">
+                <span>Plus que 13 exemplaires</span>
+                <span>Offre expire dans {fomoTimer}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-white/20">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-amber-300 to-orange-500 transition-all duration-700 animate-pulse"
+                  style={{ width: `${fomoRemainingPct}%` }}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* CTA principal */}
+          <button
+            onClick={() => openCheckout("hero_cta")}
+            className="w-full bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-white font-extrabold text-lg py-4 rounded-2xl flex items-center justify-center gap-3 shadow-lg transition-colors mb-3"
+          >
+            <WhatsAppIcon />
+            {primaryCtaText}
+          </button>
+
+          {/* Logos Mobile Money */}
+          <div className="flex flex-col items-center gap-2 mb-6">
+            <MobileMoneyLogos />
+            <p className="text-green-300 text-xs">Orange Money · MTN MoMo · Livraison {deliveryDateLabel}</p>
+          </div>
+
+          {/* Preuve sociale */}
+          <div className="flex items-center justify-center gap-3">
+            <div className="flex -space-x-2">
+              {bd.avis.slice(0, 3).map((avis, i) => (
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full border-2 border-green-900 flex items-center justify-center text-xs font-bold text-white"
+                  style={{ backgroundColor: ["#166534", "#15803d", "#14532d"][i] }}
+                >
+                  {avis.avatar}
+                </div>
+              ))}
+            </div>
+            <span className="text-green-200 text-sm font-semibold">
+              {fomoSold} familles satisfaites
+            </span>
           </div>
         </div>
       </section>
@@ -677,9 +715,10 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
             <button
               type="button"
               onClick={() => openCheckout("bottom_offer")}
-              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-8 py-4 text-base font-extrabold text-green-900 transition-colors duration-200 hover:bg-green-50 sm:w-auto"
+              className="mt-8 inline-flex w-full items-center justify-center gap-3 rounded-2xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 px-8 py-4 text-base font-extrabold text-white transition-colors shadow-lg sm:w-auto"
             >
-              {primaryCtaText} <span aria-hidden="true">→</span>
+              <WhatsAppIcon />
+              {primaryCtaText}
             </button>
             <div className="mt-4 flex flex-col items-center gap-2">
               <MobileMoneyLogos light />
@@ -769,6 +808,14 @@ function getRatingBreakdown(note: number, total: number) {
       pct: Math.round((count / safeTotal) * 100),
     };
   });
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 shrink-0">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  );
 }
 
 function MobileMoneyLogos({ light = false }: { light?: boolean }) {
