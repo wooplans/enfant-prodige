@@ -1,16 +1,37 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import type { BD } from "@/lib/catalogue";
+import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
 
 interface CarteBDProps {
   bd: BD;
 }
 
 export default function CarteBD({ bd }: CarteBDProps) {
+  const trackSeriesClick = (placement: string) => {
+    trackAnalyticsEvent({
+      eventType: "cta_click",
+      metadata: {
+        source: "catalogue_card",
+        placement,
+        href: `/bd/${bd.id}`,
+        seriesId: bd.id,
+        seriesSlug: bd.slug || bd.id,
+        seriesTitle: bd.serie,
+      },
+    });
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-shadow overflow-hidden flex flex-col border border-amber-100">
       {/* Couverture */}
-      <Link href={`/bd/${bd.id}`} className="relative block bg-amber-100 aspect-[2/3] overflow-hidden group">
+      <Link
+        href={`/bd/${bd.id}`}
+        onClick={() => trackSeriesClick("cover")}
+        className="relative block bg-amber-100 aspect-[2/3] overflow-hidden group"
+      >
         <Image
           src={bd.couverture}
           alt={`Couverture de ${bd.serie}`}
@@ -29,7 +50,7 @@ export default function CarteBD({ bd }: CarteBDProps) {
         <span className="text-sm text-green-700 font-medium uppercase tracking-wide mb-1 line-clamp-1">
           {bd.genre}
         </span>
-        <Link href={`/bd/${bd.id}`}>
+        <Link href={`/bd/${bd.id}`} onClick={() => trackSeriesClick("title")}>
           <h3 className="font-bold text-gray-900 hover:text-green-700 transition-colors leading-tight text-sm">
             {bd.serie}
           </h3>
@@ -50,6 +71,7 @@ export default function CarteBD({ bd }: CarteBDProps) {
 
           <Link
             href={`/bd/${bd.id}`}
+            onClick={() => trackSeriesClick("button")}
             className="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white text-sm font-semibold px-3 py-2 rounded-xl flex items-center justify-center gap-1 transition-colors text-center leading-tight"
           >
             Pré-commander

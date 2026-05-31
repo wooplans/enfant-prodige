@@ -1,7 +1,10 @@
 import { getPublicSeriesBySlug } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
+import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getPaymentSettings } from "@/lib/payment-settings";
+import { getDeliveryDateLabel } from "@/lib/delivery";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -51,5 +54,20 @@ export default async function PageBD({ params }: Props) {
     notFound();
   }
 
-  return <BDDetailClient bd={bd} />;
+  await getPublicCatalogue();
+  const paymentSettings = await getPaymentSettings();
+  const deliveryDateLabel = getDeliveryDateLabel(new Date(), 48);
+  const landingPageMode = bd.landingPageMode || bd.id === "academie-genies";
+  const page = (
+    <BDDetailClient
+      bd={bd}
+      landingPageMode={landingPageMode}
+      paymentSettings={paymentSettings}
+      deliveryDateLabel={deliveryDateLabel}
+    />
+  );
+
+  if (landingPageMode) return page;
+
+  return <SiteChrome showFooter={false}>{page}</SiteChrome>;
 }

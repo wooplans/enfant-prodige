@@ -121,6 +121,10 @@ export default function AdminSeriesForm({ series }: Props) {
           <input name="disponible" type="checkbox" defaultChecked={series?.disponible ?? true} className="h-4 w-4 accent-green-700" />
           Disponible à la commande
         </label>
+        <label className="inline-flex items-center gap-2 text-sm font-semibold text-gray-800">
+          <input name="landingPageMode" type="checkbox" defaultChecked={series?.landingPageMode ?? false} className="h-4 w-4 accent-green-700" />
+          Mode landing page sans header ni footer
+        </label>
       </div>
 
       <div className="flex flex-col gap-3 sm:flex-row">

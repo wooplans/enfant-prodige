@@ -1,27 +1,20 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import { Suspense } from "react";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 import FacebookPixel from "@/components/FacebookPixel";
 import ConditionalNav from "@/components/ConditionalNav";
-
-const geist = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Enfant Prodige BD | Livres Personnalisés pour Enfants au Cameroun",
   description:
-    "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, livrées en 24h à Yaoundé et Douala. Commandez via WhatsApp.",
+    "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, livrées en 24h à Yaoundé et Douala. Paiement par Mobile Money.",
   keywords: "livre personnalisé enfant, BD personnalisée, Cameroun, Yaoundé, Douala, cadeau enfant africain",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   openGraph: {
     title: "Enfant Prodige BD | Livres Personnalisés pour Enfants au Cameroun",
     description:
-      "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, livrées en 24h à Yaoundé et Douala. Commandez via WhatsApp.",
+      "Offrez à votre enfant une BD avec son prénom sur la couverture et dans les dialogues. 3 séries illustrées, livrées en 24h à Yaoundé et Douala. Paiement par Mobile Money.",
     type: "website",
     locale: "fr_CM",
     siteName: "Enfant Prodige BD",
@@ -49,14 +42,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${geist.variable} h-full`}>
-      <body className="min-h-full flex flex-col bg-amber-50 text-gray-900 antialiased">
+    <html lang="fr" className="h-full">
+      <body className="min-h-full flex flex-col bg-amber-50 text-gray-900 antialiased font-sans">
         <Suspense fallback={null}>
           <FacebookPixel />
+          <AnalyticsTracker />
         </Suspense>
-        <ConditionalNav header={<Header />} footer={<Footer />}>
-          {children}
-        </ConditionalNav>
+        {children}
       </body>
     </html>
   );

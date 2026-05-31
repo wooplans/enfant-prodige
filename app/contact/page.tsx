@@ -1,4 +1,5 @@
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
+import SiteChrome from "@/components/SiteChrome";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,6 +14,7 @@ export default function ContactPage() {
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
 
   return (
+    <SiteChrome>
     <div className="max-w-2xl mx-auto px-4 py-16">
       <div className="text-center mb-12">
         <div className="text-5xl mb-4">📬</div>
@@ -80,5 +82,6 @@ export default function ContactPage() {
         ))}
       </div>
     </div>
+    </SiteChrome>
   );
 }
