@@ -8,14 +8,14 @@ export const localCatalogue: BD[] = [
     titre: "Académie des Génies",
     genre: "Science · Entrepreneuriat · Ambition",
     description:
-      "Votre garçon rejoint l'Académie des Génies pour résoudre une grande énigme scientifique qui menace toute l'Afrique. Son prénom apparaît sur la couverture et dans les dialogues.",
+      "Votre enfant rejoint l'Académie des Génies pour résoudre une grande énigme scientifique qui menace toute l'Afrique. Son prénom apparaît sur la couverture et dans les dialogues.",
     descriptionLongue:
-      "Dans cette aventure sur mesure, votre garçon est recruté par l'Académie des Génies — une école secrète pour les jeunes esprits les plus brillants d'Afrique. Armé de sa curiosité et de son intelligence, il doit déchiffrer un mystère scientifique qui menace tout le continent. Son prénom apparaît sur la couverture, dans les bulles de dialogue et au cœur de l'histoire. 32 pages illustrées pleine couleur, format A4, style sketch vibrant.",
+      "Dans cette aventure sur mesure, votre enfant est recruté par l'Académie des Génies — une école secrète pour les jeunes esprits les plus brillants d'Afrique. Armé de sa curiosité et de son intelligence, il doit déchiffrer un mystère scientifique qui menace tout le continent. Son prénom apparaît sur la couverture, dans les bulles de dialogue et au cœur de l'histoire. 32 pages illustrées pleine couleur, format A4, style sketch vibrant.",
     pourQui: [
-      "Votre garçon est curieux, aime les sciences et les expériences",
+      "Votre enfant est curieux, aime les sciences et les expériences",
       "Vous voulez l'encourager à croire en ses capacités",
       "Vous cherchez un cadeau unique, mémorable et personnalisé",
-      "Vous voulez un livre où votre garçon se voit comme un héros",
+      "Vous voulez un livre où votre enfant se voit comme un héros",
     ],
     prix: 9900,
     fraisLivraison: 1000,
@@ -39,7 +39,7 @@ export const localCatalogue: BD[] = [
         nom: "Cécile M.",
         note: 5,
         commentaire:
-          "Mon fils de 8 ans a pleuré de joie en voyant son prénom sur la couverture ! Il a lu le livre 4 fois en une semaine. Un cadeau extraordinaire.",
+          "Il a lu le livre 4 fois en une semaine. C'est la première fois qu'il lisait sans que je lui demande.",
         ville: "Yaoundé",
         date: "il y a 2 jours",
         avatar: "C",
@@ -48,16 +48,16 @@ export const localCatalogue: BD[] = [
         nom: "Joseph T.",
         note: 5,
         commentaire:
-          "Livré en moins de 24h à Douala comme promis. Les illustrations sont magnifiques et mon fils est fier de se voir en héros africain.",
+          "Depuis cette BD, il dit qu'il veut être scientifique. Le prénom dans l'histoire a tout changé.",
         ville: "Douala",
         date: "il y a 5 jours",
         avatar: "J",
       },
       {
         nom: "Aminata F.",
-        note: 4,
+        note: 5,
         commentaire:
-          "Cadeau d'anniversaire pour mon fils de 7 ans. Il a adoré ! Le paiement Mobile Money était simple et rapide. Je recommande.",
+          "Tous les parents de l'école m'ont demandé où j'avais trouvé ça. Un cadeau vraiment unique.",
         ville: "Yaoundé",
         date: "il y a 2 semaines",
         avatar: "A",

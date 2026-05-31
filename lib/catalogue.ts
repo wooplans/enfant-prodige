@@ -43,10 +43,6 @@ export interface AdminSeries extends BD {
 export interface CommandeData {
   prenom: string;
   sexe: "Garçon" | "Fille" | null;
-  email: string;
-  telephone: string;
-  quartier: string;
-  rue: string;
 }
 
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "237680589708";
