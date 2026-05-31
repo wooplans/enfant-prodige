@@ -40,6 +40,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
   const [modalOuvert, setModalOuvert] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [famillesSold] = useState(() => FAMILLES_BASE + Math.floor((Date.now() - FAMILLES_BASE_MS) / 86400000) * 10);
   const lastCheckoutOpenAt = useRef(0);
 
   const slides =
@@ -48,8 +49,6 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
       src,
       label: defaultSlideLabels[index] ?? `Image ${index + 1}`,
     }));
-
-  const famillesSold = FAMILLES_BASE + Math.floor((Date.now() - FAMILLES_BASE_MS) / 86400000) * 10;
 
   const trackProductEvent = (
     eventType: "cta_click" | "checkout_open" | "carousel_interaction",

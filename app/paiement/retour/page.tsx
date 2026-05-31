@@ -29,7 +29,9 @@ type PaymentOrder = {
   } | null;
 };
 
-type PaymentReturnPageProps = PageProps<"/paiement/retour">;
+type PaymentReturnPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
 
 function formatStatus(status: string | null) {
   switch (status) {

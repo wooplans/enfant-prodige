@@ -105,7 +105,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
         <div className="px-5 pb-6 pt-5 space-y-5">
           <div>
             <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-              Prénom de l'enfant <span className="text-red-500">*</span>
+              Prénom de l&apos;enfant <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -115,7 +115,6 @@ export default function CheckoutModal({ bd, onClose }: Props) {
               placeholder="Ex : Kylian, Léa, Kofi..."
               maxLength={30}
               autoCapitalize="words"
-              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
               className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
                 prenomTouched && !prenomValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"

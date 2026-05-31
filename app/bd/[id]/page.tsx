@@ -1,4 +1,4 @@
-import { getPublicSeriesBySlug } from "@/lib/series";
+import { getPublicCatalogue, getPublicSeriesBySlug } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
 import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
