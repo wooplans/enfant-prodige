@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FacebookPixel from "@/components/FacebookPixel";
+import ConditionalNav from "@/components/ConditionalNav";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -53,9 +54,9 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <FacebookPixel />
         </Suspense>
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ConditionalNav header={<Header />} footer={<Footer />}>
+          {children}
+        </ConditionalNav>
       </body>
     </html>
   );

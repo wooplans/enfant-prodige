@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import type { BD, CommandeData } from "@/lib/catalogue";
-import { buildWhatsAppMessage } from "@/lib/catalogue";
+import type { BD } from "@/lib/catalogue";
+import { buildWhatsAppMessage, WHATSAPP_NUMBER } from "@/lib/catalogue";
 import { fbqTrack } from "@/components/FacebookPixel";
 
 interface Props {
@@ -10,22 +10,11 @@ interface Props {
   onClose: () => void;
 }
 
-type Step = 1 | 2 | 3;
-
-const INITIAL_DATA: CommandeData = {
-  prenom: "",
-  sexe: null,
-  quartier: "",
-  rue: "",
-};
-
 export default function CheckoutModal({ bd, onClose }: Props) {
-  const [step, setStep] = useState<Step>(1);
-  const [data, setData] = useState<CommandeData>(INITIAL_DATA);
+  const [prenom, setPrenom] = useState("");
+  const [sexe, setSexe] = useState<"Garçon" | "Fille" | null>(null);
   const [prenomTouche, setPrenomTouche] = useState(false);
-  const [quartierTouche, setQuartierTouche] = useState(false);
 
-  // Fermer avec Escape
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -48,303 +37,126 @@ export default function CheckoutModal({ bd, onClose }: Props) {
     });
   }, [bd.id, bd.prix, bd.serie]);
 
-  const prenomValide = data.prenom.trim().length >= 2;
-  const sexeValide = data.sexe !== null;
-  const etape1Valide = prenomValide && sexeValide;
-  const etape2Valide = data.quartier.trim().length >= 2;
+  const prenomValide = prenom.trim().length >= 2;
+  const pret = prenomValide && sexe !== null;
+  const whatsappUrl = buildWhatsAppMessage(bd, { prenom: prenom.trim(), sexe });
 
-  const whatsappUrl = buildWhatsAppMessage(bd, data);
+  const handleCommander = () => {
+    setPrenomTouche(true);
+    if (!pret) return;
+    fbqTrack("Lead", {
+      content_name: bd.serie,
+      content_ids: [bd.id],
+      content_type: "product",
+      value: bd.prix,
+      currency: "XAF",
+    });
+    fbqTrack("Contact", {
+      content_name: bd.serie,
+      content_ids: [bd.id],
+      content_type: "product",
+      value: bd.prix,
+      currency: "XAF",
+    });
+  };
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-end md:items-center justify-center"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      {/* Overlay */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Modal */}
-      <div className="relative w-full max-w-md bg-white rounded-t-3xl md:rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4 flex items-center justify-between rounded-t-3xl z-10">
-          <div className="flex items-center gap-3">
-            {step > 1 && (
-              <button
-                onClick={() => setStep((s) => (s - 1) as Step)}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
-              >
-                ←
-              </button>
-            )}
-            <div>
-              <div className="font-bold text-gray-900 text-sm">
-                {step === 1 && "L'enfant"}
-                {step === 2 && "Adresse de livraison"}
-                {step === 3 && "Récapitulatif"}
-              </div>
-              <div className="text-sm text-gray-600">Étape {step} sur 3</div>
-            </div>
+      <div className="relative w-full max-w-sm bg-white rounded-t-3xl md:rounded-3xl shadow-2xl">
+        <div className="flex items-center justify-between px-5 pt-5 pb-2">
+          <div>
+            <h2 className="text-xl font-extrabold text-gray-900">Personnalisez la BD</h2>
+            <p className="text-sm text-gray-500 mt-0.5">
+              Le prénom apparaîtra sur la couverture et dans les dialogues.
+            </p>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors text-lg leading-none"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors text-lg leading-none shrink-0 ml-3"
           >
             ✕
           </button>
         </div>
 
-        {/* Barre de progression */}
-        <div className="flex gap-1 px-5 pt-4">
-          {[1, 2, 3].map((s) => (
-            <div
-              key={s}
-              className={`h-1 flex-1 rounded-full transition-colors ${
-                s <= step ? "bg-green-600" : "bg-gray-200"
+        <div className="px-5 pb-6 pt-4 space-y-4">
+          {/* Prénom */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              Prénom de l&apos;enfant <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
+              onBlur={() => setPrenomTouche(true)}
+              placeholder="Ex : Kylian, Léa, Kofi…"
+              maxLength={30}
+              autoCapitalize="words"
+              autoFocus
+              className={`w-full border rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-colors text-base ${
+                prenomTouche && !prenomValide
+                  ? "border-red-400 bg-red-50"
+                  : "border-gray-200 bg-white"
               }`}
             />
-          ))}
-        </div>
+            {prenomTouche && !prenomValide && (
+              <p className="text-xs text-red-600 mt-1">Entrez au moins 2 caractères</p>
+            )}
+          </div>
 
-        <div className="px-5 pb-6 pt-4">
-          {/* ── ÉTAPE 1 : L'enfant ── */}
-          {step === 1 && (
-            <div className="space-y-5">
-              <div>
-                <div className="text-2xl mb-1">👶</div>
-                <h2 className="text-lg font-extrabold text-gray-900">Parlez-nous de l&apos;enfant</h2>
-                <p className="text-sm text-gray-600 mt-0.5">
-                  Son prénom apparaîtra sur la couverture et dans les dialogues.
-                </p>
-              </div>
-
-              {/* Prénom */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Prénom de l&apos;enfant <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={data.prenom}
-                  onChange={(e) => setData({ ...data, prenom: e.target.value })}
-                  onBlur={() => setPrenomTouche(true)}
-                  placeholder="Ex : Kylian, Léa, Kofi…"
-                  maxLength={30}
-                  autoCapitalize="words"
-                  className={`w-full border rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors text-base ${
-                    prenomTouche && !prenomValide
-                      ? "border-red-400 bg-red-50"
-                      : "border-gray-200 bg-white"
+          {/* Sexe */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Sexe <span className="text-red-500">*</span>
+            </label>
+            <div className="flex gap-3">
+              {(["Garçon", "Fille"] as const).map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSexe(s)}
+                  className={`flex-1 py-3 rounded-xl border-2 font-semibold text-sm transition-all ${
+                    sexe === s
+                      ? "border-amber-500 bg-amber-50 text-amber-700"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
                   }`}
-                />
-                {prenomTouche && !prenomValide && (
-                  <p className="text-sm text-red-600 mt-1">Veuillez entrer au moins 2 caractères</p>
-                )}
-                <p className="text-sm text-green-700 mt-1 font-medium">
-                  ✨ Le prénom sera intégré dans la BD personnalisée
-                </p>
-              </div>
-
-              {/* Sexe */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Sexe <span className="text-red-500">*</span>
-                </label>
-                <div className="flex gap-3">
-                  {(["Garçon", "Fille"] as const).map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setData({ ...data, sexe: s })}
-                      className={`flex-1 py-3 rounded-xl border-2 font-semibold text-sm transition-all ${
-                        data.sexe === s
-                          ? "border-green-600 bg-green-50 text-green-700"
-                          : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
-                      }`}
-                    >
-                      {s === "Garçon" ? "👦 Garçon" : "👧 Fille"}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                onClick={() => {
-                  setPrenomTouche(true);
-                  if (etape1Valide) {
-                    fbqTrack("Lead", {
-                      content_name: bd.serie,
-                      content_ids: [bd.id],
-                      content_type: "product",
-                      value: bd.prix,
-                      currency: "XAF",
-                    });
-                    setStep(2);
-                  }
-                }}
-                disabled={!etape1Valide}
-                className={`w-full py-4 rounded-2xl font-bold text-base transition-colors ${
-                  etape1Valide
-                    ? "bg-green-600 hover:bg-green-500 text-white shadow-lg"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                Continuer →
-              </button>
+                >
+                  {s === "Garçon" ? "👦 Garçon" : "👧 Fille"}
+                </button>
+              ))}
             </div>
+          </div>
+
+          {/* CTA */}
+          {pret ? (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleCommander}
+              className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-extrabold text-base bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-white shadow-lg transition-colors"
+            >
+              <WhatsAppIcon />
+              Commander sur WhatsApp
+            </a>
+          ) : (
+            <button
+              onClick={() => setPrenomTouche(true)}
+              className="w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-extrabold text-base bg-gray-200 text-gray-400 cursor-not-allowed"
+            >
+              <WhatsAppIcon />
+              Commander sur WhatsApp
+            </button>
           )}
 
-          {/* ── ÉTAPE 2 : Livraison ── */}
-          {step === 2 && (
-            <div className="space-y-5">
-              <div>
-                <div className="text-2xl mb-1">📍</div>
-                <h2 className="text-lg font-extrabold text-gray-900">Adresse de livraison</h2>
-                <p className="text-sm text-gray-600 mt-0.5">
-                  Nous livrons à Yaoundé et Douala sous 24h après paiement.
-                </p>
-              </div>
-
-              {/* Quartier */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Quartier <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={data.quartier}
-                  onChange={(e) => setData({ ...data, quartier: e.target.value })}
-                  onBlur={() => setQuartierTouche(true)}
-                  placeholder="Ex : Bastos, Omnisport, Akwa…"
-                  className={`w-full border rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors text-base ${
-                    quartierTouche && !etape2Valide
-                      ? "border-red-400 bg-red-50"
-                      : "border-gray-200 bg-white"
-                  }`}
-                />
-                {quartierTouche && !etape2Valide && (
-                  <p className="text-sm text-red-600 mt-1">Veuillez entrer votre quartier</p>
-                )}
-              </div>
-
-              {/* Rue */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Rue / Précision{" "}
-                  <span className="text-gray-600 font-normal">(optionnel)</span>
-                </label>
-                <input
-                  type="text"
-                  value={data.rue}
-                  onChange={(e) => setData({ ...data, rue: e.target.value })}
-                  placeholder="Ex : Rue des Manguiers, près de la pharmacie…"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors text-base bg-white"
-                />
-              </div>
-
-              <button
-                onClick={() => {
-                  setQuartierTouche(true);
-                  if (etape2Valide) setStep(3);
-                }}
-                disabled={!etape2Valide}
-                className={`w-full py-4 rounded-2xl font-bold text-base transition-colors ${
-                  etape2Valide
-                    ? "bg-green-600 hover:bg-green-500 text-white shadow-lg"
-                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                Voir le récapitulatif →
-              </button>
-            </div>
-          )}
-
-          {/* ── ÉTAPE 3 : Récapitulatif ── */}
-          {step === 3 && (
-            <div className="space-y-5">
-              <div>
-                <div className="text-2xl mb-1">✅</div>
-                <h2 className="text-lg font-extrabold text-gray-900">Votre commande</h2>
-                <p className="text-sm text-gray-600 mt-0.5">
-                  Vérifiez les informations puis envoyez votre commande sur WhatsApp.
-                </p>
-              </div>
-
-              {/* Récap */}
-              <div className="bg-gray-50 rounded-2xl divide-y divide-gray-100 border border-gray-100">
-                <div className="flex items-start gap-3 px-4 py-3.5">
-                  <span className="text-lg mt-0.5">📚</span>
-                  <div>
-                    <div className="text-sm text-gray-700 font-medium uppercase tracking-wide">Série</div>
-                    <div className="font-semibold text-gray-900 text-sm">{bd.serie}</div>
-                    <div className="text-sm text-gray-700">{bd.nombrePages} pages illustrées · Personnalisée</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 px-4 py-3.5">
-                  <span className="text-lg mt-0.5">👶</span>
-                  <div>
-                    <div className="text-sm text-gray-700 font-medium uppercase tracking-wide">Enfant</div>
-                    <div className="font-semibold text-gray-900 text-sm">
-                      {data.prenom} <span className="text-gray-700 font-normal">( {data.sexe} )</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 px-4 py-3.5">
-                  <span className="text-lg mt-0.5">📍</span>
-                  <div>
-                    <div className="text-sm text-gray-700 font-medium uppercase tracking-wide">Livraison</div>
-                    <div className="font-semibold text-gray-900 text-sm">
-                      {data.quartier}
-                      {data.rue && <span className="text-gray-700 font-normal">, {data.rue}</span>}
-                    </div>
-                    <div className="text-sm text-gray-700">Sous 24h après paiement</div>
-                  </div>
-                </div>
-                <div className="px-4 py-3.5">
-                  <div className="flex flex-col items-start gap-1 mb-2 sm:flex-row sm:justify-between sm:items-center">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <span>💰</span> BD personnalisée
-                    </div>
-                    <div className="font-bold text-gray-900">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
-                  </div>
-                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:items-center">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <span>📦</span> Frais de livraison
-                    </div>
-                    <div className="text-gray-700 text-sm">+ {bd.fraisLivraison.toLocaleString("fr-FR")} FCFA <span className="text-sm">(à la réception)</span></div>
-                  </div>
-                </div>
-                <div className="px-4 py-3.5 bg-green-50 rounded-b-2xl">
-                  <div className="flex flex-col items-start gap-1 sm:flex-row sm:justify-between sm:items-center">
-                    <div className="text-sm font-semibold text-green-800">💳 À payer par Mobile Money</div>
-                    <div className="font-extrabold text-green-800 text-lg">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* CTA WhatsApp */}
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() =>
-                  fbqTrack("Contact", {
-                    content_name: bd.serie,
-                    content_ids: [bd.id],
-                    content_type: "product",
-                    value: bd.prix,
-                    currency: "XAF",
-                  })
-                }
-                className="w-full bg-green-600 hover:bg-green-500 active:bg-green-700 text-white font-bold text-base py-4 rounded-2xl flex items-center justify-center gap-3 transition-colors shadow-lg"
-              >
-                <WhatsAppIcon />
-                Envoyer ma commande sur WhatsApp
-              </a>
-              <p className="text-sm text-gray-600 text-center">
-                Votre message est déjà rédigé — envoyez-le et attendez notre confirmation sous quelques minutes.
-              </p>
-            </div>
-          )}
+          <p className="text-xs text-gray-500 text-center">
+            Votre message est pré-rempli — envoyez-le et attendez notre confirmation.
+          </p>
         </div>
       </div>
     </div>

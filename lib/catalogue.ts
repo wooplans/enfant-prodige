@@ -42,30 +42,21 @@ export interface AdminSeries extends BD {
 export interface CommandeData {
   prenom: string;
   sexe: "Garçon" | "Fille" | null;
-  quartier: string;
-  rue: string;
 }
 
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "237680589708";
 
 export function buildWhatsAppMessage(bd: BD, commande: CommandeData): string {
-  const adresse = commande.rue
-    ? `${commande.quartier}, ${commande.rue}`
-    : commande.quartier;
-
   const message = [
-    `Bonjour ! Je souhaite commander une BD personnalisée :`,
+    `Bonjour ! Je souhaite commander la BD personnalisée :`,
     ``,
     `📚 *${bd.serie}*`,
+    `👶 Prénom : ${commande.prenom} (${commande.sexe})`,
     ``,
-    `👶 Prénom de l'enfant : ${commande.prenom} ( ${commande.sexe} )`,
+    `💰 Paiement Mobile Money : ${bd.prix.toLocaleString("fr-FR")} FCFA`,
+    `📦 Livraison : ${bd.fraisLivraison.toLocaleString("fr-FR")} FCFA (à la réception)`,
     ``,
-    `📍 Quartier : ${adresse}`,
-    ``,
-    `💰 Montant à payer par Mobile Money : ${bd.prix.toLocaleString("fr-FR")} FCFA ✅`,
-    `📦 Frais de livraison : ${bd.fraisLivraison.toLocaleString("fr-FR")} FCFA (payés à la réception)`,
-    ``,
-    `Merci de me confirmer les détails du paiement Mobile Money.`,
+    `Merci de me confirmer le numéro Mobile Money et de me demander mon adresse de livraison 🙏`,
   ].join("\n");
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;

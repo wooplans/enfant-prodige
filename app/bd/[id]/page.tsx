@@ -1,4 +1,4 @@
-import { getPublicCatalogue, getPublicSeriesBySlug } from "@/lib/series";
+import { getPublicSeriesBySlug } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -51,8 +51,5 @@ export default async function PageBD({ params }: Props) {
     notFound();
   }
 
-  const catalogue = await getPublicCatalogue();
-  const autresSeries = catalogue.filter((b) => b.id !== bd.id);
-
-  return <BDDetailClient bd={bd} autresSeries={autresSeries} />;
+  return <BDDetailClient bd={bd} />;
 }
