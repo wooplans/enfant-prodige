@@ -14,10 +14,13 @@ interface Props {
 export default function CheckoutModal({ bd, onClose }: Props) {
   const [prenom, setPrenom] = useState("");
   const [sexe, setSexe] = useState<"Garçon" | "Fille" | null>(null);
+  const [adresse, setAdresse] = useState("");
   const [prenomTouched, setPrenomTouched] = useState(false);
+  const [adresseTouched, setAdresseTouched] = useState(false);
 
   const prenomValide = prenom.trim().length >= 2;
-  const formValide = prenomValide && sexe !== null;
+  const adresseValide = adresse.trim().length >= 5;
+  const formValide = prenomValide && sexe !== null && adresseValide;
 
   useEffect(() => {
     fbqTrack("InitiateCheckout", {
@@ -56,6 +59,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
 
   const handleSubmit = () => {
     setPrenomTouched(true);
+    setAdresseTouched(true);
     if (!formValide) return;
 
     fbqTrack("Lead", {
@@ -75,7 +79,7 @@ export default function CheckoutModal({ bd, onClose }: Props) {
       },
     });
 
-    const url = buildWhatsAppMessage(bd, { prenom: prenom.trim(), sexe });
+    const url = buildWhatsAppMessage(bd, { prenom: prenom.trim(), sexe, adresse: adresse.trim() });
     window.open(url, "_blank", "noopener,noreferrer");
     onClose();
   };
@@ -150,10 +154,33 @@ export default function CheckoutModal({ bd, onClose }: Props) {
             </div>
           </div>
 
-          {prenom.trim().length >= 2 && sexe && (
+          <div>
+            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+              Adresse de livraison <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={adresse}
+              onChange={(event) => setAdresse(event.target.value)}
+              onBlur={() => setAdresseTouched(true)}
+              placeholder="Ex : Bastos, face pharmacie du centre, Yaoundé"
+              maxLength={150}
+              className={`w-full rounded-xl border px-4 py-3 text-base text-gray-900 placeholder-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                adresseTouched && !adresseValide ? "border-red-400 bg-red-50" : "border-gray-200 bg-white"
+              }`}
+            />
+            {adresseTouched && !adresseValide && (
+              <p className="mt-1 text-sm text-red-600">Veuillez entrer une adresse de livraison.</p>
+            )}
+            <p className="mt-1.5 text-xs font-medium text-green-700">
+              📍 Yaoundé et Douala uniquement
+            </p>
+          </div>
+
+          {prenom.trim().length >= 2 && sexe && adresseValide && (
             <div className="rounded-xl bg-green-50 border border-green-200 px-4 py-3">
               <p className="text-sm text-green-800 font-medium">
-                ✨ La BD sera personnalisée pour <strong>{prenom.trim()}</strong>
+                ✨ BD personnalisée pour <strong>{prenom.trim()}</strong> — livraison à <strong>{adresse.trim()}</strong>
               </p>
             </div>
           )}

@@ -43,6 +43,7 @@ export interface AdminSeries extends BD {
 export interface CommandeData {
   prenom: string;
   sexe: "Garçon" | "Fille" | null;
+  adresse: string;
 }
 
 export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "237691001580";
@@ -53,11 +54,12 @@ export function buildWhatsAppMessage(bd: BD, commande: CommandeData): string {
     ``,
     `📚 *${bd.serie}*`,
     `👶 Prénom : ${commande.prenom} (${commande.sexe})`,
+    `📍 Adresse de livraison : ${commande.adresse}`,
     ``,
     `💰 Paiement Mobile Money : ${bd.prix.toLocaleString("fr-FR")} FCFA`,
     `📦 Livraison : ${bd.fraisLivraison.toLocaleString("fr-FR")} FCFA (à la réception)`,
     ``,
-    `Merci de me confirmer le numéro Mobile Money et de me demander mon adresse de livraison 🙏`,
+    `Merci de me confirmer le numéro Mobile Money 🙏`,
   ].join("\n");
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
