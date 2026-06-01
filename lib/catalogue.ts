@@ -45,7 +45,7 @@ export interface CommandeData {
   sexe: "Garçon" | "Fille" | null;
 }
 
-export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "237680589708";
+export const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "237691001580";
 
 export function buildWhatsAppMessage(bd: BD, commande: CommandeData): string {
   const message = [

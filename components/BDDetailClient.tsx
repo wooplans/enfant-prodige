@@ -240,30 +240,6 @@ export default function BDDetailClient({ bd, landingPageMode = false, deliveryDa
         </div>
       </section>
 
-      {/* SECTION 2 : VSL PLACEHOLDER */}
-      <section className="bg-[#111] py-10 px-4">
-        <div className="mx-auto max-w-lg">
-          <button
-            type="button"
-            onClick={() => openCheckout("vsl_cta")}
-            aria-label="Voir comment votre enfant devient le héros"
-            className="relative w-full rounded-2xl overflow-hidden bg-[#0d1f0d] shadow-2xl border border-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
-            style={{ aspectRatio: "16/9" }}
-          >
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-amber-500/90 flex items-center justify-center shadow-xl">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 text-white ml-1" aria-hidden="true">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-              <p className="text-white/80 text-sm font-semibold px-4 text-center">
-                Voir comment votre enfant devient le héros de l&apos;histoire
-              </p>
-            </div>
-          </button>
-        </div>
-      </section>
-
       {/* SECTION 3 : LA PROMESSE */}
       <section className="bg-white px-4 py-14 md:py-16">
         <div className="mx-auto max-w-3xl">
