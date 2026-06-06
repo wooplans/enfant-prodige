@@ -73,3 +73,23 @@ export function buildWhatsAppMessage(bd: BD, commande: CommandeData): string {
 
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
+
+export function buildWhatsAppLeadMessage(
+  bd: BD,
+  commande: Pick<CommandeData, "prenom" | "sexe" | "quartier" | "rue">
+) {
+  const adresse = commande.rue ? `${commande.quartier}, ${commande.rue}` : commande.quartier;
+
+  const message = [
+    "Bonjour ! Je souhaite réserver une BD personnalisée :",
+    "",
+    `📚 *${bd.serie}*`,
+    `👶 Prénom de l'enfant : ${commande.prenom}`,
+    `🧒 Sexe : ${commande.sexe}`,
+    `📍 Lieu de livraison : ${adresse}`,
+    "",
+    "Merci de me confirmer la disponibilité et la suite sur WhatsApp.",
+  ].join("\n");
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}

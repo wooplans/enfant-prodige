@@ -2,6 +2,69 @@
 
 export const localCatalogue: BD[] = [
   {
+    id: "sauve-les-animaux",
+    slug: "sauve-les-animaux",
+    serie: "Sauve les Animaux",
+    titre: "Sauve les Animaux",
+    genre: "Animaux · Sauvetage · Aventure",
+    description:
+      "Votre enfant devient le héros d'une mission pour protéger les animaux et voit son prénom intégré dans l'histoire.",
+    descriptionLongue:
+      "Dans Sauve les Animaux, votre enfant entre dans une grande mission de sauvetage au cœur d'un parc animalier africain. Il aide à protéger les lions, éléphants, perroquets et gorilles, prend des décisions courageuses et découvre que sa voix compte. Son prénom apparaît sur la couverture et dans les dialogues pour transformer la lecture en aventure personnelle.",
+    pourQui: [
+      "Votre enfant adore les animaux et les histoires d'aventure",
+      "Vous cherchez une BD qui donne envie de lire dès les premières pages",
+      "Vous voulez un cadeau original, personnalisé et facile à commander",
+      "Vous voulez une histoire qui mélange émotion, action et découverte",
+    ],
+    prix: 9900,
+    fraisLivraison: 1000,
+    couverture: "/covers/exploration-zoo.jpg",
+    galerie: [
+      "/covers/exploration-zoo.jpg",
+      "/covers/exploration-zoo-scene.jpg",
+      "/covers/exploration-zoo-heros.jpg",
+      "/covers/exploration-zoo-detail.jpg",
+    ],
+    nombrePages: 32,
+    ageMin: 6,
+    ageMax: 10,
+    disponible: true,
+    landingPageMode: true,
+    note: 4.8,
+    nombreAvis: 16,
+    nombreCommandesSemaine: 11,
+    avis: [
+      {
+        nom: "Clarisse N.",
+        note: 5,
+        commentaire:
+          "Ma fille a tout de suite voulu savoir ce qui arrivait aux animaux. Quand elle a vu son prénom dans l'histoire, elle ne voulait plus lâcher la BD.",
+        ville: "Douala",
+        date: "il y a 3 jours",
+        avatar: "C",
+      },
+      {
+        nom: "Marius E.",
+        note: 5,
+        commentaire:
+          "Très belle idée de cadeau. Mon fils adore les lions, et la commande sur WhatsApp était simple.",
+        ville: "Yaoundé",
+        date: "il y a 6 jours",
+        avatar: "M",
+      },
+      {
+        nom: "Aïcha T.",
+        note: 4,
+        commentaire:
+          "Les dessins sont beaux et l'histoire tient bien l'attention des enfants. Très bon retour après la livraison.",
+        ville: "Bafoussam",
+        date: "il y a 2 semaines",
+        avatar: "A",
+      },
+    ],
+  },
+  {
     id: "academie-genies",
     slug: "academie-genies",
     serie: "Académie des Génies",

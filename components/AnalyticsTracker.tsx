@@ -7,6 +7,7 @@ export type ClientAnalyticsEventType =
   | "session_start"
   | "page_view"
   | "cta_click"
+  | "whatsapp_click"
   | "checkout_open"
   | "checkout_close"
   | "checkout_details_submit"

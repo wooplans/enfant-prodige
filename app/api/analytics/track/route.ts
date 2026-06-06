@@ -36,6 +36,7 @@ const allowedMetadataKeys = new Set([
   "placement",
   "label",
   "href",
+  "canal",
   "seriesId",
   "seriesSlug",
   "seriesTitle",

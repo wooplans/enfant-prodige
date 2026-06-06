@@ -1,5 +1,6 @@
 import { getPublicCatalogue, getPublicSeriesBySlug } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
+import SauveLesAnimauxLanding from "@/components/SauveLesAnimauxLanding";
 import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -21,11 +22,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description =
     bd.id === "academie-genies"
       ? "Offrez à votre garçon de 7 à 12 ans une BD personnalisée avec son prénom, imprimée en couleur et livrée à Douala ou Yaoundé."
-      : bd.description;
+      : bd.id === "sauve-les-animaux"
+        ? "Une landing WhatsApp pour une BD personnalisée où votre enfant sauve les animaux et devient le héros de l'histoire."
+        : bd.description;
+
   const title =
     bd.id === "academie-genies"
       ? "BD personnalisée garçon à Douala et Yaoundé"
-      : `${bd.serie} | BD personnalisée enfant`;
+      : bd.id === "sauve-les-animaux"
+        ? "Sauve les Animaux | Landing WhatsApp"
+        : `${bd.serie} | BD personnalisée enfant`;
 
   return {
     title,
@@ -64,14 +70,18 @@ export default async function PageBD({ params }: Props) {
   await getPublicCatalogue();
   const paymentSettings = await getPaymentSettings();
   const deliveryDateLabel = getDeliveryDateLabel(new Date(), 48);
-  const page = (
-    <BDDetailClient
-      bd={bd}
-      landingPageMode={bd.landingPageMode}
-      paymentSettings={paymentSettings}
-      deliveryDateLabel={deliveryDateLabel}
-    />
-  );
+
+  const page =
+    bd.id === "sauve-les-animaux" ? (
+      <SauveLesAnimauxLanding bd={bd} />
+    ) : (
+      <BDDetailClient
+        bd={bd}
+        landingPageMode={bd.landingPageMode}
+        paymentSettings={paymentSettings}
+        deliveryDateLabel={deliveryDateLabel}
+      />
+    );
 
   if (bd.landingPageMode) return page;
 
