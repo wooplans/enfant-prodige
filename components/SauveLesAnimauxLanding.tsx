@@ -11,30 +11,38 @@ interface Props {
   bd: BD;
 }
 
-const heroCover = "/sauve-les-animaux/cover-girl.jpeg";
+const heroBoyReading = "/sauve-les-animaux/hero-boy-reading.jpeg";
+const heroFamilyReading = "/sauve-les-animaux/hero-family-reading.jpeg";
+const heroGirlHolding = "/sauve-les-animaux/hero-girl-holding.jpeg";
+const heroVerandaReading = "/sauve-les-animaux/hero-veranda-reading.jpeg";
 const alternateCover = "/sauve-les-animaux/cover-boy.jpeg";
 const familyReading = "/sauve-les-animaux/family-reading.png";
 
 const heroSlides = [
   {
-    src: heroCover,
-    title: "La couverture personnalisee",
-    text: "Son prenom apparait des la premiere page.",
+    src: heroBoyReading,
+    title: "Il tient son histoire entre les mains",
+    text: "Un livre personnalise qu'il reconnait tout de suite comme le sien.",
   },
   {
-    src: alternateCover,
-    title: "L'enfant au centre de l'histoire",
-    text: "Il ne regarde pas l'aventure, il la vit.",
+    src: heroFamilyReading,
+    title: "Un moment de lecture que vous partagez",
+    text: "Une histoire qui cree un vrai souvenir entre vous et votre enfant.",
   },
   {
-    src: familyReading,
-    title: "Un vrai moment de lecture",
-    text: "Une histoire qui se partage avec fierte et emotion.",
+    src: heroGirlHolding,
+    title: "Une BD qui donne envie de lire",
+    text: "Votre enfant devient le petit heros qui sauve les animaux.",
+  },
+  {
+    src: heroVerandaReading,
+    title: "Une histoire qui se vit aussi en famille",
+    text: "Un moment simple, joyeux et memorable autour de son livre personnalise.",
   },
 ];
 
 const reassuranceItems = [
-  "Le prenom de votre enfant apparait dans l'histoire",
+  "Le prenom de votre enfant apparait dans l&apos;histoire",
   "Commande simple sur WhatsApp",
   "BD physique en couleur",
   "Livraison organisee avec vous",
@@ -43,7 +51,7 @@ const reassuranceItems = [
 const experienceItems = [
   "Votre enfant devient le heros de l'aventure.",
   "Il aide les animaux et avance dans une vraie mission.",
-  "Il retrouve son prenom dans la BD et se sent vraiment au centre de l'histoire.",
+  "Il retrouve son prenom dans la BD et se sent vraiment au centre de l&apos;histoire.",
 ];
 
 const parentBenefits = [
@@ -63,7 +71,7 @@ const faqs = [
   },
   {
     q: "Le prenom apparait vraiment dans la BD ?",
-    a: "Oui. Le prenom de votre enfant est integre dans l'histoire pour rendre le livre vraiment personnel.",
+    a: "Oui. Le prenom de votre enfant est integre dans l&apos;histoire pour rendre le livre vraiment personnel.",
   },
   {
     q: "Quelles informations faut-il donner ?",
@@ -121,6 +129,14 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                 <span className="rounded-full bg-white/10 px-4 py-2">32 pages couleur</span>
                 <span className="rounded-full bg-white/10 px-4 py-2">Commande sur WhatsApp</span>
               </div>
+
+              <div className="mt-4 inline-flex flex-wrap items-end gap-3 rounded-[1.4rem] border border-white/15 bg-white/10 px-4 py-3 shadow-lg backdrop-blur-sm">
+                <span className="text-sm font-bold text-emerald-100 line-through">15 000 FCFA</span>
+                <span className="text-3xl font-extrabold text-white sm:text-4xl">{bd.prix.toLocaleString("fr-FR")} FCFA</span>
+                <span className="rounded-full bg-amber-300 px-3 py-1 text-xs font-extrabold uppercase text-emerald-950">
+                  Offre de lancement
+                </span>
+              </div>
             </div>
 
             <div className="relative">
@@ -128,10 +144,10 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                 <Image
                   src={currentHeroSlide.src}
                   alt={currentHeroSlide.title}
-                  width={900}
-                  height={1000}
+                  width={1200}
+                  height={900}
                   priority
-                  className="h-[34vh] w-full object-cover sm:h-[38vh] md:h-[42vh] lg:h-[520px]"
+                  className="aspect-[4/3] w-full object-cover"
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent px-4 pb-4 pt-10">
                   <div className="text-sm font-extrabold text-white">{currentHeroSlide.title}</div>
@@ -178,6 +194,53 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                 <div className="text-sm font-extrabold text-emerald-800">{item}</div>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="bg-white px-4 py-12 md:px-6 md:py-16">
+          <div className="mx-auto max-w-6xl rounded-[2rem] border border-amber-200 bg-[linear-gradient(135deg,#fff8e0_0%,#fff4c7_45%,#ffffff_100%)] p-6 shadow-sm md:p-8">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+              <div>
+                <div className="mb-4 h-1.5 w-16 rounded-full bg-amber-400" />
+                <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">L&apos;offre du moment</h2>
+                <p className="mt-4 max-w-2xl text-base leading-8 text-gray-700 md:text-lg">
+                  Une BD personnalisee ou votre enfant devient le heros d&apos;une aventure pleine d&apos;animaux,
+                  de courage et de tendresse.
+                </p>
+
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  {[
+                    "32 pages illustrees en couleur",
+                    "Prenom de votre enfant dans l&apos;histoire",
+                    "Commande simple sur WhatsApp",
+                  ].map((item) => (
+                    <div key={item} className="rounded-[1.25rem] bg-white px-4 py-4 text-sm font-bold text-gray-800 shadow-sm">
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-md">
+                <div className="text-sm font-bold text-gray-500 line-through">15 000 FCFA</div>
+                <div className="mt-1 text-4xl font-extrabold text-emerald-950">{bd.prix.toLocaleString("fr-FR")} FCFA</div>
+                <p className="mt-3 text-sm leading-6 text-gray-700">
+                  Prix de lancement pour cette aventure personnalisee.
+                </p>
+                <div className="mt-5 space-y-2 text-sm text-gray-700">
+                  <div>• BD physique personnalisee</div>
+                  <div>• Votre enfant au centre de l&apos;histoire</div>
+                  <div>• Demande lancee directement sur WhatsApp</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => openLeadModal("offer_section")}
+                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-4 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d]"
+                >
+                  Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -251,7 +314,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                 ))}
               </div>
               <div className="overflow-hidden rounded-[2rem] border border-emerald-100 bg-[#f6fff8] shadow-sm">
-                <Image src={familyReading} alt="Moment de lecture entre une maman et son enfant" width={900} height={1300} className="h-full w-full object-cover" />
+                <Image src={heroFamilyReading} alt="Moment de lecture entre une maman et son enfant" width={768} height={1152} className="h-full w-full object-cover" />
               </div>
             </div>
           </div>
