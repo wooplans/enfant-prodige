@@ -156,22 +156,24 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
   return (
     <>
       <main className="bg-[#f7f1e3] pb-28 text-gray-950">
-        <section className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#184e3b_0%,#103c2f_55%,#0d2d24_100%)] text-white">
+        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#184e3b_0%,#103c2f_55%,#0d2d24_100%)] text-white md:min-h-screen">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.22),transparent_26%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.08),transparent_18%),radial-gradient(circle_at_bottom_right,rgba(74,222,128,0.18),transparent_25%)]" />
-          <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col justify-between px-4 py-5 md:px-6 md:py-8">
-            <div className="mb-5 rounded-2xl bg-amber-300 px-4 py-3 text-center text-sm font-extrabold uppercase tracking-wide text-emerald-950 shadow-lg sm:text-base">
+          <div className="relative mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:min-h-screen md:justify-between md:px-6 md:py-8">
+            <div className="overflow-hidden rounded-xl bg-amber-300 px-2 py-1.5 text-center text-[11px] font-extrabold uppercase leading-none tracking-normal text-emerald-950 shadow-lg sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base sm:tracking-wide">
+              <span className="block whitespace-nowrap">
               Fin de l'offre de lancement ce soir a 23h59
+              </span>
             </div>
-            <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
+            <div className="grid gap-3 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
               <div className="max-w-2xl">
-                <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
+                <h1 className="text-[2rem] font-extrabold leading-[1.05] sm:text-4xl md:text-6xl">
                   Votre enfant devient le héros. Il lit et apprend en s'amusant !
                 </h1>
-                <p className="mt-3 max-w-xl text-sm leading-6 text-emerald-50 sm:text-base md:text-lg">
+                <p className="mt-2 max-w-xl text-sm leading-5 text-emerald-50 sm:text-base sm:leading-6 md:text-lg">
                   Son prénom apparaît dans la BD. Un cadeau tendre, original et mémorable.
                 </p>
 
-                <div className="mt-4 inline-flex flex-wrap items-end gap-3 rounded-[1.4rem] border border-white/15 bg-white/10 px-4 py-3 shadow-lg backdrop-blur-sm">
+                <div className="mt-3 inline-flex flex-wrap items-end gap-3 rounded-[1.4rem] border border-white/15 bg-white/10 px-4 py-2.5 shadow-lg backdrop-blur-sm md:py-3">
                   <span className="text-sm font-bold text-emerald-100 line-through">15 000 FCFA</span>
                   <span className="text-3xl font-extrabold text-white sm:text-4xl">
                     {bd.prix.toLocaleString("fr-FR")} FCFA
@@ -190,11 +192,11 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                     width={1200}
                     height={900}
                     priority
-                    className="aspect-[4/3] w-full object-cover"
+                    className="h-[31svh] max-h-[240px] min-h-[185px] w-full object-cover sm:aspect-[4/3] sm:h-auto sm:max-h-none"
                   />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent px-4 pb-4 pt-10">
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent px-4 pb-3 pt-8 sm:pb-4 sm:pt-10">
                     <div className="text-sm font-extrabold text-white">{currentHeroSlide.title}</div>
-                    <p className="mt-1 max-w-sm text-xs leading-5 text-emerald-50 sm:text-sm">
+                    <p className="mt-1 max-w-sm text-xs leading-4 text-emerald-50 sm:text-sm sm:leading-5">
                       {currentHeroSlide.text}
                     </p>
                   </div>
@@ -202,7 +204,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
               </div>
             </div>
 
-            <div className="pb-2 pt-4">
+            <div className="pb-1 pt-1 md:pb-2 md:pt-4">
               <div className="flex items-center gap-2">
                 {heroSlides.map((slide, index) => (
                   <button
@@ -220,7 +222,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
               <button
                 type="button"
                 onClick={() => openLeadModal("hero")}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-4 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d] sm:w-auto"
+                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-3.5 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d] sm:w-auto md:py-4"
               >
                 Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
               </button>
