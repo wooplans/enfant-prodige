@@ -6,9 +6,15 @@ interface Props {
   onCommander: () => void;
   shakeStartId?: string;
   label?: string;
+  countdownLabel?: string;
 }
 
-export default function StickyCommanderBar({ onCommander, shakeStartId, label = "Personnaliser pour mon enfant" }: Props) {
+export default function StickyCommanderBar({
+  onCommander,
+  shakeStartId,
+  label = "Personnaliser pour mon enfant",
+  countdownLabel,
+}: Props) {
   const [visible, setVisible] = useState(false);
   const [shakeEnabled, setShakeEnabled] = useState(false);
 
@@ -49,7 +55,12 @@ export default function StickyCommanderBar({ onCommander, shakeStartId, label = 
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 shadow-2xl px-4 py-3 flex items-center justify-center">
+    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white px-4 py-3 shadow-2xl">
+      {countdownLabel && (
+        <div className="mx-auto mb-2 flex max-w-2xl items-center justify-center rounded-xl bg-amber-50 px-3 py-2 text-center text-sm font-extrabold text-amber-900 ring-1 ring-amber-200">
+          {countdownLabel}
+        </div>
+      )}
       <button
         type="button"
         onPointerDown={onCommander}

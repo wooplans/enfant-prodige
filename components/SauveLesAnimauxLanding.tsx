@@ -79,9 +79,45 @@ const faqs = [
   },
 ];
 
+const yaoundeFormatter = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "Africa/Douala",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+function getYaoundeDateParts(date: Date) {
+  const parts = yaoundeFormatter.formatToParts(date);
+
+  return {
+    year: Number(parts.find((part) => part.type === "year")?.value),
+    month: Number(parts.find((part) => part.type === "month")?.value),
+    day: Number(parts.find((part) => part.type === "day")?.value),
+  };
+}
+
+function getMillisecondsUntilYaoundeDeadline(now = new Date()) {
+  const { year, month, day } = getYaoundeDateParts(now);
+  const targetToday = Date.UTC(year, month - 1, day, 22, 59, 0);
+  const target =
+    now.getTime() < targetToday ? targetToday : Date.UTC(year, month - 1, day + 1, 22, 59, 0);
+
+  return Math.max(0, target - now.getTime());
+}
+
+function formatCountdown(milliseconds: number) {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return [hours, minutes, seconds].map((value) => String(value).padStart(2, "0")).join(":");
+}
+
 export default function SauveLesAnimauxLanding({ bd }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+  const [offerCountdown, setOfferCountdown] = useState("00:00:00");
 
   const openLeadModal = (source: string) => {
     trackAnalyticsEvent({
@@ -104,6 +140,17 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
     return () => window.clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    const updateCountdown = () => {
+      setOfferCountdown(formatCountdown(getMillisecondsUntilYaoundeDeadline()));
+    };
+
+    updateCountdown();
+    const intervalId = window.setInterval(updateCountdown, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   const currentHeroSlide = heroSlides[heroSlideIndex];
 
   return (
@@ -112,6 +159,9 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
         <section className="relative min-h-screen overflow-hidden bg-[linear-gradient(135deg,#184e3b_0%,#103c2f_55%,#0d2d24_100%)] text-white">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.22),transparent_26%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.08),transparent_18%),radial-gradient(circle_at_bottom_right,rgba(74,222,128,0.18),transparent_25%)]" />
           <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col justify-between px-4 py-5 md:px-6 md:py-8">
+            <div className="mb-5 rounded-2xl bg-amber-300 px-4 py-3 text-center text-sm font-extrabold uppercase tracking-wide text-emerald-950 shadow-lg sm:text-base">
+              Fin de l'offre de lancement ce soir a 23h59
+            </div>
             <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
               <div className="max-w-2xl">
                 <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
@@ -451,6 +501,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
         onCommander={() => openLeadModal("sticky_bar")}
         shakeStartId="avis-parents"
         label="Commander sur WhatsApp"
+        countdownLabel={`Offre de lancement : fin dans ${offerCountdown}`}
       />
       {modalOpen && <WhatsAppLeadModal bd={bd} onClose={() => setModalOpen(false)} />}
     </>
