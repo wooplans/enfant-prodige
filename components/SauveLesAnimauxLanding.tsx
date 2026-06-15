@@ -115,7 +115,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
             <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
               <div className="max-w-2xl">
                 <h1 className="text-3xl font-extrabold leading-tight sm:text-4xl md:text-6xl">
-                  Et si votre enfant devenait le petit héros qui sauve les animaux ?
+                  Votre enfant devient le héros. Il lit et apprend en s'amusant !
                 </h1>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-emerald-50 sm:text-base md:text-lg">
                   Son prénom apparaît dans la BD. Un cadeau tendre, original et mémorable.
