@@ -156,9 +156,9 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
   return (
     <>
       <main className="bg-[#f7f1e3] pb-28 text-gray-950">
-        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#184e3b_0%,#103c2f_55%,#0d2d24_100%)] text-white md:min-h-screen">
+        <section className="relative min-h-[100svh] overflow-hidden bg-[linear-gradient(135deg,#184e3b_0%,#103c2f_55%,#0d2d24_100%)] text-white">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.22),transparent_26%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.08),transparent_18%),radial-gradient(circle_at_bottom_right,rgba(74,222,128,0.18),transparent_25%)]" />
-          <div className="relative mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:min-h-screen md:justify-between md:px-6 md:py-8">
+          <div className="relative mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-between gap-4 px-4 py-3 md:px-6 md:py-8">
             <div className="overflow-hidden rounded-xl bg-amber-300 px-2 py-1.5 text-center text-[11px] font-extrabold uppercase leading-none tracking-normal text-emerald-950 shadow-lg sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base sm:tracking-wide">
               <span className="block whitespace-nowrap">
               Fin de l'offre de lancement ce soir a 23h59
@@ -192,7 +192,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                     width={1200}
                     height={900}
                     priority
-                    className="h-[31svh] max-h-[240px] min-h-[185px] w-full object-cover sm:aspect-[4/3] sm:h-auto sm:max-h-none"
+                    className="h-[36svh] max-h-[300px] min-h-[220px] w-full object-cover sm:aspect-[4/3] sm:h-auto sm:max-h-none"
                   />
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent px-4 pb-3 pt-8 sm:pb-4 sm:pt-10">
                     <div className="text-sm font-extrabold text-white">{currentHeroSlide.title}</div>
@@ -204,7 +204,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
               </div>
             </div>
 
-            <div className="pb-1 pt-1 md:pb-2 md:pt-4">
+            <div className="pb-1 md:pb-2 md:pt-4">
               <div className="flex items-center gap-2">
                 {heroSlides.map((slide, index) => (
                   <button
