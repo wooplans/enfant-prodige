@@ -11,71 +11,67 @@ interface Props {
   bd: BD;
 }
 
-const heroBoyReading = "/sauve-les-animaux/hero-boy-reading.jpeg";
-const heroFamilyReading = "/sauve-les-animaux/hero-family-reading.jpeg";
-const heroGirlHolding = "/sauve-les-animaux/hero-girl-holding.jpeg";
-const heroVerandaReading = "/sauve-les-animaux/hero-veranda-reading.jpeg";
-const alternateCover = "/sauve-les-animaux/cover-boy.jpeg";
-const experienceBookClosed = "/sauve-les-animaux/experience-book-closed.jpeg";
-
 const heroSlides = [
   {
-    src: heroBoyReading,
-    title: "Il tient son histoire entre les mains",
-    text: "Un livre personnalisé qu'il reconnaît tout de suite comme le sien.",
+    src: "/sauve-les-animaux/hero-girl-holding.jpeg",
+    title: "Une BD qui lui ressemble",
+    text: "Votre enfant tient une histoire ou son prenom devient le point de depart de l'aventure.",
   },
   {
-    src: heroFamilyReading,
-    title: "Un moment de lecture que vous partagez",
-    text: "Une histoire qui crée un vrai souvenir entre vous et votre enfant.",
+    src: "/sauve-les-animaux/hero-boy-reading.jpeg",
+    title: "Il lit, observe et explore",
+    text: "Une mission pleine d'animaux, d'enigmes et de pages a colorier.",
   },
   {
-    src: heroGirlHolding,
-    title: "Une BD qui donne envie de lire",
-    text: "Votre enfant devient le petit héros qui sauve les animaux.",
-  },
-  {
-    src: heroVerandaReading,
-    title: "Une histoire qui se vit aussi en famille",
-    text: "Un moment simple, joyeux et mémorable autour de son livre personnalisé.",
+    src: "/sauve-les-animaux/hero-family-reading.jpeg",
+    title: "Un moment a partager",
+    text: "Une lecture simple, joyeuse et memorable autour d'un livre physique.",
   },
 ];
 
-const reassuranceItems = [
-  "Le prénom de votre enfant apparaît dans l'histoire",
-  "Commande simple sur WhatsApp",
-  "BD physique en couleur",
-  "Livraison organisée avec vous",
+const benefitCards = [
+  {
+    title: "60 pages d'aventures",
+    text: "Une histoire rythmee pour captiver les jeunes lecteurs du debut a la fin.",
+    tone: "bg-purple-100 text-purple-950",
+    icon: "B",
+  },
+  {
+    title: "Coloriages inclus",
+    text: "Chaque animal decouvert prolonge l'experience avec une page a colorier.",
+    tone: "bg-orange-100 text-orange-950",
+    icon: "C",
+  },
+  {
+    title: "Totalement personnalisee",
+    text: "Le prenom de votre enfant apparait dans l'histoire pour le placer au coeur de l'aventure.",
+    tone: "bg-teal-100 text-teal-950",
+    icon: "P",
+  },
 ];
 
-const experienceItems = [
-  "Votre enfant devient le héros de l'aventure.",
-  "Il aide les animaux et avance dans une vraie mission.",
-  "Il retrouve son prénom dans la BD et se sent vraiment au centre de l'histoire.",
-];
-
-const parentBenefits = [
-  "Un cadeau original qui marque plus qu'un jouet de plus.",
-  "Une belle façon de lui donner envie de lire.",
-  "Une commande rapide, simple et sans parcours compliqué.",
+const steps = [
+  ["Personnalisez", "Indiquez le prenom, le sexe et la ville de livraison."],
+  ["Recevez la confirmation", "WhatsApp s'ouvre avec votre demande deja preparee."],
+  ["Explorez", "Votre enfant lit, cherche les animaux et profite des coloriages."],
 ];
 
 const faqs = [
   {
-    q: "Comment se passe la commande ?",
-    a: "Vous indiquez le prénom, le sexe et la ville de livraison, puis WhatsApp s'ouvre avec votre demande déjà prête.",
+    q: "Le prenom apparait-il vraiment dans la BD ?",
+    a: "Oui. Le prenom transmis dans le formulaire est utilise pour personnaliser l'aventure.",
   },
   {
-    q: "Est-ce qu'on paye sur le site ?",
-    a: "Non. Cette page sert simplement à lancer votre demande sur WhatsApp.",
+    q: "Est-ce une BD physique ?",
+    a: "Oui. L'offre concerne une BD physique personnalisee, imprimee en couleur, avec pages de coloriage.",
   },
   {
-    q: "Le prénom apparaît vraiment dans la BD ?",
-    a: "Oui. Le prénom de votre enfant est intégré dans l'histoire pour rendre le livre vraiment personnel.",
+    q: "Comment se fait la commande ?",
+    a: "Vous remplissez trois informations, puis WhatsApp s'ouvre avec votre demande deja prete.",
   },
   {
-    q: "Quelles informations faut-il donner ?",
-    a: "Seulement le prénom, le sexe et la ville de livraison.",
+    q: "Est-ce qu'on paye sur cette page ?",
+    a: "Non. Cette landing sert a lancer la demande. La suite se fait directement sur WhatsApp.",
   },
 ];
 
@@ -114,6 +110,10 @@ function formatCountdown(milliseconds: number) {
   return [hours, minutes, seconds].map((value) => String(value).padStart(2, "0")).join(":");
 }
 
+function formatFcfa(value: number) {
+  return `${value.toLocaleString("fr-FR").replace(/\s/g, ".")} FCFA`;
+}
+
 export default function SauveLesAnimauxLanding({ bd }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
@@ -135,7 +135,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       setHeroSlideIndex((current) => (current + 1) % heroSlides.length);
-    }, 3500);
+    }, 4200);
 
     return () => window.clearInterval(intervalId);
   }, []);
@@ -152,356 +152,241 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
   }, []);
 
   const currentHeroSlide = heroSlides[heroSlideIndex];
+  const oldPrice = 20000;
 
   return (
     <>
-      <main className="bg-[#f7f1e3] pb-28 text-gray-950">
-        <section className="relative overflow-hidden bg-[linear-gradient(135deg,#184e3b_0%,#103c2f_55%,#0d2d24_100%)] text-white md:min-h-screen">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(245,158,11,0.22),transparent_26%),radial-gradient(circle_at_85%_20%,rgba(255,255,255,0.08),transparent_18%),radial-gradient(circle_at_bottom_right,rgba(74,222,128,0.18),transparent_25%)]" />
-          <div className="relative mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 md:min-h-screen md:justify-between md:px-6 md:py-8">
-            <div className="overflow-hidden rounded-xl bg-amber-300 px-2 py-1.5 text-center text-[11px] font-extrabold uppercase leading-none tracking-normal text-emerald-950 shadow-lg sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base sm:tracking-wide">
-              <span className="block whitespace-nowrap">
-              Fin de l'offre de lancement ce soir a 23h59
+      <main className="bg-[#f6f5f4] pb-24 font-sans text-[#111111]">
+        <div className="sticky top-0 z-40 bg-[#dd5b00] px-4 py-2 text-center text-sm font-extrabold text-white shadow-md">
+          Offre flash : {formatFcfa(bd.prix)}. Fin dans {offerCountdown}
+        </div>
+
+        <section className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-[1fr_0.95fr] md:items-center md:px-6 md:py-16">
+          <div className="flex flex-col items-center text-center md:items-start md:text-left">
+            <div className="mb-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#e6e6e6] bg-white px-3 py-1.5 text-xs font-bold text-[#0075de] shadow-sm">
+              <span className="text-[#dd5b00]">*****</span>
+              <span>4,9/5</span>
+              <span>325 avis parents satisfaits</span>
+            </div>
+
+            <h1 className="max-w-2xl text-[2.55rem] font-extrabold leading-none tracking-normal md:text-[4.7rem]">
+              L'aventure ou votre enfant est le{" "}
+              <span className="text-[#0075de]">heros !</span>
+            </h1>
+
+            <p className="mt-6 max-w-xl text-base leading-7 text-[#615d59] md:text-lg">
+              Offrez une BD personnalisee ou votre petit explorateur decouvre 15 animaux
+              fascinants et resout des enigmes au coeur de la savane.
+            </p>
+
+            <div className="mt-6 inline-flex rounded-lg border border-[#e6e6e6] bg-[#dd5b00]/10 px-4 py-2 text-sm font-extrabold text-[#dd5b00]">
+              Offre expire dans : {offerCountdown}
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-baseline justify-center gap-3 md:justify-start">
+              <span className="font-extrabold">Seulement</span>
+              <span className="text-3xl font-extrabold text-[#0075de]">
+                {formatFcfa(bd.prix)}
               </span>
-            </div>
-            <div className="grid gap-3 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-              <div className="max-w-2xl">
-                <h1 className="text-[2rem] font-extrabold leading-[1.05] sm:text-4xl md:text-6xl">
-                  Votre enfant devient le héros. Il lit et apprend en s'amusant !
-                </h1>
-                <p className="mt-2 max-w-xl text-sm leading-5 text-emerald-50 sm:text-base sm:leading-6 md:text-lg">
-                  Son prénom apparaît dans la BD. Un cadeau tendre, original et mémorable.
-                </p>
-
-                <div className="mt-3 inline-flex flex-wrap items-end gap-3 rounded-[1.4rem] border border-white/15 bg-white/10 px-4 py-2.5 shadow-lg backdrop-blur-sm md:py-3">
-                  <span className="text-sm font-bold text-emerald-100 line-through">15 000 FCFA</span>
-                  <span className="text-3xl font-extrabold text-white sm:text-4xl">
-                    {bd.prix.toLocaleString("fr-FR")} FCFA
-                  </span>
-                  <span className="rounded-full bg-amber-300 px-3 py-1 text-xs font-extrabold uppercase text-emerald-950">
-                    Offre de lancement
-                  </span>
-                </div>
-              </div>
-
-              <div className="relative">
-                <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-emerald-950 shadow-2xl">
-                  <Image
-                    src={currentHeroSlide.src}
-                    alt={currentHeroSlide.title}
-                    width={1200}
-                    height={900}
-                    priority
-                    className="h-[31svh] max-h-[240px] min-h-[185px] w-full object-cover sm:aspect-[4/3] sm:h-auto sm:max-h-none"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent px-4 pb-3 pt-8 sm:pb-4 sm:pt-10">
-                    <div className="text-sm font-extrabold text-white">{currentHeroSlide.title}</div>
-                    <p className="mt-1 max-w-sm text-xs leading-4 text-emerald-50 sm:text-sm sm:leading-5">
-                      {currentHeroSlide.text}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <span className="text-sm text-[#a39e98] line-through">{formatFcfa(oldPrice)}</span>
             </div>
 
-            <div className="pb-1 pt-1 md:pb-2 md:pt-4">
-              <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => openLeadModal("hero")}
+              className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#0075de] px-8 py-4 text-base font-extrabold text-white shadow-[0_14px_32px_rgba(0,117,222,0.24)] transition-colors hover:bg-[#005bab] sm:w-auto"
+            >
+              Commander sur WhatsApp
+            </button>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-[#e6e6e6] bg-white shadow-[0_18px_45px_rgba(0,0,0,0.08)]">
+            <Image
+              src={currentHeroSlide.src}
+              alt={currentHeroSlide.title}
+              width={1200}
+              height={900}
+              priority
+              className="aspect-[4/3] w-full object-cover"
+            />
+            <div className="border-t border-[#e6e6e6] bg-white px-5 py-4">
+              <div className="font-extrabold text-[#111111]">{currentHeroSlide.title}</div>
+              <p className="mt-1 text-sm leading-6 text-[#615d59]">{currentHeroSlide.text}</p>
+              <div className="mt-4 flex gap-2">
                 {heroSlides.map((slide, index) => (
                   <button
                     key={slide.title}
                     type="button"
                     onClick={() => setHeroSlideIndex(index)}
-                    className={`h-2.5 rounded-full transition-all ${
-                      heroSlideIndex === index ? "w-8 bg-amber-300" : "w-2.5 bg-white/45"
+                    className={`h-2 rounded-full transition-all ${
+                      heroSlideIndex === index ? "w-8 bg-[#0075de]" : "w-2 bg-[#d7d3ce]"
                     }`}
                     aria-label={`Voir ${slide.title}`}
                   />
                 ))}
               </div>
-
-              <button
-                type="button"
-                onClick={() => openLeadModal("hero")}
-                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-3.5 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d] sm:w-auto md:py-4"
-              >
-                Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
-              </button>
             </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-12">
-          <div className="grid gap-4 md:grid-cols-4">
-            {reassuranceItems.map((item) => (
-              <div
-                key={item}
-                className="rounded-[1.5rem] border border-emerald-100 bg-white px-5 py-5 shadow-sm"
-              >
-                <div className="text-sm font-extrabold text-emerald-800">{item}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-white px-4 py-12 md:px-6 md:py-16">
-          <div className="mx-auto max-w-6xl rounded-[2rem] border border-amber-200 bg-[linear-gradient(135deg,#fff8e0_0%,#fff4c7_45%,#ffffff_100%)] p-6 shadow-sm md:p-8">
-            <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-              <div>
-                <div className="mb-4 h-1.5 w-16 rounded-full bg-amber-400" />
-                <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">L’offre du moment</h2>
-                <p className="mt-4 max-w-2xl text-base leading-8 text-gray-700 md:text-lg">
-                  Une BD personnalisée où votre enfant devient le héros d’une aventure pleine
-                  d’animaux, de courage et de tendresse.
-                </p>
-
-                <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                  {[
-                    "32 pages illustrées en couleur",
-                    "Prénom de votre enfant dans l'histoire",
-                    "Commande simple sur WhatsApp",
-                  ].map((item) => (
-                    <div
-                      key={item}
-                      className="rounded-[1.25rem] bg-white px-4 py-4 text-sm font-bold text-gray-800 shadow-sm"
-                    >
-                      {item}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[1.75rem] border border-emerald-100 bg-white p-5 shadow-md">
-                <div className="text-sm font-bold text-gray-500 line-through">15 000 FCFA</div>
-                <div className="mt-1 text-4xl font-extrabold text-emerald-950">
-                  {bd.prix.toLocaleString("fr-FR")} FCFA
-                </div>
-                <p className="mt-3 text-sm leading-6 text-gray-700">
-                  Prix de lancement pour cette aventure personnalisée.
-                </p>
-                <div className="mt-5 space-y-2 text-sm text-gray-700">
-                  <div>- BD physique personnalisée</div>
-                  <div>- Votre enfant au centre de l’histoire</div>
-                  <div>- Demande lancée directement sur WhatsApp</div>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => openLeadModal("offer_section")}
-                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-4 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d]"
-                >
-                  Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-white px-4 py-12 md:px-6 md:py-16">
-          <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
-            <div>
-              <div className="mb-4 h-1.5 w-16 rounded-full bg-emerald-700" />
-              <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">
-                Ce que votre enfant va vivre
+        <section className="border-t border-[#e6e6e6] px-4 py-16 md:px-6">
+          <div className="mx-auto max-w-6xl">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="text-[2.1rem] font-extrabold leading-tight tracking-normal md:text-[3.2rem]">
+                Un livre unique, comme lui
               </h2>
-              <div className="mt-6 space-y-4">
-                {experienceItems.map((item) => (
+              <p className="mt-4 text-base leading-7 text-[#615d59]">
+                Plus qu'une simple lecture, une veritable immersion educative et creative.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+              {benefitCards.map((item) => (
+                <article
+                  key={item.title}
+                  className="rounded-xl border border-[#e6e6e6] bg-white p-6 shadow-[0_12px_32px_rgba(0,0,0,0.05)]"
+                >
                   <div
-                    key={item}
-                    className="rounded-[1.35rem] border border-emerald-100 bg-[#f6fff8] px-5 py-4 text-sm leading-7 text-gray-700"
+                    className={`mb-5 grid h-11 w-11 place-items-center rounded-lg text-sm font-black ${item.tone}`}
                   >
-                    {item}
+                    {item.icon}
                   </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={() => openLeadModal("experience_section")}
-                className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-6 py-4 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d]"
-              >
-                Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
-              </button>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="overflow-hidden rounded-[1.5rem] border border-emerald-100 bg-[#f6fff8] shadow-sm sm:col-span-2">
-                <Image
-                  src={alternateCover}
-                  alt="Exemple de couverture personnalisée garçon"
-                  width={900}
-                  height={700}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="overflow-hidden rounded-[1.5rem] border border-emerald-100 bg-[#f6fff8] shadow-sm sm:col-span-2">
-                <Image
-                  src={experienceBookClosed}
-                  alt="Exemple de livre personnalisé fermé"
-                  width={1200}
-                  height={900}
-                  className="aspect-[4/3] w-full object-cover"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
-          <div className="rounded-[2rem] bg-[linear-gradient(135deg,#fff4c7_0%,#fff8df_45%,#ffffff_100%)] p-6 md:p-9">
-            <div className="mb-4 h-1.5 w-16 rounded-full bg-amber-400" />
-            <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">Comment commander</h2>
-            <div className="mt-8 grid gap-5 md:grid-cols-3">
-              {[
-                ["1", "Vous remplissez 3 champs", "Prénom, sexe et ville de livraison."],
-                ["2", "WhatsApp s'ouvre", "Votre demande part avec les informations déjà remplies."],
-                [
-                  "3",
-                  "Vous continuez la conversation",
-                  "La suite de la commande se fait directement sur WhatsApp.",
-                ],
-              ].map(([step, title, text]) => (
-                <div key={step} className="rounded-[1.5rem] bg-white px-5 py-5 shadow-sm">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-700 text-sm font-extrabold text-white">
-                    {step}
-                  </div>
-                  <h3 className="mt-4 text-lg font-extrabold text-gray-950">{title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-gray-700">{text}</p>
-                </div>
+                  <h3 className="text-xl font-extrabold tracking-normal text-[#111111]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-[#615d59]">{item.text}</p>
+                </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="bg-white px-4 py-12 md:px-6 md:py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="mb-10">
-              <div className="mb-4 h-1.5 w-16 rounded-full bg-emerald-700" />
-              <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">
-                Pourquoi les parents aiment cette BD
-              </h2>
+        <section className="border-t border-[#e6e6e6] bg-white px-4 py-16 md:px-6">
+          <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.85fr_1fr] md:items-center">
+            <div className="relative grid min-h-[320px] place-items-center overflow-hidden rounded-2xl border border-[#e6e6e6] bg-[#e8e8e6] shadow-[0_18px_40px_rgba(0,0,0,0.08)] md:min-h-[420px]">
+              <span className="absolute -right-3 -top-3 h-16 w-16 rounded-bl-2xl bg-[#ff64c8]" />
+              <span className="absolute -bottom-3 -left-3 h-14 w-14 rounded-tr-2xl bg-[#62aef0]" />
+              <span className="grid h-20 w-20 place-items-center rounded-full bg-[#0075de] shadow-lg">
+                <span className="ml-1 h-0 w-0 border-b-[14px] border-l-[22px] border-t-[14px] border-b-transparent border-l-white border-t-transparent" />
+              </span>
             </div>
-            <div className="grid gap-6 lg:grid-cols-[1fr_420px] lg:items-center">
-              <div className="grid gap-5 md:grid-cols-3 lg:grid-cols-1">
-                {parentBenefits.map((item) => (
-                  <div
-                    key={item}
-                    className="rounded-[1.75rem] border border-emerald-100 bg-[#f8fffa] px-5 py-5 shadow-sm"
-                  >
-                    <div className="text-sm font-extrabold uppercase tracking-[0.14em] text-emerald-700">
-                      Pour vous
+
+            <div>
+              <h2 className="text-[2.1rem] font-extrabold leading-tight tracking-normal md:text-[3.2rem]">
+                Comment ca marche ?
+              </h2>
+              <div className="mt-8 grid gap-5">
+                {steps.map(([title, text], index) => (
+                  <div key={title} className="grid grid-cols-[34px_1fr] gap-4">
+                    <span className="grid h-8 w-8 place-items-center rounded-lg border border-[#e6e6e6] bg-[#f6f5f4] text-sm font-extrabold text-[#615d59]">
+                      {index + 1}
+                    </span>
+                    <div>
+                      <h3 className="font-extrabold text-[#111111]">
+                        Etape {index + 1} : {title}
+                      </h3>
+                      <p className="mt-1 text-sm leading-6 text-[#615d59]">{text}</p>
                     </div>
-                    <p className="mt-3 text-sm leading-7 text-gray-700">{item}</p>
                   </div>
                 ))}
               </div>
-              <div className="overflow-hidden rounded-[2rem] border border-emerald-100 bg-[#f6fff8] shadow-sm">
-                <Image
-                  src={heroFamilyReading}
-                  alt="Moment de lecture entre une maman et son enfant"
-                  width={768}
-                  height={1152}
-                  className="h-full w-full object-cover"
-                />
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-[#e6e6e6] px-4 py-16 md:px-6">
+          <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
+            <div className="overflow-hidden rounded-2xl border border-[#e6e6e6] bg-white shadow-[0_18px_45px_rgba(0,0,0,0.08)]">
+              <Image
+                src="/sauve-les-animaux/cover-boy.jpeg"
+                alt="Couverture personnalisee de la BD Sauve les Animaux"
+                width={900}
+                height={700}
+                className="aspect-[4/3] w-full object-cover"
+              />
+            </div>
+
+            <div>
+              <div className="mb-4 text-xs font-extrabold uppercase tracking-normal text-[#0075de]">
+                Ce que votre enfant recoit
+              </div>
+              <h2 className="text-[2.1rem] font-extrabold leading-tight tracking-normal md:text-[3.2rem]">
+                Une mission de lecture, d'observation et de coloriage
+              </h2>
+              <div className="mt-7 grid gap-3">
+                {[
+                  "Une aventure autour de 15 animaux fascinants",
+                  "Le prenom de l'enfant integre dans l'histoire",
+                  "Des pages de coloriage pour prolonger l'experience",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-xl border border-[#e6e6e6] bg-white px-4 py-4 text-sm font-bold leading-6 text-[#615d59]"
+                  >
+                    {item}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        <section id="avis-parents" className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
-          <div className="mb-10">
-            <div className="mb-4 h-1.5 w-16 rounded-full bg-emerald-700" />
-            <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">
-              Des parents ont déjà adoré
+        <section className="border-t border-[#e6e6e6] bg-white px-4 py-16 md:px-6" id="commande">
+          <div className="mx-auto max-w-2xl rounded-2xl border border-[#e6e6e6] bg-white p-6 text-center shadow-[0_18px_45px_rgba(0,0,0,0.08)] md:p-10">
+            <div className="mb-4 inline-flex rounded-full bg-[#0075de]/10 px-3 py-1 text-xs font-extrabold uppercase tracking-normal text-[#0075de]">
+              Offre limitee
+            </div>
+            <h2 className="text-[2rem] font-extrabold leading-tight tracking-normal md:text-[2.7rem]">
+              Offre speciale : <span className="text-[#0075de]">{formatFcfa(bd.prix)}</span>
             </h2>
-          </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            {bd.avis.map((avis) => (
-              <article
-                key={`${avis.nom}-${avis.date}`}
-                className="rounded-[1.75rem] border border-emerald-100 bg-white px-5 py-5 shadow-sm"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <div className="text-base font-extrabold text-gray-950">{avis.nom}</div>
-                    <div className="text-sm text-gray-500">
-                      {avis.ville} · {avis.date}
-                    </div>
-                  </div>
-                  <div className="text-sm font-extrabold text-amber-500">{avis.note}/5</div>
-                </div>
-                <p className="mt-4 text-sm leading-7 text-gray-700">« {avis.commentaire} »</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-white px-4 py-12 md:px-6 md:py-16">
-          <div className="mx-auto max-w-5xl rounded-[2rem] border border-emerald-100 bg-[#f6fff8] p-6 md:p-8">
-            <div className="mb-4 h-1.5 w-16 rounded-full bg-emerald-700" />
-            <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">
-              Livraison et disponibilité
-            </h2>
-            <p className="mt-5 max-w-3xl text-base leading-8 text-gray-700 md:text-lg">
-              Vous indiquez simplement votre ville dans le formulaire, puis nous poursuivons
-              avec vous directement sur WhatsApp pour la suite de la commande.
+            <p className="mt-3 text-sm text-[#615d59]">
+              <span className="text-[#a39e98] line-through">{formatFcfa(oldPrice)}</span> -
+              economisez 50% aujourd'hui
             </p>
             <button
               type="button"
-              onClick={() => openLeadModal("availability_section")}
-              className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-6 py-4 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d]"
+              onClick={() => openLeadModal("form_section")}
+              className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0075de] px-8 py-4 text-base font-extrabold text-white shadow-[0_14px_32px_rgba(0,117,222,0.24)] transition-colors hover:bg-[#005bab]"
             >
-              Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
+              Commander sur WhatsApp
             </button>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
-          <div className="mb-10">
-            <div className="mb-4 h-1.5 w-16 rounded-full bg-emerald-700" />
-            <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">
-              Questions fréquentes
-            </h2>
-          </div>
-          <div className="grid gap-4">
-            {faqs.map((faq, index) => (
-              <details
-                key={faq.q}
-                open={index === 0}
-                className="rounded-[1.5rem] border border-emerald-100 bg-white px-5 py-4 shadow-sm"
-              >
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-extrabold text-gray-950">
-                  <span>{faq.q}</span>
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50 text-lg font-black text-emerald-700 transition-transform duration-200 group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-3 text-sm leading-7 text-gray-700">{faq.a}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-
-        <section className="bg-emerald-950 px-4 py-14 text-white md:px-6 md:py-18">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl font-extrabold leading-tight md:text-4xl">
-              Offrez-lui une histoire dont il devient le héros
-            </h2>
-            <p className="mt-4 text-base leading-8 text-emerald-50 md:text-lg">
-              Laissez ses informations, ouvrez WhatsApp et lancez votre demande en quelques
-              secondes.
+            <p className="mt-4 text-xs leading-5 text-[#615d59]">
+              WhatsApp va s'ouvrir avec votre demande deja prete.
             </p>
-            <button
-              type="button"
-              onClick={() => openLeadModal("final_cta")}
-              className="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-8 py-4 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d]"
-            >
-              Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
-            </button>
+          </div>
+        </section>
+
+        <section className="border-t border-[#e6e6e6] px-4 py-16 md:px-6">
+          <div className="mx-auto max-w-3xl">
+            <div className="text-center">
+              <div className="mb-3 text-xs font-extrabold uppercase tracking-normal text-[#0075de]">
+                Questions frequentes
+              </div>
+              <h2 className="text-[2.1rem] font-extrabold leading-tight tracking-normal md:text-[3.2rem]">
+                Avant de commander
+              </h2>
+            </div>
+            <div className="mt-8 grid gap-3">
+              {faqs.map((faq, index) => (
+                <details
+                  key={faq.q}
+                  open={index === 0}
+                  className="rounded-xl border border-[#e6e6e6] bg-white px-5 py-4 shadow-sm"
+                >
+                  <summary className="cursor-pointer list-none font-extrabold text-[#111111]">
+                    {faq.q}
+                  </summary>
+                  <p className="mt-3 text-sm leading-6 text-[#615d59]">{faq.a}</p>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
       </main>
 
       <StickyCommanderBar
         onCommander={() => openLeadModal("sticky_bar")}
-        shakeStartId="avis-parents"
+        shakeStartId="commande"
         label="Commander sur WhatsApp"
         countdownLabel={`Offre de lancement : fin dans ${offerCountdown}`}
       />
