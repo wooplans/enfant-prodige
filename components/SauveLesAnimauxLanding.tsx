@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import StickyCommanderBar from "@/components/StickyCommanderBar";
 import WhatsAppLeadModal from "@/components/WhatsAppLeadModal";
 import { trackAnalyticsEvent } from "@/components/AnalyticsTracker";
+import { fbqTrack } from "@/components/FacebookPixel";
 import type { BD } from "@/lib/catalogue";
 
 interface Props {
@@ -15,63 +16,63 @@ const heroSlides = [
   {
     src: "/sauve-les-animaux/hero-girl-holding.jpeg",
     title: "Une BD qui lui ressemble",
-    text: "Votre enfant tient une histoire ou son prenom devient le point de depart de l'aventure.",
+    text: "Votre enfant tient une histoire où son prénom devient le point de départ de l’aventure.",
   },
   {
     src: "/sauve-les-animaux/hero-boy-reading.jpeg",
     title: "Il lit, observe et explore",
-    text: "Une mission pleine d'animaux, d'enigmes et de pages a colorier.",
+    text: "Une mission pleine d’animaux, d’énigmes et de pages à colorier.",
   },
   {
     src: "/sauve-les-animaux/hero-family-reading.jpeg",
-    title: "Un moment a partager",
-    text: "Une lecture simple, joyeuse et memorable autour d'un livre physique.",
+    title: "Un moment à partager",
+    text: "Une lecture simple, joyeuse et mémorable autour d’un livre physique.",
   },
 ];
 
 const benefitCards = [
   {
-    title: "60 pages d'aventures",
-    text: "Une histoire rythmee pour captiver les jeunes lecteurs du debut a la fin.",
+    title: "60 pages d’aventures",
+    text: "Une histoire rythmée pour captiver les jeunes lecteurs du début à la fin.",
     tone: "bg-purple-100 text-purple-950",
     icon: "B",
   },
   {
     title: "Coloriages inclus",
-    text: "Chaque animal decouvert prolonge l'experience avec une page a colorier.",
+    text: "Chaque animal découvert prolonge l’expérience avec une page à colorier.",
     tone: "bg-orange-100 text-orange-950",
     icon: "C",
   },
   {
-    title: "Totalement personnalisee",
-    text: "Le prenom de votre enfant apparait dans l'histoire pour le placer au coeur de l'aventure.",
+    title: "Totalement personnalisée",
+    text: "Le prénom de votre enfant apparaît dans l’histoire pour le placer au cœur de l’aventure.",
     tone: "bg-teal-100 text-teal-950",
     icon: "P",
   },
 ];
 
 const steps = [
-  ["Personnalisez", "Indiquez le prenom, le sexe et la ville de livraison."],
-  ["Recevez la confirmation", "WhatsApp s'ouvre avec votre demande deja preparee."],
+  ["Personnalisez", "Indiquez le prénom, le sexe et la ville de livraison."],
+  ["Recevez la confirmation", "WhatsApp s’ouvre avec votre demande déjà préparée."],
   ["Explorez", "Votre enfant lit, cherche les animaux et profite des coloriages."],
 ];
 
 const faqs = [
   {
-    q: "Le prenom apparait-il vraiment dans la BD ?",
-    a: "Oui. Le prenom transmis dans le formulaire est utilise pour personnaliser l'aventure.",
+    q: "Le prénom apparaît-il vraiment dans la BD ?",
+    a: "Oui. Le prénom transmis dans le formulaire est utilisé pour personnaliser l’aventure.",
   },
   {
     q: "Est-ce une BD physique ?",
-    a: "Oui. L'offre concerne une BD physique personnalisee, imprimee en couleur, avec pages de coloriage.",
+    a: "Oui. L’offre concerne une BD physique personnalisée, imprimée en couleur, avec des pages de coloriage.",
   },
   {
     q: "Comment se fait la commande ?",
-    a: "Vous remplissez trois informations, puis WhatsApp s'ouvre avec votre demande deja prete.",
+    a: "Vous remplissez trois informations, puis WhatsApp s’ouvre avec votre demande déjà prête.",
   },
   {
-    q: "Est-ce qu'on paye sur cette page ?",
-    a: "Non. Cette landing sert a lancer la demande. La suite se fait directement sur WhatsApp.",
+    q: "Est-ce qu’on paye sur cette page ?",
+    a: "Non. Cette page sert à lancer la demande. La suite se fait directement sur WhatsApp.",
   },
 ];
 
@@ -120,6 +121,15 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
   const [offerCountdown, setOfferCountdown] = useState("00:00:00");
 
   const openLeadModal = (source: string) => {
+    fbqTrack("InitiateCheckout", {
+      content_name: bd.serie,
+      content_ids: [bd.id],
+      content_type: "product",
+      value: bd.prix,
+      currency: "XAF",
+      source,
+    });
+
     trackAnalyticsEvent({
       eventType: "cta_click",
       metadata: {
@@ -170,13 +180,13 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
             </div>
 
             <h1 className="max-w-2xl text-[2.55rem] font-extrabold leading-none tracking-normal md:text-[4.7rem]">
-              L'aventure ou votre enfant est le{" "}
-              <span className="text-[#0075de]">heros !</span>
+              L’aventure où votre enfant est le{" "}
+              <span className="text-[#0075de]">héros !</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-7 text-[#615d59] md:text-lg">
-              Offrez une BD personnalisee ou votre petit explorateur decouvre 15 animaux
-              fascinants et resout des enigmes au coeur de la savane.
+              Offrez une BD personnalisée où votre petit explorateur découvre 15 animaux
+              fascinants et résout des énigmes au cœur de la savane.
             </p>
 
             <div className="mt-6 inline-flex rounded-lg border border-[#e6e6e6] bg-[#dd5b00]/10 px-4 py-2 text-sm font-extrabold text-[#dd5b00]">
@@ -236,7 +246,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                 Un livre unique, comme lui
               </h2>
               <p className="mt-4 text-base leading-7 text-[#615d59]">
-                Plus qu'une simple lecture, une veritable immersion educative et creative.
+                Plus qu’une simple lecture, une véritable immersion éducative et créative.
               </p>
             </div>
 
@@ -283,7 +293,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
                     </span>
                     <div>
                       <h3 className="font-extrabold text-[#111111]">
-                        Etape {index + 1} : {title}
+                        Étape {index + 1} : {title}
                       </h3>
                       <p className="mt-1 text-sm leading-6 text-[#615d59]">{text}</p>
                     </div>
@@ -299,7 +309,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
             <div className="overflow-hidden rounded-2xl border border-[#e6e6e6] bg-white shadow-[0_18px_45px_rgba(0,0,0,0.08)]">
               <Image
                 src="/sauve-les-animaux/cover-boy.jpeg"
-                alt="Couverture personnalisee de la BD Sauve les Animaux"
+                alt="Couverture personnalisée de la BD Sauve les Animaux"
                 width={900}
                 height={700}
                 className="aspect-[4/3] w-full object-cover"
@@ -308,16 +318,16 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
 
             <div>
               <div className="mb-4 text-xs font-extrabold uppercase tracking-normal text-[#0075de]">
-                Ce que votre enfant recoit
+                Ce que votre enfant reçoit
               </div>
               <h2 className="text-[2.1rem] font-extrabold leading-tight tracking-normal md:text-[3.2rem]">
-                Une mission de lecture, d'observation et de coloriage
+                Une mission de lecture, d’observation et de coloriage
               </h2>
               <div className="mt-7 grid gap-3">
                 {[
                   "Une aventure autour de 15 animaux fascinants",
-                  "Le prenom de l'enfant integre dans l'histoire",
-                  "Des pages de coloriage pour prolonger l'experience",
+                  "Le prénom de l’enfant intégré dans l’histoire",
+                  "Des pages de coloriage pour prolonger l’expérience",
                 ].map((item) => (
                   <div
                     key={item}
@@ -334,14 +344,14 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
         <section className="border-t border-[#e6e6e6] bg-white px-4 py-16 md:px-6" id="commande">
           <div className="mx-auto max-w-2xl rounded-2xl border border-[#e6e6e6] bg-white p-6 text-center shadow-[0_18px_45px_rgba(0,0,0,0.08)] md:p-10">
             <div className="mb-4 inline-flex rounded-full bg-[#0075de]/10 px-3 py-1 text-xs font-extrabold uppercase tracking-normal text-[#0075de]">
-              Offre limitee
+              Offre limitée
             </div>
             <h2 className="text-[2rem] font-extrabold leading-tight tracking-normal md:text-[2.7rem]">
-              Offre speciale : <span className="text-[#0075de]">{formatFcfa(bd.prix)}</span>
+              Offre spéciale : <span className="text-[#0075de]">{formatFcfa(bd.prix)}</span>
             </h2>
             <p className="mt-3 text-sm text-[#615d59]">
               <span className="text-[#a39e98] line-through">{formatFcfa(oldPrice)}</span> -
-              economisez 50% aujourd'hui
+              économisez 50% aujourd’hui
             </p>
             <button
               type="button"
@@ -351,7 +361,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
               Commander sur WhatsApp
             </button>
             <p className="mt-4 text-xs leading-5 text-[#615d59]">
-              WhatsApp va s'ouvrir avec votre demande deja prete.
+              WhatsApp va s’ouvrir avec votre demande déjà prête.
             </p>
           </div>
         </section>
@@ -360,7 +370,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
           <div className="mx-auto max-w-3xl">
             <div className="text-center">
               <div className="mb-3 text-xs font-extrabold uppercase tracking-normal text-[#0075de]">
-                Questions frequentes
+                Questions fréquentes
               </div>
               <h2 className="text-[2.1rem] font-extrabold leading-tight tracking-normal md:text-[3.2rem]">
                 Avant de commander

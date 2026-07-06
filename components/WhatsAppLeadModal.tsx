@@ -13,9 +13,9 @@ interface Props {
 const DELIVERY_FEE = 1000;
 
 const deliveryOptions = [
-  "Yaounde (Livraison)",
-  "Douala (Expedition)",
-  "Autre ville (Expedition)",
+  "Yaoundé (Livraison)",
+  "Douala (Expédition)",
+  "Autre ville (Expédition)",
 ] as const;
 
 function formatFcfa(value: number) {
@@ -24,7 +24,7 @@ function formatFcfa(value: number) {
 
 export default function WhatsAppLeadModal({ bd, onClose }: Props) {
   const [prenom, setPrenom] = useState("");
-  const [sexe, setSexe] = useState<"Garcon" | "Fille" | null>(null);
+  const [sexe, setSexe] = useState<"Garçon" | "Fille" | null>(null);
   const [ville, setVille] = useState<(typeof deliveryOptions)[number] | null>(null);
   const [touched, setTouched] = useState({
     prenom: false,
@@ -33,7 +33,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
   });
 
   const prenomValide = prenom.trim().length >= 2;
-  const sexeValide = sexe === "Garcon" || sexe === "Fille";
+  const sexeValide = sexe === "Garçon" || sexe === "Fille";
   const villeValide = ville !== null;
   const isValid = prenomValide && sexeValide && villeValide;
   const total = bd.prix + DELIVERY_FEE;
@@ -57,12 +57,12 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
     if (!isValid || !sexe || !ville) return;
 
     const message = [
-      "Salut ! Je souhaite commander une BD personnalisee :",
+      "Salut ! Je souhaite commander une BD personnalisée :",
       `BD Sauve les Animaux : ${formatFcfa(bd.prix)}`,
-      `Prenom : ${prenom.trim()}`,
+      `Prénom : ${prenom.trim()}`,
       `Sexe : ${sexe}`,
       `${ville} : ${DELIVERY_FEE} FCFA`,
-      `Total a payer: ${formatFcfa(total)}`,
+      `Total à payer : ${formatFcfa(total)}`,
     ].join("\n");
 
     void trackWhatsAppOrder({
@@ -93,13 +93,13 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
         <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#e6e6e6] bg-white px-5 py-4">
           <div>
             <div className="inline-flex rounded-full bg-[#0075de]/10 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-normal text-[#0075de]">
-              Offre limitee
+              Offre limitée
             </div>
             <div className="mt-2 text-xl font-extrabold leading-tight text-[#111111]">
               Commander sur WhatsApp
             </div>
             <p className="mt-1 text-sm leading-5 text-[#615d59]">
-              Trois informations suffisent pour preparer votre demande.
+              Trois informations suffisent pour préparer votre demande.
             </p>
           </div>
           <button
@@ -108,26 +108,26 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
             className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#e6e6e6] bg-[#f6f5f4] text-lg font-bold text-[#615d59] transition-colors hover:bg-white hover:text-[#111111]"
             aria-label="Fermer"
           >
-            x
+              x
           </button>
         </div>
 
         <div className="space-y-5 px-5 pb-6 pt-5">
           <div className="rounded-xl border border-[#e6e6e6] bg-[#f6f5f4] px-4 py-3 text-left">
             <div className="text-xs font-bold uppercase tracking-normal text-[#615d59]">
-              Total a payer
+              Total à payer
             </div>
             <div className="mt-1 text-2xl font-extrabold text-[#0075de]">
               {formatFcfa(total)}
             </div>
             <p className="mt-1 text-xs leading-5 text-[#615d59]">
-              BD personnalisee + livraison / expedition a {formatFcfa(DELIVERY_FEE)}.
+              BD personnalisée + livraison / expédition à {formatFcfa(DELIVERY_FEE)}.
             </p>
           </div>
 
           <div>
             <label className="mb-1.5 block text-xs font-extrabold uppercase tracking-normal text-[#615d59]">
-              Prenom <span className="text-[#dd5b00]">*</span>
+              Prénom <span className="text-[#dd5b00]">*</span>
             </label>
             <input
               type="text"
@@ -140,7 +140,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
               }`}
             />
             {touched.prenom && !prenomValide && (
-              <p className="mt-1 text-sm text-[#dd5b00]">Veuillez entrer au moins 2 caracteres.</p>
+              <p className="mt-1 text-sm text-[#dd5b00]">Veuillez entrer au moins 2 caractères.</p>
             )}
           </div>
 
@@ -149,7 +149,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
               Sexe <span className="text-[#dd5b00]">*</span>
             </label>
             <div className="grid grid-cols-2 gap-3">
-              {(["Garcon", "Fille"] as const).map((option) => {
+              {(["Garçon", "Fille"] as const).map((option) => {
                 const active = sexe === option;
                 return (
                   <button
@@ -177,31 +177,29 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
 
           <div>
             <label className="mb-2 block text-xs font-extrabold uppercase tracking-normal text-[#615d59]">
-              Livraison / expedition : {formatFcfa(DELIVERY_FEE)}{" "}
+              Livraison / expédition : {formatFcfa(DELIVERY_FEE)}{" "}
               <span className="text-[#dd5b00]">*</span>
             </label>
-            <div className="grid gap-2">
-              {deliveryOptions.map((option) => {
-                const active = ville === option;
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => {
-                      setVille(option);
-                      setTouched((current) => ({ ...current, ville: true }));
-                    }}
-                    className={`rounded-lg border px-4 py-3 text-left text-sm font-extrabold transition-colors ${
-                      active
-                        ? "border-[#0075de] bg-[#0075de]/10 text-[#0075de]"
-                        : "border-[#e6e6e6] bg-white text-[#111111] hover:border-[#0075de]/40"
-                    }`}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
+            <select
+              value={ville ?? ""}
+              onChange={(event) => {
+                setVille(event.target.value as (typeof deliveryOptions)[number]);
+                setTouched((current) => ({ ...current, ville: true }));
+              }}
+              onBlur={() => setTouched((current) => ({ ...current, ville: true }))}
+              className={`w-full rounded-lg border bg-white px-4 py-3 text-base font-extrabold text-[#111111] outline-none transition-colors focus:border-[#0075de] focus:ring-2 focus:ring-[#0075de]/15 ${
+                touched.ville && !villeValide ? "border-[#dd5b00] bg-[#dd5b00]/5" : "border-[#e6e6e6]"
+              }`}
+            >
+              <option value="" disabled>
+                Choisissez une option
+              </option>
+              {deliveryOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
             {touched.ville && !villeValide && (
               <p className="mt-1 text-sm text-[#dd5b00]">Veuillez choisir une option.</p>
             )}
@@ -212,10 +210,10 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
             onClick={submit}
             className="flex w-full items-center justify-center rounded-full bg-[#0075de] px-5 py-4 text-base font-extrabold text-white shadow-[0_12px_28px_rgba(0,117,222,0.22)] transition-colors hover:bg-[#005bab]"
           >
-            Commander sur WhatsApp
+            Envoyez ma commande
           </button>
           <p className="text-center text-xs leading-5 text-[#615d59]">
-            WhatsApp va s'ouvrir avec votre demande deja prete.
+            WhatsApp va s’ouvrir avec votre demande déjà prête.
           </p>
         </div>
       </div>
