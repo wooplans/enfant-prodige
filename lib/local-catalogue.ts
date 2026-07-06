@@ -65,6 +65,69 @@ export const localCatalogue: BD[] = [
     ],
   },
   {
+    id: "decouvre-les-metiers",
+    slug: "decouvre-les-metiers",
+    serie: "Découvre les Métiers",
+    titre: "Découvre les Métiers",
+    genre: "Métiers · Découverte · Avenir",
+    description:
+      "Votre enfant découvre des métiers inspirants, comprend leur rôle et voit son prénom intégré dans une aventure qui l'aide à imaginer son avenir.",
+    descriptionLongue:
+      "Dans Découvre les Métiers, votre enfant avance de découverte en découverte pour comprendre à quoi servent différents métiers, comment chacun aide les autres et ce qui peut faire naître une vocation. Son prénom apparaît sur la couverture et dans les dialogues pour transformer la lecture en expérience personnelle, joyeuse et motivante.",
+    pourQui: [
+      "Votre enfant pose beaucoup de questions sur ce que font les adultes",
+      "Vous cherchez une BD éducative qui ouvre l'imagination et la curiosité",
+      "Vous voulez un cadeau personnalisé, utile et facile à commander",
+      "Vous voulez prolonger la lecture avec des activités et des coloriages",
+    ],
+    prix: 9900,
+    fraisLivraison: 1000,
+    couverture: "/decouvre-les-metiers/cover.svg",
+    galerie: [
+      "/decouvre-les-metiers/cover.svg",
+      "/decouvre-les-metiers/hero-discovery.svg",
+      "/decouvre-les-metiers/hero-planning.svg",
+      "/decouvre-les-metiers/hero-future.svg",
+    ],
+    nombrePages: 32,
+    ageMin: 6,
+    ageMax: 10,
+    disponible: true,
+    landingPageMode: true,
+    note: 4.9,
+    nombreAvis: 19,
+    nombreCommandesSemaine: 12,
+    avis: [
+      {
+        nom: "Murielle F.",
+        note: 5,
+        commentaire:
+          "Mon fils a commencé à me parler du métier de médecin et de ce qu'il voudrait faire plus tard. La BD l'a vraiment fait réfléchir avec plaisir.",
+        ville: "Douala",
+        date: "il y a 4 jours",
+        avatar: "M",
+      },
+      {
+        nom: "Steve K.",
+        note: 5,
+        commentaire:
+          "Très bonne idée de cadeau. Ma fille était fière de voir son prénom dans l'histoire et a adoré les activités après la lecture.",
+        ville: "Yaoundé",
+        date: "il y a 1 semaine",
+        avatar: "S",
+      },
+      {
+        nom: "Agnès T.",
+        note: 4,
+        commentaire:
+          "Le thème est utile, ludique et facile à comprendre pour un enfant. La commande sur WhatsApp s'est faite sans difficulté.",
+        ville: "Bafoussam",
+        date: "il y a 2 semaines",
+        avatar: "A",
+      },
+    ],
+  },
+  {
     id: "academie-genies",
     slug: "academie-genies",
     serie: "Académie des Génies",

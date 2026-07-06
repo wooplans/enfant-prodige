@@ -37,6 +37,15 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
   const villeValide = ville !== null;
   const isValid = prenomValide && sexeValide && villeValide;
   const total = bd.prix + DELIVERY_FEE;
+  const isMetiersLanding = bd.id === "decouvre-les-metiers";
+  const productLabel = `BD ${bd.serie}`;
+  const modalDescription = isMetiersLanding
+    ? "Trois informations suffisent pour préparer votre commande de Découvre les Métiers."
+    : "Trois informations suffisent pour préparer votre demande.";
+  const priceBoxDescription = isMetiersLanding
+    ? `BD personnalisée sur les métiers + livraison / expédition à ${formatFcfa(DELIVERY_FEE)}.`
+    : `BD personnalisée + livraison / expédition à ${formatFcfa(DELIVERY_FEE)}.`;
+  const trackingSource = isMetiersLanding ? "decouvre_metiers_modal" : "sauve_animaux_modal";
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -58,7 +67,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
 
     const message = [
       "Salut ! Je souhaite commander une BD personnalisée :",
-      `BD Sauve les Animaux : ${formatFcfa(bd.prix)}`,
+      `${productLabel} : ${formatFcfa(bd.prix)}`,
       `Prénom : ${prenom.trim()}`,
       `Sexe : ${sexe}`,
       `${ville} : ${DELIVERY_FEE} FCFA`,
@@ -72,7 +81,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
       prenom,
       lieuLivraison: ville,
       prix: bd.prix,
-      source: "sauve_animaux_modal",
+      source: trackingSource,
     });
 
     window.open(
@@ -98,9 +107,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
             <div className="mt-2 text-xl font-extrabold leading-tight text-[#111111]">
               Commander sur WhatsApp
             </div>
-            <p className="mt-1 text-sm leading-5 text-[#615d59]">
-              Trois informations suffisent pour préparer votre demande.
-            </p>
+            <p className="mt-1 text-sm leading-5 text-[#615d59]">{modalDescription}</p>
           </div>
           <button
             type="button"
@@ -120,9 +127,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
             <div className="mt-1 text-2xl font-extrabold text-[#0075de]">
               {formatFcfa(total)}
             </div>
-            <p className="mt-1 text-xs leading-5 text-[#615d59]">
-              BD personnalisée + livraison / expédition à {formatFcfa(DELIVERY_FEE)}.
-            </p>
+            <p className="mt-1 text-xs leading-5 text-[#615d59]">{priceBoxDescription}</p>
           </div>
 
           <div>

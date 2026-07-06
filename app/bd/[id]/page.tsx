@@ -1,5 +1,6 @@
 import { getPublicCatalogue, getPublicSeriesBySlug } from "@/lib/series";
 import BDDetailClient from "@/components/BDDetailClient";
+import DecouvreLesMetiersLanding from "@/components/DecouvreLesMetiersLanding";
 import SauveLesAnimauxLanding from "@/components/SauveLesAnimauxLanding";
 import SiteChrome from "@/components/SiteChrome";
 import { notFound } from "next/navigation";
@@ -11,6 +12,24 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+const landingMetadataById: Record<string, { title: string; description: string }> = {
+  "sauve-les-animaux": {
+    title: "Sauve les Animaux | Landing WhatsApp",
+    description:
+      "Une landing WhatsApp pour une BD personnalisée où votre enfant sauve les animaux et devient le héros de l'histoire.",
+  },
+  "decouvre-les-metiers": {
+    title: "Découvre les Métiers | Landing WhatsApp",
+    description:
+      "Une landing WhatsApp pour une BD personnalisée où votre enfant découvre les métiers, imagine son avenir et apprend en s'amusant.",
+  },
+  "academie-genies": {
+    title: "BD personnalisée garçon à Douala et Yaoundé",
+    description:
+      "Offrez à votre garçon de 7 à 12 ans une BD personnalisée avec son prénom, imprimée en couleur et livrée à Douala ou Yaoundé.",
+  },
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const bd = await getPublicSeriesBySlug(id);
@@ -19,19 +38,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     notFound();
   }
 
-  const description =
-    bd.id === "academie-genies"
-      ? "Offrez à votre garçon de 7 à 12 ans une BD personnalisée avec son prénom, imprimée en couleur et livrée à Douala ou Yaoundé."
-      : bd.id === "sauve-les-animaux"
-        ? "Une landing WhatsApp pour une BD personnalisée où votre enfant sauve les animaux et devient le héros de l'histoire."
-        : bd.description;
-
-  const title =
-    bd.id === "academie-genies"
-      ? "BD personnalisée garçon à Douala et Yaoundé"
-      : bd.id === "sauve-les-animaux"
-        ? "Sauve les Animaux | Landing WhatsApp"
-        : `${bd.serie} | BD personnalisée enfant`;
+  const landingMeta = landingMetadataById[bd.id];
+  const description = landingMeta?.description ?? bd.description;
+  const title = landingMeta?.title ?? `${bd.serie} | BD personnalisée enfant`;
 
   return {
     title,
@@ -71,10 +80,13 @@ export default async function PageBD({ params }: Props) {
   const paymentSettings = await getPaymentSettings();
   const deliveryDateLabel = getDeliveryDateLabel(new Date(), 48);
 
-  const page =
-    bd.id === "sauve-les-animaux" ? (
-      <SauveLesAnimauxLanding bd={bd} />
-    ) : (
+  let page;
+  if (bd.id === "sauve-les-animaux") {
+    page = <SauveLesAnimauxLanding bd={bd} />;
+  } else if (bd.id === "decouvre-les-metiers") {
+    page = <DecouvreLesMetiersLanding bd={bd} />;
+  } else {
+    page = (
       <BDDetailClient
         bd={bd}
         landingPageMode={bd.landingPageMode}
@@ -82,6 +94,7 @@ export default async function PageBD({ params }: Props) {
         deliveryDateLabel={deliveryDateLabel}
       />
     );
+  }
 
   if (bd.landingPageMode) return page;
 
