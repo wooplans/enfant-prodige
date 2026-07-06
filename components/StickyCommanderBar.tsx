@@ -55,23 +55,23 @@ export default function StickyCommanderBar({
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-gray-200 bg-white px-4 py-3 shadow-2xl">
-      {countdownLabel && (
-        <div className="mx-auto mb-2 flex max-w-2xl items-center justify-center rounded-xl bg-amber-50 px-3 py-2 text-center text-sm font-extrabold text-amber-900 ring-1 ring-amber-200">
-          {countdownLabel}
-        </div>
-      )}
-      <button
-        type="button"
-        onPointerDown={onCommander}
-        onClick={onCommander}
-        className="relative flex w-full max-w-2xl items-center justify-center gap-2 overflow-hidden rounded-xl bg-green-600 px-3 py-3 text-base font-bold text-white transition-colors hover:bg-green-500 active:bg-green-700"
-        style={shakeEnabled ? { animation: "sticky-shake 3s ease-in-out infinite" } : undefined}
-      >
-        <span className="cta-flash-light" aria-hidden="true" />
-        <span className="relative z-10">{label}</span>
-        <span className="relative z-10" aria-hidden="true">→</span>
-      </button>
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#e6e6e6] bg-white/96 px-4 py-3 shadow-[0_-10px_32px_rgba(0,0,0,0.08)] backdrop-blur-md">
+      <div className="mx-auto grid max-w-2xl gap-2">
+        {countdownLabel && (
+          <div className="rounded-lg border border-[#e6e6e6] bg-[#dd5b00]/10 px-3 py-2 text-center text-xs font-extrabold text-[#dd5b00]">
+            {countdownLabel}
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={onCommander}
+          className="relative flex w-full items-center justify-center overflow-hidden rounded-full bg-[#0075de] px-5 py-3.5 text-base font-extrabold text-white shadow-[0_12px_28px_rgba(0,117,222,0.22)] transition-colors hover:bg-[#005bab] active:bg-[#005bab]"
+          style={shakeEnabled ? { animation: "sticky-shake 3s ease-in-out infinite" } : undefined}
+        >
+          <span className="cta-flash-light" aria-hidden="true" />
+          <span className="relative z-10">{label}</span>
+        </button>
+      </div>
     </div>
   );
 }

@@ -13,9 +13,9 @@ interface Props {
 const DELIVERY_FEE = 1000;
 
 const deliveryOptions = [
-  "Yaoundé (Livraison)",
-  "Douala (Expédition)",
-  "Autre ville (Expédition)",
+  "Yaounde (Livraison)",
+  "Douala (Expedition)",
+  "Autre ville (Expedition)",
 ] as const;
 
 function formatFcfa(value: number) {
@@ -24,7 +24,7 @@ function formatFcfa(value: number) {
 
 export default function WhatsAppLeadModal({ bd, onClose }: Props) {
   const [prenom, setPrenom] = useState("");
-  const [sexe, setSexe] = useState<"Garçon" | "Fille" | null>(null);
+  const [sexe, setSexe] = useState<"Garcon" | "Fille" | null>(null);
   const [ville, setVille] = useState<(typeof deliveryOptions)[number] | null>(null);
   const [touched, setTouched] = useState({
     prenom: false,
@@ -33,7 +33,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
   });
 
   const prenomValide = prenom.trim().length >= 2;
-  const sexeValide = sexe === "Garçon" || sexe === "Fille";
+  const sexeValide = sexe === "Garcon" || sexe === "Fille";
   const villeValide = ville !== null;
   const isValid = prenomValide && sexeValide && villeValide;
   const total = bd.prix + DELIVERY_FEE;
@@ -62,7 +62,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
       `Prenom : ${prenom.trim()}`,
       `Sexe : ${sexe}`,
       `${ville} : ${DELIVERY_FEE} FCFA`,
-      `Total à payer: ${formatFcfa(total)}`,
+      `Total a payer: ${formatFcfa(total)}`,
     ].join("\n");
 
     void trackWhatsAppOrder({
@@ -84,38 +84,50 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center md:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center px-0 md:items-center md:px-4"
       onClick={(event) => event.target === event.currentTarget && onClose()}
     >
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-[2rem] bg-white shadow-2xl md:rounded-[2rem]">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-emerald-100 bg-white px-5 py-4">
+      <div className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-[#e6e6e6] bg-white shadow-[0_24px_70px_rgba(0,0,0,0.18)] md:rounded-2xl">
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-[#e6e6e6] bg-white px-5 py-4">
           <div>
-            <div className="text-sm font-extrabold text-emerald-900">Commander sur WhatsApp</div>
-            <div className="text-sm text-gray-600">
-              Quelques informations pour préparer votre demande
+            <div className="inline-flex rounded-full bg-[#0075de]/10 px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-normal text-[#0075de]">
+              Offre limitee
             </div>
+            <div className="mt-2 text-xl font-extrabold leading-tight text-[#111111]">
+              Commander sur WhatsApp
+            </div>
+            <p className="mt-1 text-sm leading-5 text-[#615d59]">
+              Trois informations suffisent pour preparer votre demande.
+            </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-lg text-gray-500 transition-colors hover:bg-gray-200"
+            className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#e6e6e6] bg-[#f6f5f4] text-lg font-bold text-[#615d59] transition-colors hover:bg-white hover:text-[#111111]"
             aria-label="Fermer"
           >
-            ×
+            x
           </button>
         </div>
 
         <div className="space-y-5 px-5 pb-6 pt-5">
-          <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-900">
-            <div className="font-extrabold">Total à payer : {formatFcfa(total)}</div>
-            <div className="mt-1">Frais de livraison/Expédition inclus !</div>
+          <div className="rounded-xl border border-[#e6e6e6] bg-[#f6f5f4] px-4 py-3 text-left">
+            <div className="text-xs font-bold uppercase tracking-normal text-[#615d59]">
+              Total a payer
+            </div>
+            <div className="mt-1 text-2xl font-extrabold text-[#0075de]">
+              {formatFcfa(total)}
+            </div>
+            <p className="mt-1 text-xs leading-5 text-[#615d59]">
+              BD personnalisee + livraison / expedition a {formatFcfa(DELIVERY_FEE)}.
+            </p>
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-              Prénom <span className="text-red-500">*</span>
+            <label className="mb-1.5 block text-xs font-extrabold uppercase tracking-normal text-[#615d59]">
+              Prenom <span className="text-[#dd5b00]">*</span>
             </label>
             <input
               type="text"
@@ -123,21 +135,21 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
               onChange={(event) => setPrenom(event.target.value)}
               onBlur={() => setTouched((current) => ({ ...current, prenom: true }))}
               placeholder="Ex : Kylian"
-              className={`w-full rounded-2xl border px-4 py-3 text-base text-gray-900 outline-none transition-colors focus:ring-2 focus:ring-emerald-500 ${
-                touched.prenom && !prenomValide ? "border-red-300 bg-red-50" : "border-gray-200 bg-white"
+              className={`w-full rounded-lg border px-4 py-3 text-base text-[#111111] outline-none transition-colors focus:border-[#0075de] focus:ring-2 focus:ring-[#0075de]/15 ${
+                touched.prenom && !prenomValide ? "border-[#dd5b00] bg-[#dd5b00]/5" : "border-[#e6e6e6] bg-white"
               }`}
             />
             {touched.prenom && !prenomValide && (
-              <p className="mt-1 text-sm text-red-600">Veuillez entrer au moins 2 caractères.</p>
+              <p className="mt-1 text-sm text-[#dd5b00]">Veuillez entrer au moins 2 caracteres.</p>
             )}
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Sexe <span className="text-red-500">*</span>
+            <label className="mb-2 block text-xs font-extrabold uppercase tracking-normal text-[#615d59]">
+              Sexe <span className="text-[#dd5b00]">*</span>
             </label>
             <div className="grid grid-cols-2 gap-3">
-              {(["Garçon", "Fille"] as const).map((option) => {
+              {(["Garcon", "Fille"] as const).map((option) => {
                 const active = sexe === option;
                 return (
                   <button
@@ -147,10 +159,10 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
                       setSexe(option);
                       setTouched((current) => ({ ...current, sexe: true }));
                     }}
-                    className={`rounded-2xl border px-4 py-3 text-sm font-bold transition-colors ${
+                    className={`rounded-lg border px-4 py-3 text-sm font-extrabold transition-colors ${
                       active
-                        ? "border-emerald-700 bg-emerald-700 text-white"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-emerald-300"
+                        ? "border-[#0075de] bg-[#0075de]/10 text-[#0075de]"
+                        : "border-[#e6e6e6] bg-white text-[#111111] hover:border-[#0075de]/40"
                     }`}
                   >
                     {option}
@@ -159,15 +171,16 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
               })}
             </div>
             {touched.sexe && !sexeValide && (
-              <p className="mt-1 text-sm text-red-600">Veuillez choisir une option.</p>
+              <p className="mt-1 text-sm text-[#dd5b00]">Veuillez choisir une option.</p>
             )}
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-semibold text-gray-700">
-              Livraison / Expédition : 1000 FCFA <span className="text-red-500">*</span>
+            <label className="mb-2 block text-xs font-extrabold uppercase tracking-normal text-[#615d59]">
+              Livraison / expedition : {formatFcfa(DELIVERY_FEE)}{" "}
+              <span className="text-[#dd5b00]">*</span>
             </label>
-            <div className="grid gap-3">
+            <div className="grid gap-2">
               {deliveryOptions.map((option) => {
                 const active = ville === option;
                 return (
@@ -178,10 +191,10 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
                       setVille(option);
                       setTouched((current) => ({ ...current, ville: true }));
                     }}
-                    className={`rounded-2xl border px-4 py-3 text-left text-sm font-bold transition-colors ${
+                    className={`rounded-lg border px-4 py-3 text-left text-sm font-extrabold transition-colors ${
                       active
-                        ? "border-emerald-700 bg-emerald-700 text-white"
-                        : "border-gray-200 bg-white text-gray-700 hover:border-emerald-300"
+                        ? "border-[#0075de] bg-[#0075de]/10 text-[#0075de]"
+                        : "border-[#e6e6e6] bg-white text-[#111111] hover:border-[#0075de]/40"
                     }`}
                   >
                     {option}
@@ -190,19 +203,19 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
               })}
             </div>
             {touched.ville && !villeValide && (
-              <p className="mt-1 text-sm text-red-600">Veuillez choisir une option.</p>
+              <p className="mt-1 text-sm text-[#dd5b00]">Veuillez choisir une option.</p>
             )}
           </div>
 
           <button
             type="button"
             onClick={submit}
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#25D366] px-5 py-4 text-base font-extrabold text-white shadow-lg transition-colors hover:bg-[#1ebe5d]"
+            className="flex w-full items-center justify-center rounded-full bg-[#0075de] px-5 py-4 text-base font-extrabold text-white shadow-[0_12px_28px_rgba(0,117,222,0.22)] transition-colors hover:bg-[#005bab]"
           >
-            Commander sur WhatsApp <span aria-hidden="true">-&gt;</span>
+            Commander sur WhatsApp
           </button>
-          <p className="text-center text-xs leading-5 text-gray-500">
-            WhatsApp va s’ouvrir avec votre demande déjà prête.
+          <p className="text-center text-xs leading-5 text-[#615d59]">
+            WhatsApp va s'ouvrir avec votre demande deja prete.
           </p>
         </div>
       </div>
