@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { BD } from "@/lib/catalogue";
 import type { PaymentSettings } from "@/lib/payment-settings";
 import StickyCommanderBar from "@/components/StickyCommanderBar";
@@ -73,7 +73,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
       label: defaultSlideLabels[index] ?? `Image ${index + 1}`,
     }));
 
-  const trackProductEvent = (
+  const trackProductEvent = useCallback((
     eventType: "cta_click" | "checkout_open" | "carousel_interaction",
     source: string,
     extra?: Record<string, string | number>
@@ -88,9 +88,9 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         ...extra,
       },
     });
-  };
+  }, [bd.id, bd.serie, bd.slug]);
 
-  const openCheckout = (source: string) => {
+  const openCheckout = useCallback((source: string) => {
     const now = Date.now();
     if (now - lastCheckoutOpenAt.current < 500) {
       setModalOuvert(true);
@@ -101,7 +101,7 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
     trackProductEvent("cta_click", source);
     trackProductEvent("checkout_open", source);
     setModalOuvert(true);
-  };
+  }, [trackProductEvent]);
 
   const slideSuivant = () => {
     trackProductEvent("carousel_interaction", "hero_next", { slideIndex: slideActif });
@@ -143,9 +143,13 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
 
     if (!shouldOpenCheckout) return;
 
-    setAutoFocusModal(true);
-    openCheckout("direct_link");
-  }, []);
+    const timeoutId = window.setTimeout(() => {
+      setAutoFocusModal(true);
+      openCheckout("direct_link");
+    }, 0);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [openCheckout]);
 
   useEffect(() => {
     if (slides.length <= 1) return;
