@@ -26,17 +26,17 @@ function WhatsAppIcon() {
 
 const heroSlides = [
   {
-    src: "/decouvre-les-metiers/hero-discovery.svg",
+    src: "/decouvre-les-metiers/hero-discovery.png",
     title: "Des métiers à découvrir",
     text: "Votre enfant avance d’univers en univers pour comprendre des métiers utiles, concrets et inspirants.",
   },
   {
-    src: "/decouvre-les-metiers/hero-planning.svg",
+    src: "/decouvre-les-metiers/hero-planning.png",
     title: "Une histoire avec son prénom",
     text: "Son prénom entre dans l’aventure pour l’aider à se projeter et à rêver plus grand.",
   },
   {
-    src: "/decouvre-les-metiers/hero-future.svg",
+    src: "/decouvre-les-metiers/hero-future.png",
     title: "Il imagine son avenir",
     text: "Lecture, activités et coloriages prolongent l’apprentissage bien après la fin de la BD.",
   },
@@ -327,7 +327,7 @@ export default function DecouvreLesMetiersLanding({ bd }: Props) {
           <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-2 md:items-center">
             <div className="overflow-hidden rounded-2xl border border-[#e6e6e6] bg-white shadow-[0_18px_45px_rgba(0,0,0,0.08)]">
               <Image
-                src="/decouvre-les-metiers/cover.svg"
+                src="/decouvre-les-metiers/cover.png"
                 alt="Couverture personnalisée de la BD Découvre les Métiers"
                 width={900}
                 height={700}
