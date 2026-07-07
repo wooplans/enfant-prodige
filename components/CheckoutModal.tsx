@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { BD, CommandeData } from "@/lib/catalogue";
 import type { PaymentProvider, PaymentSettings } from "@/lib/payment-settings";
 import ChariowWidgetEmbed from "@/components/ChariowWidgetEmbed";
@@ -11,6 +11,7 @@ interface Props {
   bd: BD;
   paymentSettings: PaymentSettings;
   onClose: () => void;
+  autoFocus?: boolean;
 }
 
 type Step = "details" | "payment";
@@ -47,7 +48,7 @@ type CheckoutStartResponse =
       message: string;
     };
 
-export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
+export default function CheckoutModal({ bd, paymentSettings, onClose, autoFocus = false }: Props) {
   const [step, setStep] = useState<Step>("details");
   const [data, setData] = useState<CommandeData>(INITIAL_DATA);
   const [prenomTouched, setPrenomTouched] = useState(false);
@@ -59,6 +60,7 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [checkoutInfo, setCheckoutInfo] = useState<CheckoutStartResponse | null>(null);
+  const prenomInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     fbqTrack("InitiateCheckout", {
@@ -112,6 +114,11 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
       document.body.style.overflow = "";
     };
   }, [closeCheckout]);
+
+  useEffect(() => {
+    if (!autoFocus) return;
+    prenomInputRef.current?.focus();
+  }, [autoFocus]);
 
   const startCheckout = async () => {
     setPrenomTouched(true);
@@ -238,6 +245,7 @@ export default function CheckoutModal({ bd, paymentSettings, onClose }: Props) {
                   Prénom de l’enfant <span className="text-red-500">*</span>
                 </label>
                 <input
+                  ref={prenomInputRef}
                   type="text"
                   value={data.prenom}
                   onChange={(event) => setData({ ...data, prenom: event.target.value })}

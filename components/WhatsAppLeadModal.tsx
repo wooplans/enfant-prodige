@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { BD } from "@/lib/catalogue";
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 import { trackWhatsAppOrder } from "@/lib/whatsapp-order-tracking";
@@ -8,6 +8,7 @@ import { trackWhatsAppOrder } from "@/lib/whatsapp-order-tracking";
 interface Props {
   bd: BD;
   onClose: () => void;
+  autoFocus?: boolean;
 }
 
 function WhatsAppIcon() {
@@ -34,7 +35,7 @@ function formatFcfa(value: number) {
   return `${value.toLocaleString("fr-FR").replace(/\s/g, ".")} FCFA`;
 }
 
-export default function WhatsAppLeadModal({ bd, onClose }: Props) {
+export default function WhatsAppLeadModal({ bd, onClose, autoFocus = false }: Props) {
   const [prenom, setPrenom] = useState("");
   const [sexe, setSexe] = useState<"Garçon" | "Fille" | null>(null);
   const [ville, setVille] = useState<(typeof deliveryOptions)[number] | null>(null);
@@ -43,6 +44,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
     sexe: false,
     ville: false,
   });
+  const prenomInputRef = useRef<HTMLInputElement | null>(null);
 
   const prenomValide = prenom.trim().length >= 2;
   const sexeValide = sexe === "Garçon" || sexe === "Fille";
@@ -72,6 +74,11 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
       document.body.style.overflow = "";
     };
   }, [onClose]);
+
+  useEffect(() => {
+    if (!autoFocus) return;
+    prenomInputRef.current?.focus();
+  }, [autoFocus]);
 
   const submit = () => {
     setTouched({ prenom: true, sexe: true, ville: true });
@@ -147,6 +154,7 @@ export default function WhatsAppLeadModal({ bd, onClose }: Props) {
               Prénom <span className="text-[#dd5b00]">*</span>
             </label>
             <input
+              ref={prenomInputRef}
               type="text"
               value={prenom}
               onChange={(event) => setPrenom(event.target.value)}

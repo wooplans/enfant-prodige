@@ -117,6 +117,7 @@ function formatFcfa(value: number) {
 
 export default function SauveLesAnimauxLanding({ bd }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
+  const [autoFocusModal, setAutoFocusModal] = useState(false);
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
   const [offerCountdown, setOfferCountdown] = useState("00:00:00");
 
@@ -141,6 +142,17 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
     });
     setModalOpen(true);
   };
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const shouldOpenCheckout =
+      searchParams.get("checkout") === "1" || searchParams.get("openCheckout") === "1";
+
+    if (!shouldOpenCheckout) return;
+
+    setAutoFocusModal(true);
+    openLeadModal("direct_link");
+  }, []);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -400,7 +412,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
         label="Commander sur WhatsApp"
         countdownLabel={`Offre de lancement : fin dans ${offerCountdown}`}
       />
-      {modalOpen && <WhatsAppLeadModal bd={bd} onClose={() => setModalOpen(false)} />}
+      {modalOpen && <WhatsAppLeadModal bd={bd} autoFocus={autoFocusModal} onClose={() => setModalOpen(false)} />}
     </>
   );
 }
