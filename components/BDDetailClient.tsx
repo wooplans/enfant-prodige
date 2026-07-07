@@ -61,6 +61,7 @@ const personalizedHeroSlidesBySeries: Record<string, HeroSlide[]> = {
 
 export default function BDDetailClient({ bd, landingPageMode = false, paymentSettings, deliveryDateLabel }: Props) {
   const [modalOuvert, setModalOuvert] = useState(false);
+  const [autoFocusModal, setAutoFocusModal] = useState(false);
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [fomoTimer, setFomoTimer] = useState("00:00:00");
@@ -134,6 +135,17 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
       currency: "XAF",
     });
   }, [bd.id, bd.prix, bd.serie]);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const shouldOpenCheckout =
+      searchParams.get("checkout") === "1" || searchParams.get("openCheckout") === "1";
+
+    if (!shouldOpenCheckout) return;
+
+    setAutoFocusModal(true);
+    openCheckout("direct_link");
+  }, []);
 
   useEffect(() => {
     if (slides.length <= 1) return;
@@ -515,7 +527,14 @@ export default function BDDetailClient({ bd, landingPageMode = false, paymentSet
         shakeStartId="avis-parents"
         label={primaryCtaText}
       />
-      {modalOuvert && <CheckoutModal bd={bd} paymentSettings={paymentSettings} onClose={() => setModalOuvert(false)} />}
+      {modalOuvert && (
+        <CheckoutModal
+          bd={bd}
+          paymentSettings={paymentSettings}
+          autoFocus={autoFocusModal}
+          onClose={() => setModalOuvert(false)}
+        />
+      )}
     </>
   );
 }
