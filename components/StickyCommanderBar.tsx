@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
   shakeStartId?: string;
   label?: string;
   countdownLabel?: string;
+  leadingIcon?: ReactNode;
 }
 
 export default function StickyCommanderBar({
@@ -14,6 +16,7 @@ export default function StickyCommanderBar({
   shakeStartId,
   label = "Personnaliser pour mon enfant",
   countdownLabel,
+  leadingIcon,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const [shakeEnabled, setShakeEnabled] = useState(false);
@@ -69,7 +72,10 @@ export default function StickyCommanderBar({
           style={shakeEnabled ? { animation: "sticky-shake 3s ease-in-out infinite" } : undefined}
         >
           <span className="cta-flash-light" aria-hidden="true" />
-          <span className="relative z-10">{label}</span>
+          <span className="relative z-10 flex items-center gap-2">
+            {leadingIcon}
+            <span>{label}</span>
+          </span>
         </button>
       </div>
     </div>

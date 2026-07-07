@@ -12,6 +12,18 @@ interface Props {
   bd: BD;
 }
 
+function WhatsAppIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className="h-5 w-5 fill-current"
+    >
+      <path d="M20.52 3.48A11.86 11.86 0 0 0 12.06 0C5.5 0 .17 5.32.17 11.89c0 2.09.55 4.13 1.58 5.92L0 24l6.38-1.67a11.87 11.87 0 0 0 5.68 1.44h.01c6.56 0 11.89-5.33 11.89-11.9 0-3.18-1.24-6.16-3.44-8.39ZM12.07 21.76h-.01a9.9 9.9 0 0 1-5.05-1.39l-.36-.21-3.79.99 1.01-3.69-.23-.38a9.84 9.84 0 0 1-1.5-5.19c0-5.47 4.45-9.91 9.93-9.91 2.65 0 5.14 1.03 7.01 2.91a9.84 9.84 0 0 1 2.9 7c0 5.47-4.45 9.92-9.91 9.92Zm5.44-7.42c-.3-.15-1.77-.88-2.05-.98-.27-.1-.47-.15-.67.15-.2.3-.77.98-.94 1.18-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.78-1.48-1.75-1.66-2.05-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.61-.91-2.2-.24-.58-.49-.5-.67-.5h-.57c-.2 0-.52.07-.8.38-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.1.15.2 2.1 3.2 5.08 4.49.71.3 1.27.48 1.7.62.72.23 1.37.2 1.89.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.18-1.42-.08-.12-.28-.2-.58-.35Z" />
+    </svg>
+  );
+}
+
 const heroSlides = [
   {
     src: "/decouvre-les-metiers/hero-discovery.svg",
@@ -52,9 +64,15 @@ const benefitCards = [
 ];
 
 const steps = [
-  ["Personnalisez", "Indiquez le prénom, le sexe et la ville de livraison."],
-  ["Recevez la confirmation", "WhatsApp s’ouvre avec votre demande déjà préparée."],
-  ["Projetez-vous", "Votre enfant découvre les métiers, imagine son avenir et prolonge l’expérience avec les activités."],
+  ["Commandez sur WhatsApp", "Indiquez le prénom, le sexe et la ville de livraison."],
+  [
+    "Recevez la confirmation",
+    "Vous effectuez le paiement et nous personnalisons la BD avec le nom de votre enfant avant impression.",
+  ],
+  [
+    "Recevez la bande dessinée",
+    "Nous vous livrons ou expédions la bande dessinée accompagnée des couleurs pour le coloriage.",
+  ],
 ];
 
 const faqs = [
@@ -204,8 +222,9 @@ export default function DecouvreLesMetiersLanding({ bd }: Props) {
             <button
               type="button"
               onClick={() => openLeadModal("hero")}
-              className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#0075de] px-8 py-4 text-base font-extrabold text-white shadow-[0_14px_32px_rgba(0,117,222,0.24)] transition-colors hover:bg-[#005bab] sm:w-auto"
+              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0075de] px-8 py-4 text-base font-extrabold text-white shadow-[0_14px_32px_rgba(0,117,222,0.24)] transition-colors hover:bg-[#005bab] sm:w-auto"
             >
+              <WhatsAppIcon />
               Commander sur WhatsApp
             </button>
           </div>
@@ -356,12 +375,13 @@ export default function DecouvreLesMetiersLanding({ bd }: Props) {
             <button
               type="button"
               onClick={() => openLeadModal("form_section")}
-              className="mt-8 inline-flex w-full items-center justify-center rounded-full bg-[#0075de] px-8 py-4 text-base font-extrabold text-white shadow-[0_14px_32px_rgba(0,117,222,0.24)] transition-colors hover:bg-[#005bab]"
+              className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#0075de] px-8 py-4 text-base font-extrabold text-white shadow-[0_14px_32px_rgba(0,117,222,0.24)] transition-colors hover:bg-[#005bab]"
             >
+              <WhatsAppIcon />
               Commander sur WhatsApp
             </button>
             <p className="mt-4 text-xs leading-5 text-[#615d59]">
-              WhatsApp va s’ouvrir avec votre demande déjà prête.
+              Donnez le prénom de l’enfant et le lieu de livraison.
             </p>
           </div>
         </section>
@@ -399,6 +419,7 @@ export default function DecouvreLesMetiersLanding({ bd }: Props) {
         shakeStartId="commande"
         label="Commander sur WhatsApp"
         countdownLabel={`Offre de lancement : fin dans ${offerCountdown}`}
+        leadingIcon={<WhatsAppIcon />}
       />
       {modalOpen && <WhatsAppLeadModal bd={bd} onClose={() => setModalOpen(false)} />}
     </>
