@@ -68,7 +68,7 @@ export default function BDDetailClientClone({ bd }: Props) {
   const [slideActif, setSlideActif] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const slides = bd.galerie.slice(0, 4);
-  const slideLabels = ["Couverture", "Aperçu histoire", "Héros", "Détails"];
+  const slideLabels = ["Couverture", "Patricia", "Jean-Jacques", "Famille"];
 
   const slideSuivant = () => setSlideActif((current) => (current + 1) % slides.length);
   const slidePrecedent = () => setSlideActif((current) => (current - 1 + slides.length) % slides.length);
