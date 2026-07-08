@@ -207,7 +207,6 @@ export const localCatalogue: BD[] = [
     fraisLivraison: 1000,
     couverture: "/covers/sauve-les-animaux-cover.jpg",
     galerie: [
-      "/covers/sauve-les-animaux-cover.jpg",
       "/covers/sauve-les-animaux-girl.jpg",
       "/covers/sauve-les-animaux-boy.jpg",
       "/covers/sauve-les-animaux-family.jpg",
@@ -269,7 +268,6 @@ export const localCatalogue: BD[] = [
     fraisLivraison: 1000,
     couverture: "/covers/sauve-les-animaux-cover.jpg",
     galerie: [
-      "/covers/sauve-les-animaux-cover.jpg",
       "/covers/sauve-les-animaux-girl.jpg",
       "/covers/sauve-les-animaux-boy.jpg",
       "/covers/sauve-les-animaux-family.jpg",
