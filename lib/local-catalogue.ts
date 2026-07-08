@@ -1,4 +1,4 @@
-﻿import type { BD } from "@/lib/catalogue";
+import type { BD } from "@/lib/catalogue";
 
 export const localCatalogue: BD[] = [
   {
@@ -130,6 +130,68 @@ export const localCatalogue: BD[] = [
     slug: "exploration-zoo",
     serie: "Exploration du ZOO",
     titre: "Exploration du ZOO",
+    genre: "Nature · Animaux · Découverte",
+    description:
+      "Votre enfant va en aventure dans un zoo : découverte et apprentissage en compagnie de son guide.",
+    descriptionLongue:
+      "Votre enfant passe la plus belle journée de sa vie dans le plus grand zoo d'Afrique ! Accompagné par Kamo le gardien, il rencontre des éléphants, des gorilles, des lions et des perroquets multicolores — tous avec des histoires et des secrets à partager. Une BD éducative et tendre, pleine de découvertes sur le règne animal africain. 32 pages illustrées, pleine couleur, format A4, avec le prénom de votre enfant sur la couverture et dans les dialogues.",
+    pourQui: [
+      "Votre enfant aime les animaux et la nature",
+      "Vous cherchez une BD éducative et ludique pour les 6-10 ans",
+      "Vous voulez un cadeau doux et coloré qui éveille la curiosité",
+      "Vous voulez initier votre enfant à la faune africaine",
+    ],
+    prix: 9900,
+    fraisLivraison: 1000,
+    couverture: "/covers/exploration-zoo.jpg",
+    galerie: [
+      "/covers/exploration-zoo.jpg",
+      "/covers/exploration-zoo-scene.jpg",
+      "/covers/exploration-zoo-heros.jpg",
+      "/covers/exploration-zoo-detail.jpg",
+    ],
+    nombrePages: 32,
+    ageMin: 6,
+    ageMax: 10,
+    disponible: true,
+    note: 4.7,
+    nombreAvis: 14,
+    nombreCommandesSemaine: 9,
+    avis: [
+      {
+        nom: "Bertrand M.",
+        note: 5,
+        commentaire:
+          "Mon fils de 6 ans adore les animaux. En voyant son prénom dans le livre avec le lion, il a sauté de joie ! Qualité d'impression excellente.",
+        ville: "Yaoundé",
+        date: "il y a 4 jours",
+        avatar: "B",
+      },
+      {
+        nom: "Sophie A.",
+        note: 4,
+        commentaire:
+          "Très belle BD pour les petits. Les dessins sont colorés et expressifs. Ma fille a demandé à ce qu'on lui lise deux fois de suite.",
+        ville: "Douala",
+        date: "il y a 10 jours",
+        avatar: "S",
+      },
+      {
+        nom: "Thierry O.",
+        note: 5,
+        commentaire:
+          "Cadeau parfait. La personnalisation est bien faite, le prénom s'intègre naturellement dans les dialogues. Livraison en 24h, impeccable.",
+        ville: "Yaoundé",
+        date: "il y a 2 semaines",
+        avatar: "T",
+      },
+    ],
+  },
+  {
+    id: "sauve-les-animaux-clone",
+    slug: "sauve-les-animaux-clone",
+    serie: "Exploration du ZOO (Clone)",
+    titre: "Exploration du ZOO (Clone)",
     genre: "Nature · Animaux · Découverte",
     description:
       "Votre enfant va en aventure dans un zoo : découverte et apprentissage en compagnie de son guide.",

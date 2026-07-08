@@ -1,7 +1,16 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  if (pathname === "/bd/sauve-les-animaux-clone") {
+    return null;
+  }
+
   return (
     <footer className="bg-green-900 text-white mt-16">
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">

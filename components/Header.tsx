@@ -2,10 +2,16 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { WHATSAPP_NUMBER } from "@/lib/catalogue";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname === "/bd/sauve-les-animaux-clone") {
+    return null;
+  }
 
   return (
     <header className="bg-green-800 text-white shadow-lg">
