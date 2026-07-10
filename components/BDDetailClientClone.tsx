@@ -490,14 +490,88 @@ export default function BDDetailClientClone({ bd }: Props) {
         <section className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-5">
           <button
             onClick={() => setDescExpanded(!descExpanded)}
-            className="w-full flex items-center justify-between font-extrabold text-slate-800 text-sm uppercase tracking-wider text-left"
+            className="w-full flex items-center justify-between font-extrabold text-slate-800 text-sm uppercase tracking-wider text-left focus:outline-none"
           >
-            <span>📖 À propos de cette histoire</span>
-            <span className="text-green-600 text-xs">{descExpanded ? "▲" : "▼"}</span>
+            <span className="flex items-center gap-2">📖 À propos de cette aventure</span>
+            <span className="text-green-600 text-xs font-bold transition-transform duration-200">{descExpanded ? "▲ Masquer" : "▼ En savoir plus"}</span>
           </button>
+          
           {descExpanded && (
-            <div className="mt-4 text-xs sm:text-sm text-slate-600 leading-relaxed">
-              {bd.descriptionLongue}
+            <div className="mt-5 flex flex-col gap-5 text-slate-700 border-t border-slate-100 pt-4 animate-fadeIn">
+              
+              <p className="text-xs sm:text-sm leading-relaxed font-medium text-slate-600">
+                Dans ce grand livre d&apos;aventures sur mesure, votre enfant est le héros qui parcourt l&apos;Afrique pour protéger la faune sauvage !
+              </p>
+
+              {/* 3 Main Features */}
+              <div className="grid grid-cols-1 gap-3.5">
+                {[
+                  {
+                    icon: "📚",
+                    title: "Histoires personnalisées",
+                    desc: "Le prénom de l'enfant est imprimé sur la couverture et intégré au cœur de chaque récit.",
+                  },
+                  {
+                    icon: "🧠",
+                    title: "15 Fiches éducatives",
+                    desc: "Des fiches documentaires ('À retenir sur...') pour apprendre le mode de vie et les secrets de chaque espèce.",
+                  },
+                  {
+                    icon: "🎨",
+                    title: "15 Pages de coloriages",
+                    desc: "Un espace créatif de coloriage après chaque aventure pour s'amuser et s'approprier l'histoire.",
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="flex gap-3 items-start bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
+                    <span className="text-2xl shrink-0 p-1 bg-white rounded-xl shadow-xs">{item.icon}</span>
+                    <div>
+                      <h4 className="font-extrabold text-xs text-slate-900 uppercase tracking-wider">{item.title}</h4>
+                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Animal Grid */}
+              <div className="flex flex-col gap-2">
+                <h4 className="font-extrabold text-[10px] text-slate-400 uppercase tracking-widest">
+                  Quelques animaux à secourir dans le livre :
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    "🐘 Tembo l'éléphant",
+                    "🦁 Simba le lionceau",
+                    "🦒 Zara la girafe",
+                    "🦍 Kongo le gorille",
+                    "🐢 Kélé la tortue",
+                    "🦜 Koko le perroquet",
+                    "🦏 Rino le rhinocéros",
+                    "🐗 Pumba le phacochère",
+                    "🐆 Kipo le guépard",
+                    "🦎 Léo le caméléon",
+                  ].map((animal) => (
+                    <span
+                      key={animal}
+                      className="text-xs bg-green-50 text-green-700 font-bold px-3 py-1.5 rounded-xl border border-green-100"
+                    >
+                      {animal}
+                    </span>
+                  ))}
+                  <span className="text-xs bg-slate-50 text-slate-500 font-bold px-3 py-1.5 rounded-xl border border-slate-100 italic">
+                    + 5 autres animaux !
+                  </span>
+                </div>
+              </div>
+
+              {/* Book Details Footer */}
+              <div className="flex items-center justify-between text-[11px] font-black text-slate-400 uppercase tracking-wider bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                <span>📄 Format A4</span>
+                <span className="text-slate-300">|</span>
+                <span>📖 62 pages</span>
+                <span className="text-slate-300">|</span>
+                <span>🎨 Coloriage inclus</span>
+              </div>
+
             </div>
           )}
         </section>

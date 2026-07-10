@@ -94,7 +94,7 @@ const catalogue = [
     titre: "Sauve les animaux",
     genre: "Nature · Animaux · Empathie · Coloriage",
     description:
-      "Votre enfant devient un héros de la nature en volant au secours de 10 animaux sauvages d'Afrique. Une BD éducative et personnalisée avec fiches documentaires et coloriages !",
+      "Votre enfant devient un héros de la nature en volant au secours de 15 animaux. Une BD éducative et personnalisée avec fiches documentaires et 15 pages de coloriages !",
     description_longue:
       "Dans cette grande aventure sur mesure, votre enfant (dont le prénom apparaît sur la couverture et dans toutes les histoires) parcourt la savane et la forêt équatoriale pour aider 10 animaux en difficulté : Tembo l'éléphanteau assoiffé, Simba le lionceau blessé, Zara la girafe craintive, Kongo le petit gorille égaré... Chaque histoire est accompagnée de fiches éducatives captivantes (À retenir sur...) et de pages de coloriage pour chaque animal. 62 pages d'activités haute qualité, format A4, combinant lecture personnalisée, apprentissage scientifique et coloriage.",
     pour_qui: [
