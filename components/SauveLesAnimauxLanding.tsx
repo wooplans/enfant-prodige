@@ -174,20 +174,30 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
         <section className="mx-auto grid max-w-6xl gap-10 px-4 py-10 md:grid-cols-[1fr_0.95fr] md:items-center md:px-6 md:py-16">
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <div className="mb-5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full border border-[#e6e6e6] bg-white px-3 py-1.5 text-xs font-bold text-[#0075de] shadow-sm">
-              <span className="text-[#dd5b00]">*****</span>
-              <span>4,9/5</span>
-              <span>325 avis parents satisfaits</span>
+              <span className="text-[#dd5b00]" aria-hidden="true">★★★★★</span>
+              <span>Une aventure pensée pour les 6–10 ans</span>
             </div>
 
             <h1 className="max-w-2xl text-[2.55rem] font-extrabold leading-none tracking-normal md:text-[4.7rem]">
-              L’aventure où votre enfant est le{" "}
-              <span className="text-[#0075de]">héros !</span>
+              Son prénom devient le{" "}
+              <span className="text-[#0075de]">héros de la savane</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-7 text-[#615d59] md:text-lg">
-              Offrez une BD personnalisée où votre petit explorateur découvre 15 animaux
-              fascinants et résout des énigmes au cœur de la savane.
+              Offrez-lui une BD physique personnalisée : il découvre 15 animaux,
+              résout des énigmes et retrouve son prénom dans toute l’aventure.
             </p>
+
+            <div className="mt-5 flex flex-wrap justify-center gap-2 md:justify-start">
+              {["60 pages", "15 animaux", "Coloriages inclus"].map((item) => (
+                <span
+                  key={item}
+                  className="rounded-full bg-white px-3 py-2 text-xs font-extrabold text-[#111111] shadow-sm"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
 
             <div className="mt-6 inline-flex rounded-lg border border-[#e6e6e6] bg-[#dd5b00]/10 px-4 py-2 text-sm font-extrabold text-[#dd5b00]">
               Offre expire dans : {offerCountdown}
@@ -206,7 +216,7 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
               onClick={() => openLeadModal("hero")}
               className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[#0075de] px-8 py-4 text-base font-extrabold text-white shadow-[0_14px_32px_rgba(0,117,222,0.24)] transition-colors hover:bg-[#005bab] sm:w-auto"
             >
-              Commander sur WhatsApp
+              Personnaliser sa BD — {formatFcfa(bd.prix)}
             </button>
           </div>
 
@@ -273,11 +283,16 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
 
         <section className="border-t border-[#e6e6e6] bg-white px-4 py-16 md:px-6">
           <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.85fr_1fr] md:items-center">
-            <div className="relative grid min-h-[320px] place-items-center overflow-hidden rounded-2xl border border-[#e6e6e6] bg-[#e8e8e6] shadow-[0_18px_40px_rgba(0,0,0,0.08)] md:min-h-[420px]">
-              <span className="absolute -right-3 -top-3 h-16 w-16 rounded-bl-2xl bg-[#ff64c8]" />
-              <span className="absolute -bottom-3 -left-3 h-14 w-14 rounded-tr-2xl bg-[#62aef0]" />
-              <span className="grid h-20 w-20 place-items-center rounded-full bg-[#0075de] shadow-lg">
-                <span className="ml-1 h-0 w-0 border-b-[14px] border-l-[22px] border-t-[14px] border-b-transparent border-l-white border-t-transparent" />
+            <div className="relative min-h-[320px] overflow-hidden rounded-2xl border border-[#e6e6e6] bg-white shadow-[0_18px_40px_rgba(0,0,0,0.08)] md:min-h-[420px]">
+              <Image
+                src="/sauve-les-animaux/family-reading.png"
+                alt="Un parent partage un moment de lecture avec son enfant"
+                fill
+                sizes="(max-width: 768px) 100vw, 42vw"
+                className="object-cover"
+              />
+              <span className="absolute bottom-4 left-4 rounded-full bg-white/95 px-3 py-2 text-xs font-extrabold text-[#111111]">
+                Un moment qu’il n’oubliera pas
               </span>
             </div>
 
@@ -347,11 +362,11 @@ export default function SauveLesAnimauxLanding({ bd }: Props) {
               Offre limitée
             </div>
             <h2 className="text-[2rem] font-extrabold leading-tight tracking-normal md:text-[2.7rem]">
-              Offre spéciale : <span className="text-[#0075de]">{formatFcfa(bd.prix)}</span>
+              Personnalisez la BD de votre enfant
             </h2>
             <p className="mt-3 text-sm text-[#615d59]">
-              <span className="text-[#a39e98] line-through">{formatFcfa(oldPrice)}</span> -
-              économisez 50% aujourd’hui
+              Aujourd’hui : <span className="text-[#a39e98] line-through">{formatFcfa(oldPrice)}</span>{" "}
+              <strong className="text-[#0075de]">{formatFcfa(bd.prix)}</strong> · livraison / expédition : 1.000 FCFA
             </p>
             <button
               type="button"
