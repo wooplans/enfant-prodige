@@ -1,4 +1,4 @@
-﻿import { readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
@@ -89,30 +89,30 @@ const catalogue = [
     ],
   },
   {
-    slug: "exploration-zoo",
-    serie: "Exploration du ZOO",
-    titre: "Exploration du ZOO",
-    genre: "Nature · Animaux · Découverte",
+    slug: "sauve-les-animaux",
+    serie: "Sauve les animaux",
+    titre: "Sauve les animaux",
+    genre: "Nature · Animaux · Empathie · Coloriage",
     description:
-      "Votre enfant va en aventure dans un zoo : découverte et apprentissage en compagnie de son guide.",
+      "Votre enfant devient un héros de la nature en volant au secours de 10 animaux sauvages d'Afrique. Une BD éducative et personnalisée avec fiches documentaires et coloriages !",
     description_longue:
-      "Votre enfant passe la plus belle journée de sa vie dans le plus grand zoo d'Afrique ! Accompagné par Kamo le gardien, il rencontre des éléphants, des gorilles, des lions et des perroquets multicolores — tous avec des histoires et des secrets à partager. Une BD éducative et tendre, pleine de découvertes sur le règne animal africain. 32 pages illustrées, pleine couleur, format A4, avec le prénom de votre enfant sur la couverture et dans les dialogues.",
+      "Dans cette grande aventure sur mesure, votre enfant (dont le prénom apparaît sur la couverture et dans toutes les histoires) parcourt la savane et la forêt équatoriale pour aider 10 animaux en difficulté : Tembo l'éléphanteau assoiffé, Simba le lionceau blessé, Zara la girafe craintive, Kongo le petit gorille égaré... Chaque histoire est accompagnée de fiches éducatives captivantes (À retenir sur...) et de pages de coloriage pour chaque animal. 62 pages d'activités haute qualité, format A4, combinant lecture personnalisée, apprentissage scientifique et coloriage.",
     pour_qui: [
-      "Votre enfant aime les animaux et la nature",
-      "Vous cherchez une BD éducative et ludique pour les 6-10 ans",
-      "Vous voulez un cadeau doux et coloré qui éveille la curiosité",
-      "Vous voulez initier votre enfant à la faune africaine",
+      "Votre enfant adore les animaux et la nature sauvage d'Afrique",
+      "Vous voulez développer son empathie, sa bienveillance et son goût de la lecture",
+      "Vous cherchez un livre d'activités 3-en-1 : BD personnalisée, fiches documentaires et dessins à colorier",
+      "Idéal pour les enfants de 4 à 10 ans (apprentissage ludique de la faune africaine)",
     ],
     prix: 9900,
     frais_livraison: 1000,
     images: [
-      "/covers/exploration-zoo.jpg",
-      "/covers/exploration-zoo-scene.jpg",
-      "/covers/exploration-zoo-heros.jpg",
-      "/covers/exploration-zoo-detail.jpg",
+      "/covers/sauve-les-animaux-cover.jpg",
+      "/covers/sauve-les-animaux-girl.jpg",
+      "/covers/sauve-les-animaux-boy.jpg",
+      "/covers/sauve-les-animaux-family.jpg",
     ],
-    nombre_pages: 32,
-    age_min: 6,
+    nombre_pages: 62,
+    age_min: 4,
     age_max: 10,
     note: 4.7,
     nombre_avis: 14,

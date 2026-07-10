@@ -1,4 +1,4 @@
-﻿import "server-only";
+import "server-only";
 
 import type { AdminSeries, Avis, BD } from "@/lib/catalogue";
 import { localCatalogue } from "@/lib/local-catalogue";
@@ -101,7 +101,7 @@ function toAdminSeries(row: SeriesRow): AdminSeries {
 
 export async function getPublicCatalogue(): Promise<BD[]> {
   const supabase = getSupabasePublic();
-  if (!supabase) return localCatalogue;
+  if (!supabase) return localCatalogue.filter((bd) => !bd.slug.endsWith("-clone"));
 
   const { data, error } = await supabase
     .from("series")
@@ -114,7 +114,7 @@ export async function getPublicCatalogue(): Promise<BD[]> {
 
   if (error) {
     console.error("Unable to load public catalogue", error);
-    return localCatalogue;
+    return localCatalogue.filter((bd) => !bd.slug.endsWith("-clone"));
   }
 
   return ((data ?? []) as unknown as SeriesRow[]).map(toPublicSeries);
