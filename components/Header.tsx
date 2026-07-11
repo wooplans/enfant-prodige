@@ -9,7 +9,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  if (pathname === "/bd/sauve-les-animaux-clone" || pathname === "/bd/sauve-les-animaux") {
+  if (pathname === "/bd/sauve-les-animaux-clone" || pathname === "/bd/sauve-les-animaux" || pathname === "/bd/cahier-des-vacances") {
     return null;
   }
 
